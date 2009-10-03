@@ -1,11 +1,0 @@
-#include <pwmc.h>
-
-#define MIN_DUTY_CYCLE 0
-#define MAX_DUTY_CYCLE 50
-
-#define PB21   {1 << 9, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
-
-/// Pio pins to configure.
-static const Pin pins[] = {    PB21
-};
-

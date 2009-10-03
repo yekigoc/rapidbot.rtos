@@ -73,6 +73,8 @@
 #include "descriptors.h"
 
 #include "../usr/liblcd/lcd.h"
+#include "../pwm/pwm.h"
+extern pwms pwmstate;
 
 #define usbNO_BLOCK ( ( portTickType ) 0 )
 
@@ -742,18 +744,34 @@ unsigned portCHAR usStatus = 10;
 
 		case usbSET_STATUS_REQUEST:
 			/* Just send two byte dummy status. */
-		  LCDPutStr("][", 90, 90, SMALL, BLACK, WHITE);
+		  /*		  if (pxRequest->usValue == 1)
+		    LCDPutStr("1", 110, 10, SMALL, BLACK, WHITE);
+		  if (pxRequest->usValue == 2)
+		    LCDPutStr("2", 110, 20, SMALL, BLACK, WHITE);
+		  if (pxRequest->usValue == 3)
+		    LCDPutStr("3", 110, 30, SMALL, BLACK, WHITE);
+		  if (pxRequest->usValue == 4)
+		  LCDPutStr("4", 110, 40, SMALL, BLACK, WHITE);*/
+
+		  /*		  LCDPutStr("][", 90, 90, SMALL, BLACK, WHITE);
 		  if (pxRequest->usLength == 1)
 		    LCDPutStr("Y", 80, 90, SMALL, BLACK, WHITE);
 		  else
 		    LCDPutStr("N", 80, 90, SMALL, BLACK, WHITE);
-		  char stat;
-		  memcpy( &stat, pxControlRx.ucBuffer, sizeof( stat ) );
-		  int a = stat;
+		    unsigned short stat;*/
+		  if (pxRequest->usValue == 1)
+		    memcpy( &pwmstate.pwms1, pxControlRx.ucBuffer, sizeof( pwmstate.pwms1 ) );
+		  if (pxRequest->usValue == 2)
+		    memcpy( &pwmstate.pwms2, pxControlRx.ucBuffer, sizeof( pwmstate.pwms2 ) );
+		  if (pxRequest->usValue == 3)
+		    memcpy( &pwmstate.pwms3, pxControlRx.ucBuffer, sizeof( pwmstate.pwms3 ) );
+		  if (pxRequest->usValue == 4)
+		    memcpy( &pwmstate.pwms4, pxControlRx.ucBuffer, sizeof( pwmstate.pwms4 ) );
+		      /*		  int a = stat;
 		  
 		  char buf[128];
 		  sprintf (buf, "%i",a);
-		  LCDPutStr(buf, 100, 100, SMALL, BLACK, WHITE);
+		  LCDPutStr(buf, 100, 100, SMALL, BLACK, WHITE);*/
 		  //		  if (pxControlRx.ucBuffer[pxControlRx.ulNextCharIndex]==0x8a)
 		  //		    LCDPutStr(buf, 0, 0, SMALL, BLACK, WHITE);
 		    //		  else

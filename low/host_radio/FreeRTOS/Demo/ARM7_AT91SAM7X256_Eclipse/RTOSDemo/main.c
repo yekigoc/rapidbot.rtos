@@ -171,9 +171,7 @@ void UTIL_WaitTimeInUs(unsigned int mck, unsigned int time_us)
 }
 
 /*-----------------------------------------------------------*/
-unsigned int count;
-unsigned int duty;
-int fadein;
+pwms pwmstate;
 /*
  * Starts all the other tasks, then starts the scheduler.
  */
@@ -218,9 +216,10 @@ int main( void )
   LCDSettings();
   Backlight(BKLGHT_LCD_ON);
 
-  count = 0;
-  duty = MIN_DUTY_CYCLE;
-  fadein = 1;
+  pwmstate.pwms1 = MIN_DUTY_CYCLE;
+  pwmstate.pwms2 = MIN_DUTY_CYCLE;
+  pwmstate.pwms3 = MIN_DUTY_CYCLE;
+  pwmstate.pwms4 = MIN_DUTY_CYCLE;
   
   /* Setup lwIP. */
   //    vlwIPInit();
@@ -317,7 +316,7 @@ portCHAR cTxByte;
       //      if (count == (PWM_FREQUENCY / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE))) 
       //	{
 	  // Fade in
-	if (fadein == 1)
+	/*	if (fadein == 1)
 	{
 	  duty = duty+1;
 	  if (duty==MAX_DUTY_CYCLE)
@@ -335,13 +334,13 @@ portCHAR cTxByte;
 	      fadein=1;
 	    }
 
-	}
-      PWMC_SetDutyCycle(CHANNEL_PWM_1, duty);
-      PWMC_SetDutyCycle(CHANNEL_PWM_2, duty);
-      PWMC_SetDutyCycle(CHANNEL_PWM_3, duty);
-      PWMC_SetDutyCycle(CHANNEL_PWM_4, duty);
+	    }*/
+	PWMC_SetDutyCycle(CHANNEL_PWM_1, pwmstate.pwms1);
+	PWMC_SetDutyCycle(CHANNEL_PWM_2, pwmstate.pwms2);
+	PWMC_SetDutyCycle(CHANNEL_PWM_3, pwmstate.pwms3);
+	PWMC_SetDutyCycle(CHANNEL_PWM_4, pwmstate.pwms4);
 	  
-      UTIL_WaitTimeInMs(BOARD_MCK, 10);
+	//      UTIL_WaitTimeInMs(BOARD_MCK, 10);
       
       //            PWMC_SetDutyCycle(CHANNEL_PWM, duty);
 	  //    }

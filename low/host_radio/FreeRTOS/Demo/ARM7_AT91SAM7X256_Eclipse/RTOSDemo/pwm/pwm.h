@@ -4,10 +4,18 @@
 #include "../pwmc/pwmc.h"
 #include "../usr/liblcd/lcd.h"
 
+typedef struct
+{
+  unsigned short pwms1;
+  unsigned short pwms2;
+  unsigned short pwms3;
+  unsigned short pwms4;
+} pwms ;
+
 
 #define MIN_DUTY_CYCLE 0
 #define MAX_DUTY_CYCLE 500
-#define PWM_FREQUENCY   14000
+#define PWM_FREQUENCY   5000
 #define CHANNEL_PWM_1 1
 #define CHANNEL_PWM_2 2
 #define CHANNEL_PWM_3 3

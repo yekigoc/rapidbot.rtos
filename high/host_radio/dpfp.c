@@ -133,18 +133,57 @@ static int get_hwstat(unsigned char *status)
 static int set_hwstat(unsigned char data)
 {
 	int r;
-
-	printf("set hwstat to %02x\n", data);
-	r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x0, 0, &data, 1, 0);
-	if (r < 0) {
-		fprintf(stderr, "set hwstat error %d\n", r);
-		return r;
-	}
-	if ((unsigned int) r < 1) {
-		fprintf(stderr, "short write (%d)", r);
-		return -1;
-	}
-
+	unsigned short tr=0;
+	int in = 0;
+	while (1)
+	  {
+	    if (in == 0)
+	      {
+		
+		tr=tr+1;
+		
+		printf("set hwstat to %02x\n", tr);
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x01, 0, &tr, 2, 0);
+		if (r < 0) 
+		  {
+		    fprintf(stderr, "set hwstat error %d\n", r);
+		    return r;
+		  }
+		if ((unsigned int) r < 1) 
+		  {
+		    fprintf(stderr, "short write (%d)", r);
+		    return -1;
+		  }
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x02, 0, &tr, 2, 0);
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x03, 0, &tr, 2, 0);
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x04, 0, &tr, 2, 0);
+		if (tr==500)
+		  in=1;
+	      }
+	    else
+	      {
+		tr=tr-1;
+		
+		printf("set hwstat to %02x\n", tr);
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x01, 0, &tr, 2, 0);
+		if (r < 0) 
+		  {
+		    fprintf(stderr, "set hwstat error %d\n", r);
+		    return r;
+		  }
+		if ((unsigned int) r < 1) 
+		  {
+		    fprintf(stderr, "short write (%d)", r);
+		    return -1;
+		  }
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x02, 0, &tr, 2, 0);
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x03, 0, &tr, 2, 0);
+		r = libusb_control_transfer(devh, CTRL_OUT, 0x12, 0x04, 0, &tr, 2, 0);
+		if (tr==0)
+		  in=0;
+		
+	      }
+	  }
 	return 0;
 }
 
