@@ -50,6 +50,11 @@ RTOS_SOURCE_DIR=../../../Source
 DEMO_COMMON_DIR=../../Common/Minimal
 DEMO_INCLUDE_DIR=../../Common/include
 UIP_COMMON_DIR=../../Common/ethernet/uIP/uip-1.0/uip
+AIC_DIR=../../Common/drivers/Atmel/at91lib/peripherals/aic
+PWMC_DIR=../../Common/drivers/Atmel/at91lib/peripherals/pwmc
+PIO_DIR=../../Common/drivers/Atmel/at91lib/peripherals
+BOARD_DIR=../../Common/drivers/Atmel/at91lib/boards/at91sam9xe-ek
+
 
 CC=/home/snegovick/dev/arm/usr/bin/arm-elf-gcc
 OBJCOPY=/home/snegovick/dev/arm/usr/bin/arm-elf-objcopy
@@ -92,7 +97,11 @@ THUMB_SOURCE= \
 		USB/USB-CDC.c \
 		./usr/liblcd/lcd.c \
 		./usr/liblcd/lcdchar.c \
-		./usr/liblcd/lcdstr.c
+		./usr/liblcd/lcdstr.c \
+		pio/pio.c \
+		pio/pio_it.c \
+		aic/aic.c \
+		pwmc/pwmc.c
 #		./usr/liblcd/libterm.c	\
 #
 #		./usr/lcdtermtask.c 
@@ -156,7 +165,8 @@ THUMB_SOURCE= \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_AT91SAM7S/portISR.c \
 		./SrcAtmel/Cstartup_SAM7.c \
-		USB/USBIsr.c
+		USB/USBIsr.c \
+		pwm/pwm_isr.c
 #		EMAC/SAM7_EMAC_ISR.c \
 
 

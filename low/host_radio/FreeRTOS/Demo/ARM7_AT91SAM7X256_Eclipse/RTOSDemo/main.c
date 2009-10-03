@@ -99,7 +99,8 @@
 //#include "lwip/api.h" 
 
 /* usr tasks */
-#include "./usr/liblcd/lcd.h"
+
+#include "pwm/pwm.h"
 
 //xLCDParameters * lcdpar;
 
@@ -140,8 +141,39 @@
 
 static void prvSetupHardware( void );
 
-/*-----------------------------------------------------------*/
 
+//------------------------------------------------------------------------------
+/// Wait time in ms
+//------------------------------------------------------------------------------
+void UTIL_Loop(unsigned int loop)
+{
+    while(loop--);	
+}
+
+
+void UTIL_WaitTimeInMs(unsigned int mck, unsigned int time_ms)
+{
+    register unsigned int i = 0;
+    i = (mck / 1000) * time_ms;
+    i = i / 3;
+    UTIL_Loop(i);
+}
+
+//------------------------------------------------------------------------------
+/// Wait time in us
+//------------------------------------------------------------------------------
+void UTIL_WaitTimeInUs(unsigned int mck, unsigned int time_us)
+{
+    volatile unsigned int i = 0;
+    i = (mck / 1000000) * time_us;
+    i = i / 3;
+    UTIL_Loop(i);
+}
+
+/*-----------------------------------------------------------*/
+unsigned int count;
+unsigned int duty;
+int fadein;
 /*
  * Starts all the other tasks, then starts the scheduler.
  */
@@ -150,6 +182,45 @@ int main( void )
   /* Setup any hardware that has not already been configured by the low
      level init routines. */
   prvSetupHardware();
+
+  //  UTIL_WaitTimeInMs(BOARD_MCK, 1000);
+  //  UTIL_WaitTimeInUs(BOARD_MCK, 1000);
+
+  //  
+
+  PWMC_ConfigureChannel(CHANNEL_PWM_1, AT91C_PWMC_CPRE_MCKA, 0, 0);
+  PWMC_SetPeriod(CHANNEL_PWM_1, MAX_DUTY_CYCLE);
+  PWMC_SetDutyCycle(CHANNEL_PWM_1, MIN_DUTY_CYCLE);
+
+  PWMC_ConfigureChannel(CHANNEL_PWM_2, AT91C_PWMC_CPRE_MCKA, 0, 0);
+  PWMC_SetPeriod(CHANNEL_PWM_2, MAX_DUTY_CYCLE);
+  PWMC_SetDutyCycle(CHANNEL_PWM_2, MIN_DUTY_CYCLE);
+
+  PWMC_ConfigureChannel(CHANNEL_PWM_3, AT91C_PWMC_CPRE_MCKA, 0, 0);
+  PWMC_SetPeriod(CHANNEL_PWM_3, MAX_DUTY_CYCLE);
+  PWMC_SetDutyCycle(CHANNEL_PWM_3, MIN_DUTY_CYCLE);
+
+  PWMC_ConfigureChannel(CHANNEL_PWM_4, AT91C_PWMC_CPRE_MCKA, 0, 0);
+  PWMC_SetPeriod(CHANNEL_PWM_4, MAX_DUTY_CYCLE);
+  PWMC_SetDutyCycle(CHANNEL_PWM_4, MIN_DUTY_CYCLE);
+
+  
+  /*  AIC_ConfigureIT(AT91C_ID_PWMC, 0, ISR_Pwmc);
+  AIC_EnableIT(AT91C_ID_PWMC);
+  PWMC_EnableChannelIt(CHANNEL_PWM_3);*/
+
+  PWMC_EnableChannel(CHANNEL_PWM_1);  
+  PWMC_EnableChannel(CHANNEL_PWM_2);
+  PWMC_EnableChannel(CHANNEL_PWM_3);
+  PWMC_EnableChannel(CHANNEL_PWM_4);
+
+  InitLCD();
+  LCDSettings();
+  Backlight(BKLGHT_LCD_ON);
+
+  count = 0;
+  duty = MIN_DUTY_CYCLE;
+  fadein = 1;
   
   /* Setup lwIP. */
   //    vlwIPInit();
@@ -157,7 +228,7 @@ int main( void )
   /* Create the lwIP task.  This uses the lwIP RTOS abstraction layer.*/
   //    sys_thread_new( vBasicWEBServer, ( void * ) NULL, mainWEBSERVER_PRIORITY );
   
-  xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );	
+  xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
   /* Start the task that handles the TCP/IP and WEB server functionality. */
   //  xTaskCreate( vuIP_Task, "uIP", mainUIP_TASK_STACK_SIZE, NULL, mainUIP_PRIORITY, NULL );
   
@@ -181,9 +252,7 @@ int main( void )
      called.  The demo applications included in the FreeRTOS.org download switch
      to supervisor mode prior to main being called.  If you are not using one of
      these demo application projects then ensure Supervisor mode is used here. */
-        InitLCD();
-      LCDSettings();
-      Backlight(BKLGHT_LCD_ON);
+
       //      LCDclearbg (131,0,0,131,WHITE);
 
   vTaskStartScheduler();
@@ -210,6 +279,10 @@ static void prvSetupHardware( void )
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOB;
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_EMAC;
 
+  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PWMC;
+  PWMC_ConfigureClocks(PWM_FREQUENCY * MAX_DUTY_CYCLE, 0, BOARD_MCK);
+  PIO_Configure(pins, PIO_LISTSIZE(pins));
+
   /* Initialise the LED outputs for use by the demo application tasks. */
   //  vParTestInitialise();
 }
@@ -231,6 +304,48 @@ portCHAR cTxByte;
 		  vUSBSendByte( cTxByte );
 		}		
 	}
+	      
+
+      //      UTIL_WaitTimeInUs(BOARD_MCK, 100);
+
+  // Interrupt on channel #1
+  //  if ((AT91C_BASE_PWMC->PWMC_ISR & AT91C_PWMC_CHID2) == AT91C_PWMC_CHID2) {
+      
+      //      count++;
+      
+      // Fade in/out
+      //      if (count == (PWM_FREQUENCY / (MAX_DUTY_CYCLE - MIN_DUTY_CYCLE))) 
+      //	{
+	  // Fade in
+	if (fadein == 1)
+	{
+	  duty = duty+1;
+	  if (duty==MAX_DUTY_CYCLE)
+	    {
+	      duty = MAX_DUTY_CYCLE;
+	      fadein=0;
+	    }
+	}
+      else
+	{
+	  duty = duty-1;
+	  if (duty==MIN_DUTY_CYCLE)
+	    {
+	      duty = MIN_DUTY_CYCLE;
+	      fadein=1;
+	    }
+
+	}
+      PWMC_SetDutyCycle(CHANNEL_PWM_1, duty);
+      PWMC_SetDutyCycle(CHANNEL_PWM_2, duty);
+      PWMC_SetDutyCycle(CHANNEL_PWM_3, duty);
+      PWMC_SetDutyCycle(CHANNEL_PWM_4, duty);
+	  
+      UTIL_WaitTimeInMs(BOARD_MCK, 10);
+      
+      //            PWMC_SetDutyCycle(CHANNEL_PWM, duty);
+	  //    }
+
 }
 
 

@@ -1,0 +1,19 @@
+//#include <board.h>
+#include <pio/pio.h>
+#include <aic/aic.h>
+#include <pwmc/pwmc.h>
+
+
+#define MIN_DUTY_CYCLE 0
+#define MAX_DUTY_CYCLE 50
+#define PWM_FREQUENCY               20000
+#define CHANNEL_PWM 2
+
+#define PB21   {1 << 21, AT91C_BASE_PIOB, AT91C_ID_PIOB, PIO_OUTPUT_0, PIO_DEFAULT}
+
+/// Pio pins to configure.
+static const Pin pins[] = {
+  PB21
+};
+
+static void ISR_Pwmc(void);
