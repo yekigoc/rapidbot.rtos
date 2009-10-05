@@ -63,7 +63,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#ifndef AT91SAM7S256
 #include "AT91SAM7X256.h"
+#else
+#include "AT91SAM7S256.h"
+#endif
+
 
 /* Constants required to handle interrupts. */
 #define portTIMER_MATCH_ISR_BIT		( ( unsigned portCHAR ) 0x01 )

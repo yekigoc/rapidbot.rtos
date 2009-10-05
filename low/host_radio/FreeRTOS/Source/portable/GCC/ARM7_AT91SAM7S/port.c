@@ -70,7 +70,11 @@
 #include "task.h"
 
 /* Processor constants. */
+#ifndef AT91SAM7S256
 #include "AT91SAM7X256.h"
+#else
+#include "AT91SAM7S256.h"
+#endif
 
 /* Constants required to setup the task context. */
 #define portINITIAL_SPSR				( ( portSTACK_TYPE ) 0x1f ) /* System mode, ARM mode, interrupts enabled. */
