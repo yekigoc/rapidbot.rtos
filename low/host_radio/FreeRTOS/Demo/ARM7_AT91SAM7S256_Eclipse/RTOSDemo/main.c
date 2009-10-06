@@ -94,6 +94,7 @@
 #include "dynamic.h"*/
 
 #include "tr24a/tr24a.h"
+#include "pio/pio.h"
 
 /* Priorities for the demo application tasks. */
 #define mainUIP_PRIORITY					( tskIDLE_PRIORITY + 2 )
@@ -203,51 +204,24 @@ portCHAR cTxByte;
 		}
 	}
 	trspistat.counter = trspistat.counter + 1;
+	trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
 	if ((trspistat.trinited == 0) && (trspistat.usbinited == 1))
 	  {
-	    //	    PIO_Clear(TRRESET_PIN);
-	    //	    UTIL_WaitTimeInMs(BOARD_MCK, 2000);
 	    trspistat.trinited = 11;
+	    Pin res = TRRESET_PIO;
+	    PIO_Clear(&res);
+
+	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
+
+	    tr24_initframer();
+	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
+	    tr24_initrfic();
+
 	    //	    vTaskDelay( 10 );	    
-	    unsigned int data = 0x30;
-	    data = (data & ~0x0100);
-	    
-	    // Wait for the transfer to complete
-	    while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-	    
-	    AT91C_BASE_SPI->SPI_TDR = data;
-	    trspistat.trinited = 17;
-	    /*	    SPI_Write(&trspi, TR24_NPCS, 0x30);
-	    trspistat.trinited = 12;
-	    SPI_Write(&trspi, TR24_NPCS, 0x9800);
-	    trspistat.trinited = 1;
-	    SPI_Write(&trspi, TR24_NPCS, 0x31);
-	    SPI_Write(&trspi, TR24_NPCS, 0xFF8F);
-	    trspistat.trinited = 2;
-	    SPI_Write(&trspi, TR24_NPCS, 0x32);
-	    SPI_Write(&trspi, TR24_NPCS, 0x8028);
-	    trspistat.trinited = 3;
-	    SPI_Write(&trspi, TR24_NPCS, 0x33);
-	    SPI_Write(&trspi, TR24_NPCS, 0x8056);
-	    trspistat.trinited = 4;
-	    SPI_Write(&trspi, TR24_NPCS, 0x34);
-	    SPI_Write(&trspi, TR24_NPCS, 0x4EF6);
-	    trspistat.trinited = 5;
-	    SPI_Write(&trspi, TR24_NPCS, 0x35);
-	    SPI_Write(&trspi, TR24_NPCS, 0xF6F5);
-	    trspistat.trinited = 6;
-	    SPI_Write(&trspi, TR24_NPCS, 0x36);
-	    SPI_Write(&trspi, TR24_NPCS, 0x185C);
-	    trspistat.trinited = 7;
-	    SPI_Write(&trspi, TR24_NPCS, 0x37);
-	    SPI_Write(&trspi, TR24_NPCS, 0xD651);
-	    trspistat.trinited = 8;
-	    SPI_Write(&trspi, TR24_NPCS, 0x38);
-	    SPI_Write(&trspi, TR24_NPCS, 0x4444);
-	    trspistat.trinited = 9;
-	    SPI_Write(&trspi, TR24_NPCS, 0x39);
-	    SPI_Write(&trspi, TR24_NPCS, 0xE000);
-	    trspistat.trinited = 10;*/
+
+
+	    //data = (data & ~0x0100);
+
 	  }
 
 }

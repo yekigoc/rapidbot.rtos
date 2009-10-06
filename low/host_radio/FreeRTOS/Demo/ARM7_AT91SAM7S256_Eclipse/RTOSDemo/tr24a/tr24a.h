@@ -8,7 +8,7 @@
 #define FIFOFLG_PIN (1<<16)
 #define PKTFLG_PIN (1<<15)
 
-#define TRRESET_PIO {TRRESET_PIN, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
+#define TRRESET_PIO {TRRESET_PIN, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
 #define MISO_PIO {MISO_PIN, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define MOSI_PIO {MOSI_PIN, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define NPCS_PIO {NPCS_PIN, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
@@ -18,7 +18,7 @@
 
 #define TR24_NPCS 1
 
-#define TR24_BAUDRATE 115200
+#define TR24_BAUDRATE 9600
 
 typedef struct
 {
@@ -26,6 +26,7 @@ typedef struct
   unsigned short trinited;
   unsigned short counter;
   unsigned short usbinited;
+  unsigned int spistatreg;
 } spistat;
 
 /*
@@ -40,4 +41,5 @@ AT91S_SPI trspi;
 spistat trspistat;
 
 void tr24_init();
+void tr24_initrfic();
 void ISR_Spi0(void);

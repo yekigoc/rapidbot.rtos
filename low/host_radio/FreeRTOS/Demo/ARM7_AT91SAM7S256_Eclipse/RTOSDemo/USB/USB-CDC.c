@@ -749,7 +749,9 @@ unsigned portCHAR usStatus = 0xFFFF;
 		    case 0x3:
 		      prvSendControlData( ( unsigned portCHAR * ) &trspistat.counter, sizeof( trspistat.counter ), sizeof( trspistat.counter ), pdFALSE );
 		      break;
-
+		    case 0x4:
+		      prvSendControlData( ( unsigned portCHAR * ) &trspistat.spistatreg, sizeof( trspistat.spistatreg ), sizeof( trspistat.spistatreg ), pdFALSE );
+		      break;
 		    default:
 		      prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );
 		      break;

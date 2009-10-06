@@ -136,7 +136,9 @@ const char pxConfigDescriptor[] = {
 	0x01,				/* CbConfigurationValue					*/
 	usbCONFIGURATION_STRING,/* CiConfiguration					*/
 	usbBUS_POWERED,		/* CbmAttributes Bus powered + Remote Wakeup*/
-	0x32,				/* CMaxPower: 100mA						*/
+	//	0x32,				/* CMaxPower: 100mA
+	//	*/
+	0xFA,				/* CMaxPower: 500mA						*/
 
 	/* Communication Class Interface Descriptor Requirement		*/
 	0x09,				/* bLength								*/
