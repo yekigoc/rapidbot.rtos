@@ -217,6 +217,12 @@ portCHAR cTxByte;
 	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
 	    tr24_initrfic();
 
+	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
+
+	    char a[2]="AA";
+	    tr24_writefifo(a, 2);
+	    trspistat.usbinited = 0;
+
 	    //	    vTaskDelay( 10 );	    
 
 
