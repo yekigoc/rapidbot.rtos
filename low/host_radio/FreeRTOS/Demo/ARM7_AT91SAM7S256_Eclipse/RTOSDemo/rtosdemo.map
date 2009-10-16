@@ -137,7 +137,7 @@ LOAD spi/spi.o
 LOAD pio/pio.o
 LOAD tr24a/tr24a.o
 LOAD USB/USB-CDC.o
-LOAD /tmp/ccASTJn0.o
+LOAD /tmp/ccM8s2vs.o
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a
@@ -146,7 +146,7 @@ LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/li
 
 startup         0x0000000000100000       0x44
  *(.startup)
- .startup       0x0000000000100000       0x44 /tmp/ccASTJn0.o
+ .startup       0x0000000000100000       0x44 /tmp/ccM8s2vs.o
 
 prog            0x0000000000100044     0x9684
  *(.text)
@@ -253,7 +253,7 @@ prog            0x0000000000100044     0x9684
  .text          0x0000000000102300      0x87c USB/USB-CDC.o
                 0x0000000000102300                vUSBSendByte
                 0x0000000000102428                vUSBCDCTask
- .text          0x0000000000102b7c       0xd0 /tmp/ccASTJn0.o
+ .text          0x0000000000102b7c       0xd0 /tmp/ccM8s2vs.o
                 0x0000000000102b7c                start
                 0x0000000000102c2c                endless_loop
  .text          0x0000000000102c4c       0x8c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
