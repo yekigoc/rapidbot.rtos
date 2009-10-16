@@ -1,0 +1,8 @@
+halt
+wait_halt
+flash probe 0
+flash erase 0 0 0
+flash write 0 main.bin 0x0
+#flash write_image main.hex
+reset run
+shutdown

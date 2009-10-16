@@ -1,0 +1,24 @@
+CC=gcc
+DELETE=rm
+ECHO=echo -e
+CFLAGS+=-I/usr/include -fPIC -I/usr/include/libusb-1.0/
+LDFLAGS+=-L/usr/lib -lusb-1.0
+SHARED=
+SOURCES=dpfp.c
+OBJECTS=$(SOURCES:.c=.o)
+BIN=simevo
+
+BINDIR=./
+
+all: $(BINDIR)/$(BIN)
+
+$(BINDIR)/$(BIN): $(OBJECTS)
+	$(ECHO) "----- Building simple evolution -----"
+	$(CC) $(SHARED) $(LDFLAGS) $(OBJECTS) -o $@
+
+$(OBJECTS): %.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.PHONY: clean
+clean:
+	$(DELETE) $(OBJECTS) $(BINDIR)/$(BIN)
