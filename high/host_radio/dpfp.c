@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <libusb.h>
+#include <libusb/libusb.h>
 
 #define EP_INTR			(1 | LIBUSB_ENDPOINT_IN)
 #define EP_DATA			(2 | LIBUSB_ENDPOINT_IN)
@@ -115,18 +115,66 @@ static int print_f0_data(void)
 static int get_hwstat(unsigned char *status)
 {
 	int r;
-
-	r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x0, 0, status, 1, 0);
-	if (r < 0) {
-		fprintf(stderr, "read hwstat error %d\n", r);
+	unsigned int stat = 0;
+	unsigned int spistat = 0;
+	unsigned int ctr = 0;
+	
+	r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x01, 0, &stat, 2, 0);
+	if (r < 0) 
+	  {
+	    fprintf(stderr, "set hwstat error %d\n", r);
+	    return r;
+	  }
+	if ((unsigned int) r < 1) 
+	  {
+	    fprintf(stderr, "short write (%d)", r);
+	    return -1;
+	  }
+	
+	printf("hwstat spicalls = %i\n", *status);
+	stat=0;
+	while (1)
+	  {
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x02, 0, &stat, 2, 0);
+	    if (r < 0) 
+	      {
+		fprintf(stderr, "set hwstat error %d\n", r);
 		return r;
-	}
-	if ((unsigned int) r < 1) {
-		fprintf(stderr, "short read (%d)\n", r);
+	      }
+	    if ((unsigned int) r < 1) 
+	      {
+		fprintf(stderr, "short write (%d)", r);
 		return -1;
-	}
+	      }
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x04, 0, &spistat, 4, 0);
+	    if (r < 0) 
+	      {
+		fprintf(stderr, "set hwstat error %d\n", r);
+		return r;
+	      }
+	    if ((unsigned int) r < 1) 
+	      {
+		fprintf(stderr, "short write (%d)", r);
+		return -1;
+	      }
 
-	printf("hwstat reads %02x\n", *status);
+
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x03, 0, &ctr, 2, 0);
+	    if (r < 0) 
+	      {
+		fprintf(stderr, "set hwstat error %d\n", r);
+		return r;
+	      }
+	    if ((unsigned int) r < 1) 
+	      {
+		fprintf(stderr, "short write (%d)", r);
+		return -1;
+	      }
+
+	    printf("hwstat ctr=%i trinited = %i spistat = %02x\n", ctr, stat,spistat);
+
+	    usleep(1000000);
+	  }
 	return 0;
 }
 
@@ -135,9 +183,9 @@ static int set_hwstat(unsigned char data)
 	int r;
 	unsigned short tr=0;
 	int in = 0;
-	while (1)
-	  {
-	    if (in == 0)
+	//	while (1)
+	//	  {
+	/*	    if (in == 0)
 	      {
 		
 		tr=tr+1;
@@ -183,7 +231,7 @@ static int set_hwstat(unsigned char data)
 		  in=0;
 		
 	      }
-	  }
+	      }*/
 	return 0;
 }
 
