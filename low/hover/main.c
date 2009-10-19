@@ -105,9 +105,11 @@ void Initialize(void)
   // Setting peripheral Clock (pclk) to System Clock (cclk)
   VPBDIV=0x1;
   
-  SPI_SPCCR = 0x8;
+  //  SPI_SPCCR = 0x8; 
+  SPI_SPCCR = 0x4A; //200KHz
   //  unsigned short spcr = 0x838;
-  SPI_SPCR = 0x20;
+  //  SPI_SPCR = 0x20;
+  SPI_SPCR = 0x87C;
 
   IODIR |= PIN_RESET | PIN_LED;
   IOSET = PIN_LED;

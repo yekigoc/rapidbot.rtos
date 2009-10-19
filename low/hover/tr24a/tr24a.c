@@ -25,7 +25,6 @@ void UTIL_Loop(unsigned int loop)
     while(loop--);	
 }
 
-
 void UTIL_WaitTimeInMs(unsigned int mck, unsigned int time_ms)
 {
     register unsigned int i = 0;

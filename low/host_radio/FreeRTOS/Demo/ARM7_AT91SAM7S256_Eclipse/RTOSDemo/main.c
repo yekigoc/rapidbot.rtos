@@ -109,7 +109,8 @@ portCHAR cTxByte;
 	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
 
 	    char a[2]="AA";
-	    tr24_writefifo(a, 2);
+	    //	    tr24_writefifo(a, 2);
+	    tr24_readfifo();
 	    trspistat.usbinited = 0;
 	  }
 

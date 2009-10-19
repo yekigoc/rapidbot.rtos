@@ -171,6 +171,32 @@ void tr24_initrfic()
   trspistat.trinited = 1002;
 }
 
+void tr24_readfifo()
+{
+  Pin pkt = PKTFLG_PIO;
+  Pin fifo = FIFOFLG_PIO;
+  Pin ss = NPCS_PIO;
+
+  tr24_writereg(0x52, 0x00, 0x80);
+  UTIL_WaitTimeInMs(BOARD_MCK,10);
+  tr24_writereg(0x07,0x00,0x90); //INTO RX
+  UTIL_WaitTimeInMs(BOARD_MCK,10);
+
+  trspistat.trinited = 4001;
+  while (1)
+    {
+      if (PIO_Get(&fifo))
+	{
+	  trspistat.trinited += 10;
+	}
+      if (PIO_Get(&pkt))
+	{
+	  trspistat.trinited += 100;
+	}
+    }
+  trspistat.trinited += 1;
+}
+
 void tr24_writefifo(char * msg, int len)
 {
   Pin pkt = PKTFLG_PIO;
@@ -214,7 +240,7 @@ void tr24_writefifo(char * msg, int len)
 
   trspistat.trinited = 1003;  
  
-  while (!PIO_Get(&pkt))
+  while (!PIO_Get(&fifo))
     {
       trspistat.trinited = PIO_Get(&pkt)+PIO_Get(&fifo);
     }

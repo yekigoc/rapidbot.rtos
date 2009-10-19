@@ -46,3 +46,5 @@ spistat trspistat;
 void tr24_init();
 void tr24_initrfic();
 void ISR_Spi0(void);
+void tr24_readfifo();
+void tr24_writefifo(char * msg, int len);
