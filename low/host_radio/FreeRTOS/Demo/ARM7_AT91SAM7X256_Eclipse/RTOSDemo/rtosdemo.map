@@ -139,7 +139,7 @@ LOAD pio/pio.o
 LOAD pio/pio_it.o
 LOAD aic/aic.o
 LOAD pwmc/pwmc.o
-LOAD /tmp/cc4dvbc8.o
+LOAD /tmp/ccgBt7bq.o
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a
@@ -148,7 +148,7 @@ LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/li
 
 startup         0x0000000000100000       0x44
  *(.startup)
- .startup       0x0000000000100000       0x44 /tmp/cc4dvbc8.o
+ .startup       0x0000000000100000       0x44 /tmp/ccgBt7bq.o
 
 prog            0x0000000000100044     0xab3c
  *(.text)
@@ -269,7 +269,7 @@ prog            0x0000000000100044     0xab3c
                 0x00000000001032b4                PWMC_DisableChannel
                 0x00000000001031dc                PWMC_ConfigureChannel
                 0x0000000000103204                PWMC_SetPeriod
- .text          0x00000000001033e8       0xd0 /tmp/cc4dvbc8.o
+ .text          0x00000000001033e8       0xd0 /tmp/ccgBt7bq.o
                 0x00000000001033e8                start
                 0x0000000000103498                endless_loop
  .text          0x00000000001034b8       0x8c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
