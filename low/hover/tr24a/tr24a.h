@@ -53,7 +53,7 @@ spistat trspistat;
 #define PIN_LED 1<<21
 #define PIN_FIFOFLG 1<<23
 #define PIN_PKTFLG 1<<22
-#define PINDIRSEL PIN_RESET | PIN_FIFOFLG | PIN_PKTFLG
+#define PIN_SS 1<<7
 
 #define SPIF (1<<7)
 #include "../lpc210x.h"
@@ -63,3 +63,6 @@ void tr24_init();
 void tr24_initrfic();
 void ISR_Spi0(void);
 void UTIL_WaitTimeInMs(unsigned int mck, unsigned int time_ms);
+void UTIL_WaitTimeInUs(unsigned int mck, unsigned int time_ns);
+void UTIL_WaitTimeInNs(unsigned int mck, unsigned int time_ns);
+

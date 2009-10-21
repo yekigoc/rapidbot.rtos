@@ -25,8 +25,7 @@ int main (void)
   char a[2]="AA";
   tr24_writefifo(a, 2);
 
-  IOCLR = PIN_RESET;
-  IOCLR |= PIN_LED;
+  IOCLR |= PIN_RESET;
   while (1) 
     {
     }
@@ -100,23 +99,24 @@ void Initialize(void)
   MAMTIM=0x4;
   
   //set pins for spi
-  PINSEL0 = 0x5500;
+  PINSEL0 = 0x1500;
 
   // Setting peripheral Clock (pclk) to System Clock (cclk)
   VPBDIV=0x1;
   
   //  SPI_SPCCR = 0x8; 
-  SPI_SPCCR = 0x4A; //200KHz
+  SPI_SPCCR = 0xF; //1MHz
   //  unsigned short spcr = 0x838;
   //  SPI_SPCR = 0x20;
-  SPI_SPCR = 0x87C;
+  SPI_SPCR = 0x28;
+  SPI_SPCR |= 1<<11;
 
-  IODIR |= PIN_RESET | PIN_LED;
-  IOSET = PIN_LED;
+  IODIR |= PIN_RESET | PIN_LED | PIN_SS;
+  IOSET |= PIN_LED | PIN_SS;
   UTIL_WaitTimeInMs(BOARD_MCK, 1000);
-  IOCLR = PIN_RESET | PIN_LED;
-  UTIL_WaitTimeInMs(BOARD_MCK, 000);
-  IOSET = PIN_RESET | PIN_LED;
+  IOCLR |= PIN_RESET | PIN_LED;
+  UTIL_WaitTimeInMs(BOARD_MCK, 1000);
+  IOSET |= PIN_RESET;
 }
 
 

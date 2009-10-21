@@ -69,7 +69,7 @@ void tr24_init()
   //l_pSpi->SPI_MR      = 0xE0099;           //Master mode, fixed select, disable decoder, FDIV=1 (NxMCK), PCS=1110, loopback
   //l_pSpi->SPI_MR      = 0xE0019;            //Master mode, fixed select, disable decoder, FDIV=1 (NxMCK), PCS=1110,
   //l_pSpi->SPI_MR      = 0xE0011;            //Master mode, fixed select, disable decoder, FDIV=0 (MCK), PCS=1110
-  AT91C_BASE_SPI->SPI_MR      = 0x90E0011;//0x90E0011;//0xE0019;
+  AT91C_BASE_SPI->SPI_MR      = 0xE0019;//0xE0001;//0x90E0011;//0xE0019;
 					  ////Master mode, fixed
 					  //select, disable decoder,
 					  //FDIV=1 (MCK), PCS=1110
@@ -81,7 +81,7 @@ void tr24_init()
   //l_pSpi->SPI_CSR[0]  = 0x4A11;             //9bit, CPOL=1, ClockPhase=0, SCLK = 200kHz
   //l_pSpi->SPI_CSR[0]  = 0x01011F11;           //9bit, CPOL=1, ClockPhase=0, SCLK = 48Mhz/32*31 = 48kHz
   // work l_pSpi->SPI_CSR[0]  = 0x01010F11;           //9bit, CPOL=1, ClockPhase=0, SCLK = 48Mhz/32*15 = 96kHz
-  AT91C_BASE_SPI->SPI_CSR[0]  = 0x109FF00;//0x01010F11;//0x01010C11;           //9bit, CPOL=1,
+  AT91C_BASE_SPI->SPI_CSR[0]  = 0x4a02;//0x109FF00;0x3002;//0xCC3000;//0x109FF00;//0x01010F11;//0x01010C11;           //9bit, CPOL=1,
 						      //ClockPhase=0,
 						      //SCLK =
 						      //48Mhz/32*12 =
@@ -94,80 +94,84 @@ void tr24_writebyte(unsigned short byte)
   unsigned short data = byte;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
   AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
-  while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0)
-
-  UTIL_WaitTimeInUs(BOARD_MCK, 10);
+  while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0);
 }
 
 void tr24_writereg(unsigned short reg, unsigned short h, unsigned short l)
 {
-  /*  Pin ss = NPCS_PIO;
+  Pin ss = NPCS_PIO;
 
   PIO_Clear(&ss);
 
-  UTIL_WaitTimeInUs(BOARD_MCK, 1);*/
+  UTIL_WaitTimeInUs(BOARD_MCK, 1);
 
   unsigned short data = reg;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-  AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
+  AT91C_BASE_SPI->SPI_TDR = data ;//| SPI_PCS(1);
   while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0)
-
-  UTIL_WaitTimeInUs(BOARD_MCK, 10);
 
   data = h;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-  AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
+  AT91C_BASE_SPI->SPI_TDR = data ;//| SPI_PCS(1);
   while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0)
-
-  UTIL_WaitTimeInUs(BOARD_MCK, 10);
 
   data = l;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-  AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
-  while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0)
-
-  UTIL_WaitTimeInUs(BOARD_MCK, 10);
-
-  /*  PIO_Set(&ss);
-
-      UTIL_WaitTimeInUs(BOARD_MCK, 1);*/
+  AT91C_BASE_SPI->SPI_TDR = data ;//| SPI_PCS(1);
+  while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0);
+    
+  PIO_Set(&ss);
 }
 
 void tr24_initframer()
 {
+  UTIL_WaitTimeInMs(BOARD_MCK, 1);
   tr24_writereg(0x30, 0x98, 0x00);
-  tr24_writereg(0x31, 0xFF, 0x8F);
+  //  tr24_writereg(0x31, 0xFF, 0x8F);
+  tr24_writereg(0x31, 0xFF, 0x0F);
   tr24_writereg(0x32, 0x80, 0x28);
   tr24_writereg(0x33, 0x80, 0x56);
   tr24_writereg(0x34, 0x4E, 0xF6);
   tr24_writereg(0x35, 0xF6, 0xF5);
   tr24_writereg(0x36, 0x18, 0x5C);
   tr24_writereg(0x37, 0xD6, 0x51);
-  tr24_writereg(0x38, 0x44, 0x44);
+  //  tr24_writereg(0x38, 0x44, 0x44);
+  tr24_writereg(0x38, 0x44, 0x04);
   tr24_writereg(0x39, 0xE0, 0x00);
+  tr24_writereg(0x3A, 0x00, 0x00);
   trspistat.trinited = 1001;
 }
 
 void tr24_initrfic()
 {
-  tr24_writereg(0x09, 0x20, 0x01);
-  tr24_writereg(0x00, 0x35, 0x4D);
+tr24_writereg(0x00, 0x35, 0x4F);
+  //  tr24_writereg(0x02, 0x1F, 0x01);
   tr24_writereg(0x02, 0x1F, 0x01);
-  tr24_writereg(0x04, 0xBC, 0xF0);
+  //  tr24_writereg(0x04, 0xBC, 0xF0);
+  tr24_writereg(0x04, 0x38, 0xD8);
   tr24_writereg(0x05, 0x00, 0xA1);
   tr24_writereg(0x07, 0x12, 0x4C);
-  tr24_writereg(0x08, 0x80, 0x00);
-  tr24_writereg(0x0C, 0x80, 0x00);
+  tr24_writereg(0x08, 0x80, 0x08);
+  tr24_writereg(0x09, 0x21, 0x01);
+  tr24_writereg(0x0A, 0x00, 0x04);
+  tr24_writereg(0x0B, 0x40, 0x41);
+  //  tr24_writereg(0x00, 0x35, 0x4D);
+  tr24_writereg(0x0C, 0x7E, 0x00);
+  tr24_writereg(0x0D, 0x00, 0x00);
   tr24_writereg(0x0E, 0x16, 0x9B);
-  tr24_writereg(0x0F, 0x90, 0xAD);
-  tr24_writereg(0x10, 0xB0, 0x00);
+  tr24_writereg(0x0F, 0x80, 0x2F);
+  tr24_writereg(0x10, 0xB0, 0xF8);
+  tr24_writereg(0x12, 0xE0, 0x00);
   tr24_writereg(0x13, 0xA1, 0x14);
   tr24_writereg(0x14, 0x81, 0x91);
+  tr24_writereg(0x15, 0x69, 0x62);
   tr24_writereg(0x16, 0x00, 0x02);
+  tr24_writereg(0x17, 0x00, 0x02);
   tr24_writereg(0x18, 0xB1, 0x40);
-  tr24_writereg(0x19, 0xA8, 0x0F);
+  tr24_writereg(0x19, 0x78, 0x0F);
   tr24_writereg(0x1A, 0x3F, 0x04);
   tr24_writereg(0x1C, 0x58, 0x00);
+  tr24_writereg(0x07, 0x00, 0x00);
   trspistat.trinited = 1002;
 }
 
@@ -188,11 +192,14 @@ void tr24_readfifo()
       if (PIO_Get(&fifo))
 	{
 	  trspistat.trinited += 10;
+	  break;
 	}
       if (PIO_Get(&pkt))
 	{
 	  trspistat.trinited += 100;
+	  break;
 	}
+
     }
   trspistat.trinited += 1;
 }
@@ -202,14 +209,8 @@ void tr24_writefifo(char * msg, int len)
   Pin pkt = PKTFLG_PIO;
   Pin fifo = FIFOFLG_PIO;
   Pin ss = NPCS_PIO;
-  
-  int a = 0;
-
-  a=a+1;
-  
-  UTIL_WaitTimeInUs(BOARD_MCK, 10);
-
-  tr24_writereg(0x07, 0x00, 0x80);  //Set DBUS_TX_EN (Enable
+    
+  //  tr24_writereg(0x07, 0x00, 0x80);  //Set DBUS_TX_EN (Enable
 				    //transmission)
   //  memcpy(FIFObuf,msg,len ); // copy message to FIFObuf
 
@@ -217,10 +218,11 @@ void tr24_writefifo(char * msg, int len)
 
   tr24_writereg(0x52, 0x80, 0x00); //RESET TX FIFO
 
-  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  UTIL_WaitTimeInMs(BOARD_MCK, 5);
 
-  //  PIO_Clear(&ss);
-  
+  PIO_Clear(&ss);
+  UTIL_WaitTimeInUs(BOARD_MCK, 4);
+
   tr24_writebyte(0x50); //RESET TX
 
   UTIL_WaitTimeInUs(BOARD_MCK, 10);
@@ -230,20 +232,25 @@ void tr24_writefifo(char * msg, int len)
   tr24_writebyte(0x00);
   tr24_writebyte(0x00);
 
-  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  PIO_Set(&ss);
 
-  //  PIO_Set(&ss);
+  tr24_writereg(0x07, 0x01, 0x10);
 
-  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  trspistat.trinited = 1003;
 
-  tr24_writereg(0x07, 0x00, 0x80);
+  unsigned int i=0;
 
-  trspistat.trinited = 1003;  
- 
-  while (!PIO_Get(&fifo))
+  while (!PIO_Get(&pkt) && !PIO_Get(&fifo))
     {
-      trspistat.trinited = PIO_Get(&pkt)+PIO_Get(&fifo);
+      if (i>6000000)
+	break;
+      i=i+1;
     }
-  
+ 
   trspistat.trinited = 1100;  
+
+  tr24_writereg(0x52, 0x80, 0x00); //RESET TX FIFO
+  UTIL_WaitTimeInMs(BOARD_MCK, 5);
+  tr24_writereg(0x07, 0x00, 0x00);
+  UTIL_WaitTimeInMs(BOARD_MCK, 5);
 }

@@ -98,19 +98,22 @@ portCHAR cTxByte;
 	  {
 	    trspistat.trinited = 11;
 	    Pin res = TRRESET_PIO;
-	    PIO_Clear(&res);
+	    PIO_Set(&res);
 
 	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
 
+	    trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
 	    tr24_initframer();
-	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
+	    trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
 	    tr24_initrfic();
+	    trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
 
 	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
 
 	    char a[2]="AA";
-	    //	    tr24_writefifo(a, 2);
-	    tr24_readfifo();
+	    tr24_writefifo(a, 2);
+		    //tr24_readfifo();
+	    PIO_Clear(&res);
 	    trspistat.usbinited = 0;
 	  }
 
