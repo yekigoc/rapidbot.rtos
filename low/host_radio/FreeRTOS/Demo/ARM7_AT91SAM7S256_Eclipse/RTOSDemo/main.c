@@ -82,41 +82,44 @@ void vApplicationIdleHook( void )
 static portTickType xLastTx = 0;
 portCHAR cTxByte;
 
-	/* The idle hook simply sends a string of characters to the USB port.
-	The characters will be buffered and sent once the port is connected. */
-	if( ( xTaskGetTickCount() - xLastTx ) > mainUSB_TX_FREQUENCY )
-	{
-		xLastTx = xTaskGetTickCount();
-		for( cTxByte = mainFIRST_TX_CHAR; cTxByte <= mainLAST_TX_CHAR; cTxByte++ )
-		{
-		  vUSBSendByte( cTxByte );
-		}
-	}
-	trspistat.counter = trspistat.counter + 1;
-	trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
-	if ((trspistat.trinited == 0) && (trspistat.usbinited == 1))
-	  {
-	    trspistat.trinited = 11;
-	    Pin res = TRRESET_PIO;
-	    PIO_Set(&res);
+/* The idle hook simply sends a string of characters to the USB port.
+   The characters will be buffered and sent once the port is connected. */
+ if( ( xTaskGetTickCount() - xLastTx ) > mainUSB_TX_FREQUENCY )
+   {
+     xLastTx = xTaskGetTickCount();
+     for( cTxByte = mainFIRST_TX_CHAR; cTxByte <= mainLAST_TX_CHAR; cTxByte++ )
+       {
+	 vUSBSendByte( cTxByte );
+       }
+   }
 
-	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
+ trspistat.counter = trspistat.counter + 1;
+ trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
 
-	    trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
-	    tr24_initframer();
-	    trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
-	    tr24_initrfic();
-	    trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
-
-	    UTIL_WaitTimeInUs(BOARD_MCK, 100);
-
-	    char a[2]="AA";
-	    tr24_writefifo(a, 2);
-		    //tr24_readfifo();
-	    PIO_Clear(&res);
-	    trspistat.usbinited = 0;
-	  }
-
+ if ((trspistat.trinited == 0) && (trspistat.usbinited == 1))
+   {
+     portENTER_CRITICAL();
+     trspistat.trinited = 11;
+     Pin res = TRRESET_PIO;
+     UTIL_WaitTimeInUs(BOARD_MCK, 1000);
+     PIO_Set(&res);
+     
+     UTIL_WaitTimeInUs(BOARD_MCK, 100);
+     
+     trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
+     tr24_initframer();
+     UTIL_WaitTimeInMs(BOARD_MCK, 50);
+     trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
+     tr24_initrfic();
+     trspistat.spistatreg=AT91C_BASE_SPI->SPI_SR;
+     portEXIT_CRITICAL();
+     UTIL_WaitTimeInUs(BOARD_MCK, 100);
+     
+     char a[2]="AA";
+     tr24_writefifo(a, 2);
+     //tr24_readfifo();
+     PIO_Clear(&res);
+     trspistat.usbinited = 0;
+   }
+ 
 }
-
-

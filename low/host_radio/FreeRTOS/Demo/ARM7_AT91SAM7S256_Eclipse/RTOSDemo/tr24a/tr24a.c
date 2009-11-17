@@ -25,10 +25,10 @@ void UTIL_Loop(unsigned int loop)
 
 void UTIL_WaitTimeInMs(unsigned int mck, unsigned int time_ms)
 {
-    register unsigned int i = 0;
-    i = (mck / 1000) * time_ms;
-    i = i / 3;
-    UTIL_Loop(i);
+  register unsigned int i = 0;
+  i = (mck / 1000) * time_ms;
+  i = i / 3;
+  UTIL_Loop(i);
 }
 
 //------------------------------------------------------------------------------
@@ -36,10 +36,10 @@ void UTIL_WaitTimeInMs(unsigned int mck, unsigned int time_ms)
 //------------------------------------------------------------------------------
 void UTIL_WaitTimeInUs(unsigned int mck, unsigned int time_us)
 {
-    volatile unsigned int i = 0;
-    i = (mck / 1000000) * time_us;
-    i = i / 3;
-    UTIL_Loop(i);
+  volatile unsigned int i = 0;
+  i = (mck / 1000000) * time_us;
+  i = i / 3;
+  UTIL_Loop(i);
 }
 
 void tr24_init()
@@ -64,24 +64,26 @@ void tr24_init()
 
   AT91C_BASE_SPI->SPI_CR      = 0x02;               //SPI Disable
   AT91C_BASE_SPI->SPI_CR      = 0x81;               //SPI Enable, Software reset
-  AT91C_BASE_SPI->SPI_CR      = 0x81;               //SPI Enable,
+  AT91C_BASE_SPI->SPI_CR      = 0x01;               //SPI Enable,
 						    //Software reset
   //l_pSpi->SPI_MR      = 0xE0099;           //Master mode, fixed select, disable decoder, FDIV=1 (NxMCK), PCS=1110, loopback
   //l_pSpi->SPI_MR      = 0xE0019;            //Master mode, fixed select, disable decoder, FDIV=1 (NxMCK), PCS=1110,
   //l_pSpi->SPI_MR      = 0xE0011;            //Master mode, fixed select, disable decoder, FDIV=0 (MCK), PCS=1110
-  AT91C_BASE_SPI->SPI_MR      = 0xE0019;//0xE0001;//0x90E0011;//0xE0019;
+  AT91C_BASE_SPI->SPI_MR      = 0xE0019;//0xC0E0011;// 0xE0019;//0xE0001;//0x90E0011;//0xE0019;
 					  ////Master mode, fixed
 					  //select, disable decoder,
 					  //FDIV=1 (MCK), PCS=1110
-  AT91C_BASE_SPI->SPI_CR      = 0x02;               //SPI Disable
-  AT91C_BASE_SPI->SPI_CR      = 0x01;               //SPI Enable
-  //l_pSpi->SPI_CSR[0]  = 0x4A02;             //8bit, CPOL=0, ClockPhase=1, SCLK = 200kHz
+  //  AT91C_BASE_SPI->SPI_CR      = 0x02;               //SPI Disable
+  //  AT91C_BASE_SPI->SPI_CR      = 0x01;               //SPI Enable
+  AT91C_BASE_SPI->SPI_CSR[0]=0x1010402;
+  //  AT91C_BASE_SPI->SPI_CSR[0]=0x1010210;
+  //  AT91C_BASE_SPI->SPI_CSR[0]  = 0x4A02;             //8bit, CPOL=0, ClockPhase=1, SCLK = 200kHz
   //l_pSpi->SPI_CSR[0]  = 0x4A13;             //9bit, CPOL=1, ClockPhase=1, SCLK = 200kHz
   //l_pSpi->SPI_CSR[0]  = 0x4A12;             //9bit, CPOL=0, ClockPhase=1, SCLK = 200kHz
   //l_pSpi->SPI_CSR[0]  = 0x4A11;             //9bit, CPOL=1, ClockPhase=0, SCLK = 200kHz
   //l_pSpi->SPI_CSR[0]  = 0x01011F11;           //9bit, CPOL=1, ClockPhase=0, SCLK = 48Mhz/32*31 = 48kHz
   // work l_pSpi->SPI_CSR[0]  = 0x01010F11;           //9bit, CPOL=1, ClockPhase=0, SCLK = 48Mhz/32*15 = 96kHz
-  AT91C_BASE_SPI->SPI_CSR[0]  = 0x4a02;//0x109FF00;0x3002;//0xCC3000;//0x109FF00;//0x01010F11;//0x01010C11;           //9bit, CPOL=1,
+  //AT91C_BASE_SPI->SPI_CSR[0]  = 0x1013100;//0x109FF00;0x3002;//0xCC3000;//0x109FF00;//0x01010F11;//0x01010C11;           //9bit, CPOL=1,
 						      //ClockPhase=0,
 						      //SCLK =
 						      //48Mhz/32*12 =
@@ -89,38 +91,48 @@ void tr24_init()
   //  AT91C_BASE_SPI->SPI_CR      = 0x01;               //SPI Enable
 }
 
-void tr24_writebyte(unsigned short byte)
+void tr24_writebyte(unsigned int byte)
 {
-  unsigned short data = byte;
+  portENTER_CRITICAL();
+  unsigned int data = byte;
+  //  data = (data & ~0x0100);
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
   AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
   while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0);
+  portEXIT_CRITICAL();
 }
 
 void tr24_writereg(unsigned short reg, unsigned short h, unsigned short l)
 {
+  UTIL_WaitTimeInUs(BOARD_MCK, 5);
+  portENTER_CRITICAL();
   Pin ss = NPCS_PIO;
 
+#ifdef SS
   PIO_Clear(&ss);
-
-  UTIL_WaitTimeInUs(BOARD_MCK, 1);
-
+#endif
+  
   unsigned short data = reg;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-  AT91C_BASE_SPI->SPI_TDR = data ;//| SPI_PCS(1);
+  AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
   while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0)
 
   data = h;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-  AT91C_BASE_SPI->SPI_TDR = data ;//| SPI_PCS(1);
+  AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
   while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0)
 
   data = l;
   while((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TXEMPTY) == 0);
-  AT91C_BASE_SPI->SPI_TDR = data ;//| SPI_PCS(1);
+  AT91C_BASE_SPI->SPI_TDR = data | SPI_PCS(1);
   while ((AT91C_BASE_SPI->SPI_SR & AT91C_SPI_TDRE) == 0);
-    
+#ifdef SS   
   PIO_Set(&ss);
+#endif
+  //  tr24_writereg(0x31, 0xFF, 0x8F);
+
+  portEXIT_CRITICAL();
+  UTIL_WaitTimeInUs(BOARD_MCK, 5);
 }
 
 void tr24_initframer()
@@ -186,20 +198,21 @@ void tr24_readfifo()
   tr24_writereg(0x07,0x00,0x90); //INTO RX
   UTIL_WaitTimeInMs(BOARD_MCK,10);
 
+  int e=1;
+
   trspistat.trinited = 4001;
-  while (1)
+  while (e)
     {
       if (PIO_Get(&fifo))
 	{
 	  trspistat.trinited += 10;
-	  break;
+	  e=0;
 	}
       if (PIO_Get(&pkt))
 	{
 	  trspistat.trinited += 100;
-	  break;
+	  e=0;
 	}
-
     }
   trspistat.trinited += 1;
 }
@@ -220,25 +233,35 @@ void tr24_writefifo(char * msg, int len)
 
   UTIL_WaitTimeInMs(BOARD_MCK, 5);
 
+#ifdef SS
   PIO_Clear(&ss);
-  UTIL_WaitTimeInUs(BOARD_MCK, 4);
+#endif
 
   tr24_writebyte(0x50); //RESET TX
+  UTIL_WaitTimeInUs(BOARD_MCK, 1);
 
-  UTIL_WaitTimeInUs(BOARD_MCK, 10);
+  tr24_writebyte(0x04);
+  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  tr24_writebyte(0x99);
+  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  tr24_writebyte(0x99);
+  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  tr24_writebyte(0x99);
+  UTIL_WaitTimeInUs(BOARD_MCK, 1);
+  tr24_writebyte(0x99);
 
-  tr24_writebyte(0x02);
 
-  tr24_writebyte(0x00);
-  tr24_writebyte(0x00);
-
+#ifdef SS
   PIO_Set(&ss);
+#endif
 
   tr24_writereg(0x07, 0x01, 0x10);
 
   trspistat.trinited = 1003;
 
   unsigned int i=0;
+
+  trspistat.trinited =   trspistat.trinited + PIO_Get(&fifo) + 10*PIO_Get(&pkt);
 
   while (!PIO_Get(&pkt) && !PIO_Get(&fifo))
     {
