@@ -127,8 +127,8 @@ static int get_hwstat(unsigned char *status)
 
 	unsigned int spistat = 0;
 	unsigned int ctr = 0;
-	int m=5;
-	int m2=10;
+	int m=10;
+	int m2=2;
 	printf ("get_hwstat\n");
 	
 	int dc1en = 1;
@@ -154,76 +154,84 @@ static int get_hwstat(unsigned char *status)
 	while (1)
 	  {
 	    rc = read_joystick_event(&jse);
-	    if (rc == 1) {
-	      if (jse.type != 129)
-		{
-		  switch (jse.number) {
-		  case 0: 
-		    if (jse.type==2)
-		      {
-			if (jse.value==0)
-			  titc.leftstickx=0;
-			else
-			  titc.leftstickx = abs(jse.value)/jse.value;
-		      }
-		    else
-		      {
-			if (jse.value==0)
-			  titc.rightsticky = 0;
-			else
-			  titc.rightsticky = jse.value;
-		      }
-		    break;
-		  case 1:
-		    if (jse.type==2)
-		      {
-			if (jse.value==0)
-			  titc.leftsticky = 0;
-			else
-			  titc.leftsticky = -abs(jse.value)/jse.value;
-		      }
-		    else
-		      {
-			if (jse.value==0)
-			  titc.rightstickx = 0;
-			else
-			  titc.rightstickx = jse.value;
-		      }
-		    break;
-		  case 2:
-		    if (jse.type==1)
-		      {
-			if (jse.value==0)
-			  titc.rightsticky = 0;
-			else
-			  titc.rightsticky = -jse.value;
-		      }
-		    break;
-		  case 3:
-		    if (jse.type==1)		 
-		      {
-			if (jse.value==0)
-			  titc.rightstickx = 0;
-			else
-			  titc.rightstickx = -jse.value;
-		      }
-		    break;
-		  default:
-		    break;
-		  }
-		}
-	      //printf("Event: time %8u, value %8hd, type: %3u, axis/button: %u\n", 
-	      //jse.time, jse.value, jse.type, jse.number);
-	      //printf("leftx %i, lefty %i, rightx %i, righty %i\n",
-	      //titc.leftstickx, titc.leftsticky, titc.rightstickx, titc.rightsticky);
-	    }
-	    
-	    
-	      r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x01, 0, &stat2, 2, 0);
-	      if (r < 0) 
+	    if (rc == 1) 
 	      {
-	      fprintf(stderr, "set hwstat error %d\n", r);
-	      return r;
+		if (jse.type != 129)
+		  {
+		    switch (jse.number) {
+		    case 0: 
+		      if (jse.type==2)
+			{
+			  if (jse.value==0)
+			    titc.leftstickx=0;
+			  else
+			    titc.leftstickx = abs(jse.value)/jse.value;
+			}
+		      else
+			{
+			  if (jse.value==0)
+			    titc.rightsticky = 0;
+			  else
+			    titc.rightsticky = jse.value;
+			}
+		      break;
+		    case 1:
+		      if (jse.type==2)
+			{
+			  if (jse.value==0)
+			    titc.leftsticky = 0;
+			  else
+			    titc.leftsticky = -abs(jse.value)/jse.value;
+			}
+		      else
+			{
+			  if (jse.value==0)
+			    titc.rightstickx = 0;
+			  else
+			    titc.rightstickx = jse.value;
+			}
+		      break;
+		    case 2:
+		      if (jse.type==1)
+			{
+			  if (jse.value==0)
+			    titc.rightsticky = 0;
+			  else
+			    titc.rightsticky = -jse.value;
+			}
+		      break;
+		    case 3:
+		      if (jse.type==1)		 
+			{
+			  if (jse.value==0)
+			    titc.rightstickx = 0;
+			  else
+			    titc.rightstickx = -jse.value;
+			}
+		      break;
+		    default:
+		      break;
+		    }
+		  }
+		//printf("Event: time %8u, value %8hd, type: %3u, axis/button: %u\n", 
+		//jse.time, jse.value, jse.type, jse.number);
+		//printf("leftx %i, lefty %i, rightx %i, righty %i\n",
+		//titc.leftstickx, titc.leftsticky, titc.rightstickx, titc.rightsticky);
+	      }
+	    else
+	      {
+		/*printf ("lost connection\n");
+		titc.rightstickx = 0;
+		titc.rightsticky = 0;
+		titc.leftstickx = 0;
+		titc.leftsticky = 0;*/
+	      }
+	    
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x01, 0, &stat2, 2, 0);
+	    if (r < 0) 
+	      {
+		fprintf(stderr, "set hwstat error %d\n", r);
+		return r;
 	      }
 	    if ((unsigned int) r < 1) 
 	      {
@@ -293,9 +301,9 @@ static int get_hwstat(unsigned char *status)
 		stat20=400;
 		}*/
 
-	    printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i\n", ctr, stat2, stat22);
+	    //printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i\n", ctr, stat2, stat22);
 	   
-	    usleep(100000);
+	    usleep(10000);
 	  }
 	return 0;
 }
