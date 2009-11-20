@@ -46,9 +46,9 @@
 #*/
 
 
-RTOS_SOURCE_DIR=../../../Source
-DEMO_COMMON_DIR=../../Common/Minimal
-DEMO_INCLUDE_DIR=../../Common/include
+RTOS_SOURCE_DIR=../../low_rtos/FreeRTOS/Source
+DEMO_COMMON_DIR=../../low_rtos/FreeRTOS/Demo/Common/Minimal
+DEMO_INCLUDE_DIR=../../low_rtos/FreeRTOS/Demo/Common/include
 
 
 CC=/home/snegovick/dev/arm/usr/bin/arm-elf-gcc

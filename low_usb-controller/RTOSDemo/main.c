@@ -30,8 +30,10 @@ int main( void )
 
   trspistat.counter = 0;
   trspistat.usbinited = 0;
-  trspistat.dutycycle = 0;
-  trspistat.changecycle = 0;
+  trspistat.dutycycle1 = 0;
+  trspistat.changecycle1 = 0;
+  trspistat.dutycycle2 = 0;
+  trspistat.changecycle2 = 0;
 
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
@@ -59,7 +61,12 @@ static void prvSetupHardware( void )
   PWMC_SetPeriod(CHANNEL_PWM_1, MAX_DUTY_CYCLE);
   PWMC_SetDutyCycle(CHANNEL_PWM_1, MIN_DUTY_CYCLE);
 
-  PWMC_EnableChannel(CHANNEL_PWM_1);  
+  PWMC_ConfigureChannel(CHANNEL_PWM_2, AT91C_PWMC_CPRE_MCKA, 0, 0);
+  PWMC_SetPeriod(CHANNEL_PWM_2, MAX_DUTY_CYCLE);
+  PWMC_SetDutyCycle(CHANNEL_PWM_2, MIN_DUTY_CYCLE);
+
+  PWMC_EnableChannel(CHANNEL_PWM_1);
+  PWMC_EnableChannel(CHANNEL_PWM_2);
 
 }
 /*-----------------------------------------------------------*/
@@ -81,14 +88,15 @@ portCHAR cTxByte;
    }
  
  trspistat.counter++;
- if (trspistat.changecycle==1)
-   {  
-     /*     if (trspistat.dutycycle>=MAX_DUTY_CYCLE)
-       trspistat.dutycycle=MAX_DUTY_CYCLE;
-     if (trspistat.dutycycle<=MIN_DUTY_CYCLE)
-     trspistat.dutycycle=MIN_DUTY_CYCLE;*/
-     PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.dutycycle);
-     trspistat.changecycle=0;
+ if (trspistat.changecycle1==1)
+   {
+     PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.dutycycle1);
+     trspistat.changecycle1=0;
+   }
+ if (trspistat.changecycle2==1)
+   {
+     PWMC_SetDutyCycle(CHANNEL_PWM_2, trspistat.dutycycle2);
+     trspistat.changecycle2=0;
    }
  
 }

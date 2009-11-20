@@ -741,12 +741,12 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
       switch (pxRequest->usValue)
 	{
 	case 0x1:
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle1, sizeof( trspistat.dutycycle1 ), sizeof( trspistat.dutycycle1 ), pdFALSE );
 	  break;
 	case 0x2:
-	  trspistat.changecycle = 1;
+	  trspistat.changecycle1 = 1;
 	  prvSendZLP();
-	  memcpy( &trspistat.dutycycle, pxControlRx.ucBuffer, sizeof( trspistat.dutycycle ) );
+	  memcpy( &trspistat.dutycycle1, pxControlRx.ucBuffer, sizeof( trspistat.dutycycle1 ) );
 	  //prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
 	  break;
 	case 0x3:
@@ -754,6 +754,14 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	  break;
 	case 0x4:
 	  prvSendControlData( ( unsigned portCHAR * ) &a, sizeof( a ), sizeof( a ), pdFALSE );
+	  break;
+	case 0x5:
+	  trspistat.changecycle2 = 1;
+	  prvSendZLP();
+	  memcpy( &trspistat.dutycycle2, pxControlRx.ucBuffer, sizeof( trspistat.dutycycle2 ) );
+	  break;
+	case 0x6:
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle2, sizeof( trspistat.dutycycle2 ), sizeof( trspistat.dutycycle2 ), pdFALSE );
 	  break;
 	default:
 	  prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );

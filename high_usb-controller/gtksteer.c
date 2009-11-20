@@ -91,7 +91,8 @@ static void hello( GtkWidget *widget,
     int pwm;
     sscanf (a,"%i",&pwm);
 
-    libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, &pwm, 2, 0);
+    //    libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, &pwm, 2, 0);
+    libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &pwm, 2, 0);
 }
 
 static gboolean delete_event( GtkWidget *widget,

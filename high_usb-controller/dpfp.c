@@ -29,6 +29,8 @@
 
 #include <libusb.h>
 
+#include "joystick.h"
+
 #define EP_INTR			(1 | LIBUSB_ENDPOINT_IN)
 #define EP_DATA			(2 | LIBUSB_ENDPOINT_IN)
 //#define CTRL_IN			(LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_ENDPOINT_IN)
@@ -115,28 +117,122 @@ static int print_f0_data(void)
 static int get_hwstat(unsigned char *status)
 {
 	int r;
-	unsigned short stat = 251;
-	unsigned short stat2 = 251;
-	unsigned int stat1 = 251;
+	unsigned short stat20 = 374;
+	unsigned short stat21 = 374;
+	unsigned int stat22 = 374;
+
+	unsigned short stat = 275;
+	unsigned short stat1 = 275;
+	unsigned int stat2 = 275;
+
 	unsigned int spistat = 0;
 	unsigned int ctr = 0;
-	int m=1;
+	int m=5;
+	int m2=10;
 	printf ("get_hwstat\n");
+	
+	int dc1en = 1;
+	int dc2en = 1;
+	
+	int fd, rc;
+	int done = 0;
+	
+	struct js_event jse;
+	
+	fd = open_joystick("/dev/input/js0");
+	if (fd < 0) {
+	  printf("open failed.\n");
+	  exit(1);
+	}
+
+	struct carpad titc;
+	titc.leftstickx=0;
+	titc.leftsticky=0;
+	titc.rightstickx=0;
+	titc.rightsticky=0;
+
 	while (1)
 	  {
-	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x01, 0, &stat2, 2, 0);
-	    if (r < 0) 
+	    rc = read_joystick_event(&jse);
+	    if (rc == 1) {
+	      if (jse.type != 129)
+		{
+		  switch (jse.number) {
+		  case 0: 
+		    if (jse.type==2)
+		      {
+			if (jse.value==0)
+			  titc.leftstickx=0;
+			else
+			  titc.leftstickx = abs(jse.value)/jse.value;
+		      }
+		    else
+		      {
+			if (jse.value==0)
+			  titc.rightsticky = 0;
+			else
+			  titc.rightsticky = jse.value;
+		      }
+		    break;
+		  case 1:
+		    if (jse.type==2)
+		      {
+			if (jse.value==0)
+			  titc.leftsticky = 0;
+			else
+			  titc.leftsticky = -abs(jse.value)/jse.value;
+		      }
+		    else
+		      {
+			if (jse.value==0)
+			  titc.rightstickx = 0;
+			else
+			  titc.rightstickx = jse.value;
+		      }
+		    break;
+		  case 2:
+		    if (jse.type==1)
+		      {
+			if (jse.value==0)
+			  titc.rightsticky = 0;
+			else
+			  titc.rightsticky = -jse.value;
+		      }
+		    break;
+		  case 3:
+		    if (jse.type==1)		 
+		      {
+			if (jse.value==0)
+			  titc.rightstickx = 0;
+			else
+			  titc.rightstickx = -jse.value;
+		      }
+		    break;
+		  default:
+		    break;
+		  }
+		}
+	      //printf("Event: time %8u, value %8hd, type: %3u, axis/button: %u\n", 
+	      //jse.time, jse.value, jse.type, jse.number);
+	      //printf("leftx %i, lefty %i, rightx %i, righty %i\n",
+	      //titc.leftstickx, titc.leftsticky, titc.rightstickx, titc.rightsticky);
+	    }
+	    
+	    
+	      r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x01, 0, &stat2, 2, 0);
+	      if (r < 0) 
 	      {
-		fprintf(stderr, "set hwstat error %d\n", r);
-		return r;
+	      fprintf(stderr, "set hwstat error %d\n", r);
+	      return r;
 	      }
 	    if ((unsigned int) r < 1) 
 	      {
 		fprintf(stderr, "short write (%d)", r);
 		return -1;
 	      }
-	    
-	    r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, &stat, 2, 0);
+	   
+	    if (dc1en)
+	      r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, &stat, 2, 0);
 
 	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x03, 0, &ctr, 4, 0);
 	    if (r < 0) 
@@ -149,18 +245,57 @@ static int get_hwstat(unsigned char *status)
 		fprintf(stderr, "short write (%d) 2", r);
 		return -1;
 	      }
+
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x06, 0, &stat22, 2, 0);
+	    if (r < 0) 
+	      {
+		fprintf(stderr, "set hwstat error %d\n", r);
+		return r;
+	      }
+	    if ((unsigned int) r < 1) 
+	      {
+		fprintf(stderr, "short write (%d)", r);
+		return -1;
+	      }
+
+	    if (dc2en)
+	      r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &stat20, 2, 0);
 	    
-	    stat1 = stat1+m;
-	    stat = stat1;
+	    if (titc.leftstickx==1)
+	      stat = stat+m;
+	    else if (titc.leftstickx==-1)
+	      stat = stat-m;
+	    else
+	      stat=275;
+	    
+	    if (titc.rightsticky==1)
+	      stat20 = stat20+m2;
+	    else if (titc.rightsticky==-1)
+	      stat20 = stat20-m2;
+	    else
+	      stat20=374;
 
-	    if (stat==600)
-	      m=-1;
-	    if (stat==200)
-	      m=1;
+	    if (stat>=600)
+	      stat=600;
+	    if (stat<=50)
+	      stat=20;
 
-	    printf("hwstat counter=%i dutycycle = %i\n", ctr, stat2);
+	    if (stat20>=500)
+	      stat20=500;
+	    if (stat20<=251)
+	      stat20=251;
+	    /*	    if (stat20==400)
+	      {
+		printf ("-------------middle--------------\n");
+		stat20=374;
+		if (dc2en)
+		  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &stat20, 2, 0);
+		stat20=400;
+		}*/
 
-	    usleep(10000);
+	    printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i\n", ctr, stat2, stat22);
+	   
+	    usleep(100000);
 	  }
 	return 0;
 }
