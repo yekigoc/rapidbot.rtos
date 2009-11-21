@@ -34,6 +34,7 @@ int main( void )
   trspistat.changecycle1 = 0;
   trspistat.dutycycle2 = 0;
   trspistat.changecycle2 = 0;
+  trspistat.led = 0;
 
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
@@ -97,6 +98,17 @@ portCHAR cTxByte;
    {
      PWMC_SetDutyCycle(CHANNEL_PWM_2, trspistat.dutycycle2);
      trspistat.changecycle2=0;
+   }
+
+ if (trspistat.led==1)
+   {
+     Pin led=PA8;
+     PIO_Clear(&led);
+   }
+ else
+   {
+     Pin led=PA8;
+     PIO_Set(&led);
    }
  
 }

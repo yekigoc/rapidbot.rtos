@@ -730,7 +730,7 @@ static void prvGetStandardInterfaceDescriptor( xUSB_REQUEST *pxRequest )
 
 static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 {
-  unsigned portCHAR usStatus = 0xFFFF;
+  unsigned portCHAR usStatus = 0xFF;
   int a = 0;
 
   switch( pxRequest->ucRequest )
@@ -762,6 +762,10 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	  break;
 	case 0x6:
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle2, sizeof( trspistat.dutycycle2 ), sizeof( trspistat.dutycycle2 ), pdFALSE );
+	  break;
+	case 0x7:
+	  prvSendZLP();
+	  trspistat.led=1;
 	  break;
 	default:
 	  prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );

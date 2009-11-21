@@ -150,6 +150,8 @@ static int get_hwstat(unsigned char *status)
 	titc.leftsticky=0;
 	titc.rightstickx=0;
 	titc.rightsticky=0;
+	int led = 1;
+	r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x07, 0, 0, 0, 0);
 
 	while (1)
 	  {
@@ -277,16 +279,16 @@ static int get_hwstat(unsigned char *status)
 	      stat=275;
 	    
 	    if (titc.rightsticky==1)
-	      stat20 = stat20+m2;
-	    else if (titc.rightsticky==-1)
 	      stat20 = stat20-m2;
+	    else if (titc.rightsticky==-1)
+	      stat20 = stat20+m2;
 	    else
 	      stat20=374;
 
-	    if (stat>=600)
-	      stat=600;
-	    if (stat<=50)
-	      stat=20;
+	    if (stat>=590)
+	      stat=590;
+	    if (stat<=60)
+	      stat=60;
 
 	    if (stat20>=500)
 	      stat20=500;

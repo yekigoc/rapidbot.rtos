@@ -9,10 +9,12 @@
 
 #define PA0  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define PA1  {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
+#define PA8  {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
 
 static const Pin pins[] = {
   PA0,
-  PA1
+  PA1,
+  PA8
 };
 
 

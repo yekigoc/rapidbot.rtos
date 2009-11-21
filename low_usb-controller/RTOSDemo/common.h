@@ -14,6 +14,7 @@ typedef struct
   unsigned int changecycle1;
   unsigned short dutycycle2;
   unsigned int changecycle2;
+  int led;
 } spistat;
 
 spistat trspistat;
