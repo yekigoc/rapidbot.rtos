@@ -68,7 +68,7 @@
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK         1
 #define configUSE_TICK_HOOK         0
-#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 48054857 ) /* 47923200 )*/
+#define configCPU_CLOCK_HZ          ( ( unsigned int ) 48054857 ) /* 47923200 )*/
 //#define configCPU_CLOCK_HZ          ( ( unsigned portLONG ) 47923200
 //#)
 #define BOARD_MCK              configCPU_CLOCK_HZ //((18432000 * 97 / 9) / 2)

@@ -51,8 +51,9 @@ DEMO_COMMON_DIR=../../low_rtos/FreeRTOS/Demo/Common/Minimal
 DEMO_INCLUDE_DIR=../../low_rtos/FreeRTOS/Demo/Common/include
 
 
-CC=/home/snegovick/dev/arm/usr/bin/arm-elf-gcc
-OBJCOPY=/home/snegovick/dev/arm/usr/bin/arm-elf-objcopy
+CC=~/dev/arm/usr/bin/arm-elf-gcc
+OBJCOPY=~/dev/arm/usr/bin/arm-elf-objcopy
+SIZE=~/dev/arm/usr/bin/arm-elf-size
 LDSCRIPT=atmel-rom.ld
 
 LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -oRTOSDemo.elf -Xlinker -M -Xlinker -Map=rtosdemo.map
@@ -88,7 +89,9 @@ THUMB_SOURCE= \
 		aic/aic.c \
 		pwmc/pwmc.c \
 		pio/pio.c \
-		USB/USB-CDC.c 
+		USB/USB-CDC.c \
+		proximity_sensor/proximity_sensor.c \
+		proximity_sensor/proximity_sensor_task.c
 
 #		tr24a/tr24a.c \
 
@@ -162,7 +165,8 @@ THUMB_SOURCE= \
 ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_AT91SAM7S/portISR.c \
 		./SrcAtmel/Cstartup_SAM7.c \
-		USB/USBIsr.c
+		USB/USBIsr.c \
+		adc/adc.c
 
 #		tr24a/spi_isr.c \
 
@@ -186,7 +190,8 @@ RTOSDemo.hex : RTOSDemo.elf
 	$(OBJCOPY) RTOSDemo.elf -O ihex RTOSDemo.hex
 
 RTOSDemo.elf : $(THUMB_OBJS) $(ARM_OBJS) boot.s Makefile
-	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) boot.s $(LINKER_FLAGS) 
+	$(CC) $(CFLAGS) $(ARM_OBJS) $(THUMB_OBJS) $(LIBS) boot.s $(LINKER_FLAGS)
+	$(SIZE) RTOSDemo.elf
 
 $(THUMB_OBJS) : %.o : %.c Makefile FreeRTOSConfig.h
 	$(CC) -c $(CFLAGS) -mthumb $< -o $@
@@ -202,7 +207,6 @@ program: RTOSDemo.bin
 clean :
 	rm $(THUMB_OBJS)
 	rm $(ARM_OBJS)
-	touch Makefile
 	rm RTOSDemo.elf
 	rm RTOSDemo.hex
 

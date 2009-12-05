@@ -767,6 +767,9 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	  prvSendZLP();
 	  trspistat.led=1;
 	  break;
+	case 0x8:
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.adcvalue, sizeof( trspistat.adcvalue ), sizeof( trspistat.adcvalue ), pdFALSE );
+	  break;
 	default:
 	  prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );
 	  break;

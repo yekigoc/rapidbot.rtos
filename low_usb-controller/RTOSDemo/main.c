@@ -11,6 +11,10 @@
 #include "pio/pio.h"
 #include "pwm/pwm.h"
 
+#include "adc/adc.h"
+
+#include "proximity_sensor/proximity_sensor_task.h"
+
 /* Priorities for the demo application tasks. */
 #define mainUSB_PRIORITY			( tskIDLE_PRIORITY + 1 )
 #define mainUSB_TASK_STACK			( 200 )
@@ -37,6 +41,7 @@ int main( void )
   trspistat.led = 0;
 
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
+  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
 
   vTaskStartScheduler();
 
@@ -55,6 +60,8 @@ static void prvSetupHardware( void )
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PWMC;
   PWMC_ConfigureClocks(PWM_FREQUENCY * MAX_DUTY_CYCLE, 0, BOARD_MCK);
   PIO_Configure(pins, PIO_LISTSIZE(pins));
+  
+  adcinit();
 	
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
 
