@@ -21,6 +21,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#define SERVOMIDDLE 400
+#define SERVOLEFT 300
+#define SERVORIGHT 500
+
 #include <errno.h>
 #include <signal.h>
 #include <string.h>
@@ -120,10 +124,12 @@ static int get_hwstat(unsigned char *status)
 	unsigned short stat20 = 374;
 	unsigned short stat21 = 374;
 	unsigned int stat22 = 374;
+	
+	unsigned int adcval=0;
 
-	unsigned short stat = 275;
-	unsigned short stat1 = 275;
-	unsigned int stat2 = 275;
+	unsigned short stat = SERVOMIDDLE;
+	unsigned short stat1 = SERVOMIDDLE;
+	unsigned int stat2 = SERVOMIDDLE;
 
 	unsigned int spistat = 0;
 	unsigned int ctr = 0;
@@ -217,8 +223,8 @@ static int get_hwstat(unsigned char *status)
 		  }
 		//printf("Event: time %8u, value %8hd, type: %3u, axis/button: %u\n", 
 		//jse.time, jse.value, jse.type, jse.number);
-		//printf("leftx %i, lefty %i, rightx %i, righty %i\n",
-		//titc.leftstickx, titc.leftsticky, titc.rightstickx, titc.rightsticky);
+		//		printf("leftx %i, lefty %i, rightx %i, righty %i\n",
+		titc.leftstickx, titc.leftsticky, titc.rightstickx, titc.rightsticky);
 	      }
 	    else
 	      {
@@ -240,6 +246,7 @@ static int get_hwstat(unsigned char *status)
 		fprintf(stderr, "short write (%d)", r);
 		return -1;
 	      }
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x01, 0, &adcval, 4, 0);
 	   
 	    if (dc1en)
 	      r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, &stat, 2, 0);
@@ -276,7 +283,7 @@ static int get_hwstat(unsigned char *status)
 	    else if (titc.leftstickx==-1)
 	      stat = stat-m;
 	    else
-	      stat=275;
+	      stat=SERVOMIDDLE;
 	    
 	    if (titc.rightsticky==1)
 	      stat20 = stat20-m2;
@@ -285,10 +292,10 @@ static int get_hwstat(unsigned char *status)
 	    else
 	      stat20=374;
 
-	    if (stat>=590)
-	      stat=590;
-	    if (stat<=60)
-	      stat=60;
+	    if (stat>=SERVORIGHT)
+	      stat=SERVORIGHT;
+	    if (stat<=SERVOLEFT)
+	      stat=SERVOLEFT;
 
 	    if (stat20>=500)
 	      stat20=500;
@@ -303,7 +310,7 @@ static int get_hwstat(unsigned char *status)
 		stat20=400;
 		}*/
 
-	    //printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i\n", ctr, stat2, stat22);
+	    printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i, adcval = %i\n", ctr, stat2, stat22, adcval);
 	   
 	    usleep(10000);
 	  }
