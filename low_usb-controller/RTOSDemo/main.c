@@ -60,9 +60,7 @@ static void prvSetupHardware( void )
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PWMC;
   PWMC_ConfigureClocks(PWM_FREQUENCY * MAX_DUTY_CYCLE, 0, BOARD_MCK);
   PIO_Configure(pins, PIO_LISTSIZE(pins));
-  
-  adcinit();
-	
+  	
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
 
   PWMC_ConfigureChannel(CHANNEL_PWM_1, AT91C_PWMC_CPRE_MCKA, 0, 0);
