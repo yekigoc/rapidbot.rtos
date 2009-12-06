@@ -21,6 +21,7 @@ unsigned portBASE_TYPE uxLEDTask;
 
 static void vProximitySensorTask( void *pvParameters )
 {
+  /* Save the context of the interrupted task. */
   for(;;)
     {
       /* Delay */
