@@ -39,6 +39,7 @@
 #define USB_RQ_STAT			0x0
 #define USB_RQ_FEATURE                  0x03
 #define INTR_LENGTH		64
+//#define USE_JOYSTICK
 
 enum {
 	MODE_INIT = 0x00,
@@ -125,6 +126,8 @@ static int get_hwstat(unsigned char *status)
 	unsigned short stat1 = 275;
 	unsigned int stat2 = 275;
 
+	unsigned int adcval = 0;
+
 	unsigned int spistat = 0;
 	unsigned int ctr = 0;
 	int m=10;
@@ -139,11 +142,13 @@ static int get_hwstat(unsigned char *status)
 	
 	struct js_event jse;
 	
+#ifdef USE_JOYSTICK
 	fd = open_joystick("/dev/input/js0");
 	if (fd < 0) {
 	  printf("open failed.\n");
 	  exit(1);
 	}
+#endif
 
 	struct carpad titc;
 	titc.leftstickx=0;
@@ -155,7 +160,9 @@ static int get_hwstat(unsigned char *status)
 
 	while (1)
 	  {
+#ifdef USE_JOYSTICK
 	    rc = read_joystick_event(&jse);
+#endif
 	    if (rc == 1) 
 	      {
 		if (jse.type != 129)
@@ -240,6 +247,7 @@ static int get_hwstat(unsigned char *status)
 		fprintf(stderr, "short write (%d)", r);
 		return -1;
 	      }
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x08, 0, &adcval, 4, 0);
 	   
 	    if (dc1en)
 	      r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, &stat, 2, 0);
@@ -303,7 +311,7 @@ static int get_hwstat(unsigned char *status)
 		stat20=400;
 		}*/
 
-	    //printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i\n", ctr, stat2, stat22);
+	    printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i, adcvalue = %i\n", ctr, stat2, stat22, adcval);
 	   
 	    usleep(10000);
 	  }
