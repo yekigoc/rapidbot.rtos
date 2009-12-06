@@ -6,7 +6,7 @@
 
 #define ledSTACK_SIZE		configMINIMAL_STACK_SIZE
 
-static void vProximitySensorTask( void *pvParameters );
+void vProximitySensorTask( void *pvParameters );
 
 /*-----------------------------------------------------------*/
 
@@ -19,7 +19,7 @@ unsigned portBASE_TYPE uxLEDTask;
 }
 /*-----------------------------------------------------------*/
 
-static void vProximitySensorTask( void *pvParameters )
+void vProximitySensorTask( void *pvParameters )
 {
   adcinit();
   /* Save the context of the interrupted task. */
