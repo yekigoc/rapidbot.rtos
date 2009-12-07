@@ -44,6 +44,7 @@ typedef struct
   unsigned short dutycycle2;
   unsigned int changecycle2;
   int led;
+  int ledctr;
   unsigned int adcvalue;
 } spistat;
 
@@ -63,7 +64,7 @@ spistat trspistat;
 // ADC
 //------------------------------------------------------------------------------
 /// ADC clock frequency, at 10-bit resolution (in Hz)
-#define ADC_MAX_CK_10BIT         5000000
+#define ADC_MAX_CK_10BIT         6000000
 /// ADC clock frequency, at 8-bit resolution (in Hz)
 #define ADC_MAX_CK_8BIT          8000000
 /// Startup time max, return from Idle mode (in µs)

@@ -16,7 +16,7 @@
 #include "proximity_sensor/proximity_sensor_task.h"
 
 /* Priorities for the demo application tasks. */
-#define mainUSB_PRIORITY			( tskIDLE_PRIORITY + 1 )
+#define mainUSB_PRIORITY			( tskIDLE_PRIORITY + 2 )
 #define mainUSB_TASK_STACK			( 200 )
 
 /* The rate at which the idle hook sends data to the USB port. */
@@ -39,9 +39,10 @@ int main( void )
   trspistat.dutycycle2 = 0;
   trspistat.changecycle2 = 0;
   trspistat.led = 0;
+  trspistat.ledctr = 0;
 
-  xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
   vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
+  xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
 
@@ -105,7 +106,7 @@ portCHAR cTxByte;
      trspistat.changecycle2=0;
    }
 
- if (trspistat.led==1)
+ /* if (trspistat.led==1)
    {
      Pin led=PA8;
      PIO_Clear(&led);
@@ -114,6 +115,5 @@ portCHAR cTxByte;
    {
      Pin led=PA8;
      PIO_Set(&led);
-   }
- 
+     }*/
 }

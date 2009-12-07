@@ -24,6 +24,10 @@ vADC_ISR_Handler(void)
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   unsigned int status;
   unsigned int id_channel;
+
+
+  Pin led=PA8;
+  PIO_Set(&led);
   
   status = ADC_GetStatus(AT91C_BASE_ADC);
   

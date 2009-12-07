@@ -1,13 +1,8 @@
 #include "common.h"
 #include <adc/adc.h>
 
-#define BOARD_ADC_FREQ 5000000
+#define BOARD_ADC_FREQ 6000000
 #define ADC_VREF       3300  // 3.3 * 1000
-
-/// Pio pins to configure.
-#ifdef PINS_ADC
-static const Pin pinsADC[] = {PINS_ADC};
-#endif
 
 #define ADC_NUM_1  ADC_CHANNEL_0
 #define ADC_NUM_2  ADC_CHANNEL_1
