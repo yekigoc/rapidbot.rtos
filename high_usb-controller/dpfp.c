@@ -155,6 +155,7 @@ static int get_hwstat(unsigned char *status)
 	titc.leftsticky=0;
 	titc.rightstickx=0;
 	titc.rightsticky=0;
+
 	int led = 1;
 	r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x07, 0, 0, 0, 0);
 
@@ -278,7 +279,7 @@ static int get_hwstat(unsigned char *status)
 
 	    if (dc2en)
 	      r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &stat20, 2, 0);
-	    
+
 	    if (titc.leftstickx==1)
 	      stat = stat+m;
 	    else if (titc.leftstickx==-1)

@@ -1,4 +1,7 @@
 #include "proximity_sensor.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
 
 extern unsigned char conversionDone;
 
@@ -26,7 +29,7 @@ adcinit()
 		  AT91C_ADC_LOWRES_10_BIT,
 		  BOARD_MCK,
 		  BOARD_ADC_FREQ,
-		  10,
+		  20,
 		  1200);
   
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_NUM_1);
@@ -51,7 +54,10 @@ adcgetvalue()
   // Start measurement
   ADC_StartConversion(AT91C_BASE_ADC);
   
-  while( conversionDone != ((1<<ADC_NUM_1) /*|(1<<ADC_NUM_2)|(1<<ADC_NUM_3)|(1<<ADC_NUM_4))*/ ));
+  while ( conversionDone != ((1<<ADC_NUM_1) /*|(1<<ADC_NUM_2)|(1<<ADC_NUM_3)|(1<<ADC_NUM_4))*/ ))
+    {
+      vTaskDelay( 1 / portTICK_RATE_MS );
+    }
   
   /*        for(id_channel=ADC_NUM_1;id_channel<=ADC_NUM_4;id_channel++) {
 	    
@@ -59,5 +65,8 @@ adcgetvalue()
 	    id_channel,
 	    ConvHex2mV(ADC_GetConvertedData(AT91C_BASE_ADC, id_channel))
 	    );*/
-  return ConvHex2mV(ADC_GetConvertedData(AT91C_BASE_ADC, AT91C_BASE_ADC));
+  //  unsigned int ret = ADC_GetConvertedData(AT91C_BASE_ADC, ADC_NUM_1);
+  return ConvHex2mV(ADC_GetConvertedData(AT91C_BASE_ADC, ADC_NUM_1));
+  //return ret;
+  //return 10;
 }
