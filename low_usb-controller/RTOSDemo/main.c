@@ -41,7 +41,7 @@ int main( void )
   trspistat.led = 0;
   trspistat.ledctr = 0;
 
-  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
+  //  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
@@ -106,7 +106,7 @@ portCHAR cTxByte;
      trspistat.changecycle2=0;
    }
 
- /* if (trspistat.led==1)
+ if (trspistat.led==1)
    {
      Pin led=PA8;
      PIO_Clear(&led);
@@ -115,5 +115,5 @@ portCHAR cTxByte;
    {
      Pin led=PA8;
      PIO_Set(&led);
-     }*/
+   }
 }
