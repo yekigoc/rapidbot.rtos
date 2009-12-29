@@ -5,6 +5,8 @@ sys.path.append('/usr/local/lib/python2.6/dist-packages/usb/')
 import usb.core
 import usb.util
 import threading
+import socket
+
 
 import pygtk
 pygtk.require('2.0')
@@ -18,6 +20,9 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
+
+HOST, PORT = "10.218.35.100", 30000
+
 # Some api in the chain is translating the keystrokes to this octal string
 # so instead of saying: ESCAPE = 27, we use the following.
 ESCAPE = '\033'
@@ -36,6 +41,7 @@ steerangle=defsteerangle
 lastpressed=[0.0, 0.0, 0.0, 0.0]
 maxpresseddiff=0.1
 dev=None
+sock = None
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
@@ -52,17 +58,9 @@ def InitGL(Width, Height):				# We call this right after our OpenGL window is cr
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
 
     glMatrixMode(GL_MODELVIEW)
-    global dev
-    dev = usb.core.find(idVendor=0xEB03, idProduct=0x0920)
-    
-        # was it found?
-    if dev is None:
-        raise ValueError('Device not found')
-    
-    dev.set_configuration()
-    
-    #       CTRL_OUT = [0x81, 0x0]
-    dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, [0])
+    global sock
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((HOST, PORT))
 
 
 # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
@@ -106,38 +104,16 @@ def DrawGLScene():
 
 	#  since this is double buffered, swap the buffers to display what just got drawn. 
         glutSwapBuffers()
-        global velmult
-        global steermult
-        global steerspeed
-        global acceleration
-        global defvelocity
-        global defsteerangle
-        global velocity
-        global steerangle
-        global dev
-        velocity = velocity+velmult*acceleration
-        steerangle = steerangle+steermult*steerspeed
-        if (velocity >= 400):
-            velocity = 400
-        if (velocity <= 365):
-            velocity = 365
-        if(steerangle > 500):
-            steerangle = 500
-        if(steerangle < 293):
-            steerangle = 293
-        print ("angle = "+str(steerangle) + "velocity = " + str(velocity) + str(velmult)+str(acceleration))
-        vel = struct.pack("H", velocity)
-        ang = struct.pack("H", steerangle)
-        ret = dev.ctrl_transfer(0x01, 0x0, 0x05, 0, vel);
-        ret = dev.ctrl_transfer(0x01, 0x0, 0x02, 0, ang);
 
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
-	# If escape is pressed, kill everything.
+    # If escape is pressed, kill everything.
     global velmult
     global velocity
+    global sock
     if args[0] == ESCAPE:
+        sock.close()
         glutDestroyWindow(window)
         sys.exit()
     if args[0] == ' ':
@@ -160,18 +136,14 @@ def special_pressed(*args):
     global defvelocity
     global defsteerangle
 
-    if (args[0]==101):
-        #forward
-        velmult=-1.0
-    if (args[0]==103):
-        #reverse
-        velmult=1.0
-    if (args[0]==100):
-        #left
-        steermult=-1.0
-    if (args[0]==102):
-        #right
-        steermult=1.0
+    global sock
+    packet = struct.pack("<B", 1)
+    sock.send(packet)
+    packet = struct.pack("<B", args[0])
+    sock.send(packet)
+    received = sock.recv(1)
+    hdr = struct.unpack("<B", received)
+
 
 def special_released(*args):
 	# If escape is pressed, kill everything.
@@ -184,22 +156,15 @@ def special_released(*args):
     global velocity
 
 
-    if (args[0]==101):
-        #forward
-        velmult=0.0
-        velocity=defvelocity
-    if (args[0]==103):
-        #reverse
-        velmult=0.0
-        velocity=defvelocity
-    if (args[0]==100):
-        #left
-        steermult=0.0
-        steerangle=defsteerangle
-    if (args[0]==102):
-        #right
-        steermult=0.0
-        steerangle=defsteerangle
+
+    global sock
+    packet = struct.pack("<B", 2)
+    sock.send(packet)
+    packet = struct.pack("<B", args[0])
+    sock.send(packet)
+    received = sock.recv(1)
+    hdr = struct.unpack("<B", received)
+
 
 def main():
 	global window
