@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import getopt
+
 import sys
 sys.path.append('/usr/local/lib/python2.6/dist-packages/usb/')
 import usb.core
@@ -21,7 +23,17 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
 
-HOST, PORT = "10.218.35.4", 30000
+def usage():
+    print ("rapidclient.py -h")
+    print ("prints this page")
+    print ("rapidclient.py -v")
+    print ("prints version")
+    print ("rapidclient.py --host=\"destination\" [-p port]")
+    print ("rapidclient.py --host=\"destination\" [--port=port]")
+
+def printversion():
+    print ("unstable")
+
 
 # Some api in the chain is translating the keystrokes to this octal string
 # so instead of saying: ESCAPE = 27, we use the following.
@@ -42,6 +54,49 @@ lastpressed=[0.0, 0.0, 0.0, 0.0]
 maxpresseddiff=0.1
 dev=None
 sock = None
+stop = 0
+#keycode, updateflag, value
+#value 1 - pressed
+#value 2 - released
+updatekeys = {"left": [100,0,0], 
+              "right": [102,0,0], 
+              "up": [101,0,0], 
+              "down": [103,0,0], 
+              "1": [49,0,0], 
+              "2": [50,0,0], 
+              "3": [51,0,0]}
+telemetry = [0,0,0,0,0,0,0,0]
+thread = None
+def intercom():
+# update keys
+    global stop
+    global telemetry
+    global sock
+    global updatekeys
+    while (not stop):
+        for k, v in updatekeys.iteritems():
+            if v[1]==1:
+                v[1]=0
+                packet = struct.pack("<B", v[2])
+                sock.send(packet)
+                packet = struct.pack("<B", v[0])
+                sock.send(packet)
+#                received = sock.recv(1)
+#                hdr = struct.unpack("<B", received)
+#receive telemetry
+        packet = struct.pack("<B", 3)
+        sock.send(packet)
+        received = sock.recv(1)
+        hdr = struct.unpack("<B", received)
+        if hdr[0] == 254:
+            i = 0
+            while i<8:
+                received = sock.recv(4)
+                telemetry[i] = (struct.unpack("I", received))[0]
+                i=i+1
+            print telemetry
+
+    sock.close()
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
@@ -76,12 +131,12 @@ def ReSizeGLScene(Width, Height):
 
 # The main drawing function. 
 def DrawGLScene():
-	# Clear The Screen And The Depth Buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	glLoadIdentity()					# Reset The View 
+# Clear The Screen And The Depth Buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glLoadIdentity()					# Reset The View 
 
 	# Move Left 1.5 units and into the screen 6.0 units.
-	glTranslatef(-1.5, 0.0, -6.0)
+    glTranslatef(-1.5, 0.0, -6.0)
 
 	# Draw a triangle
 #	glBegin(GL_POLYGON)                 # Start drawing a polygon
@@ -103,120 +158,172 @@ def DrawGLScene():
 #	glEnd()                             # We are done with the polygon
 
 	#  since this is double buffered, swap the buffers to display what just got drawn. 
-        glutSwapBuffers()
+    glutSwapBuffers()
 
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
     # If escape is pressed, kill everything.
-    global velmult
-    global velocity
-    global sock
+    global stop
+    global updatekeys
+    global thread
+    print args[0] + " pressed"
     if args[0] == ESCAPE:
-        sock.close()
+        stop = 1
+        thread.join()
         glutDestroyWindow(window)
         sys.exit()
-    if args[0] == ' ':
-        velocity = 400
-        velmult=0.0
+    if (args[0]=='1'):
+        updatekeys["1"][1]=1
+        updatekeys["1"][2]=1
+    if (args[0]=='2'):
+        updatekeys["2"][1]=1
+        updatekeys["2"][2]=1
+    if (args[0]=='3'):
+        updatekeys["3"][1]=1
+        updatekeys["3"][2]=1
 
 def key_released(*args):
 	# If escape is pressed, kill everything.
-    global velmult
-    global velocity
-    global defvelocity
-    if args[0] == ' ':
-        velocity = defvelocity
+    global updatekeys
+    print args[0] + " released"
+    if (args[0]=='1'):
+        updatekeys["1"][1]=1
+        updatekeys["1"][2]=2
+    if (args[0]=='2'):
+        updatekeys["2"][1]=1
+        updatekeys["2"][2]=2
+    if (args[0]=='3'):
+        updatekeys["3"][1]=1
+        updatekeys["3"][2]=2
 
 def special_pressed(*args):
 	# If escape is pressed, kill everything.
     print str(args[0]) + " pressed"
-    global velmult
-    global steermult
-    global defvelocity
-    global defsteerangle
-
-    global sock
-    packet = struct.pack("<B", 1)
-    sock.send(packet)
-    packet = struct.pack("<B", args[0])
-    sock.send(packet)
-    received = sock.recv(1)
-    hdr = struct.unpack("<B", received)
-
+    global updatekeys
+    if (args[0]==101):
+        #forward
+        updatekeys["up"][1]=1
+        updatekeys["up"][2]=1
+    if (args[0]==103):
+        #reverse
+        updatekeys["down"][1]=1
+        updatekeys["down"][2]=1
+    if (args[0]==100):
+    #left
+        updatekeys["left"][1]=1
+        updatekeys["left"][2]=1
+    if (args[0]==102):
+    #right
+        updatekeys["right"][1]=1
+        updatekeys["right"][2]=1
 
 def special_released(*args):
 	# If escape is pressed, kill everything.
     print str(args[0]) + " released"
-    global velmult
-    global steermult
-    global defvelocity
-    global defsteerangle
-    global steerangle
-    global velocity
+    global updatekeys
+    if (args[0]==101):
+        #forward
+        updatekeys["up"][1]=1
+        updatekeys["up"][2]=2
+    if (args[0]==103):
+        #reverse
+        updatekeys["down"][1]=1
+        updatekeys["down"][2]=2
+    if (args[0]==100):
+    #left
+        updatekeys["left"][1]=1
+        updatekeys["left"][2]=2
+    if (args[0]==102):
+    #right
+        updatekeys["right"][1]=1
+        updatekeys["right"][2]=2
 
-
-
-    global sock
-    packet = struct.pack("<B", 2)
-    sock.send(packet)
-    packet = struct.pack("<B", args[0])
-    sock.send(packet)
-    received = sock.recv(1)
-    hdr = struct.unpack("<B", received)
-
+HOST, PORT = "0.0.0.0", 30000
 
 def main():
-	global window
-	# For now we just pass glutInit one empty argument. I wasn't sure what should or could be passed in (tuple, list, ...)
-	# Once I find out the right stuff based on reading the PyOpenGL source, I'll address this.
-	glutInit(())
-
-	# Select type of Display mode:   
-	#  Double buffer 
-	#  RGBA color
-	# Alpha components supported 
-	# Depth buffer
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
-	
-	# get a 640 x 480 window 
-	glutInitWindowSize(400, 400)
-	
-	# the window starts at the upper left corner of the screen 
-	glutInitWindowPosition(0, 0)
-	
-	# Okay, like the C version we retain the window id to use when closing, but for those of you new
-	# to Python (like my, remember this assignment would make the variable local and not global
-	# if it weren't for the global declaration at the start of main.
-	window = glutCreateWindow("Jeff Molofee's GL Code Tutorial ... NeHe '99")
-
-   	# Register the drawing function with glut, BUT in Python land, at least using PyOpenGL, we need to
-	# set the function pointer and invoke a function to actually register the callback, otherwise it
-	# would be very much like the C version of the code.	
-	glutDisplayFunc (DrawGLScene)
-	
-	# Uncomment this line to get full screen.
-	#glutFullScreen()
-
-	# When we are doing nothing, redraw the scene.
-	glutIdleFunc(DrawGLScene)
-	
-	# Register the function called when our window is resized.
-	glutReshapeFunc (ReSizeGLScene)
-	
-	# Register the function called when the keyboard is pressed.  
+    global HOST
+    global PORT
+    try:
+        optlist, args = getopt.getopt(sys.argv[1:], 'p:', ['host=', 'port='])
+    except getopt.GetoptError, err:
+        print str(err) # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)
         
-        glutIgnoreKeyRepeat(1)
-	glutKeyboardFunc (keyPressed)
-	glutKeyboardUpFunc (key_released)
-	glutSpecialFunc (special_pressed)
-	glutSpecialUpFunc (special_released)
-
-	# Initialize our window. 
-	InitGL(640, 480)
-
-	# Start Event Processing Engine	
-	glutMainLoop()
+    for o, a in optlist:
+        if o == "-v":
+            printversion()
+            sys.exit()
+        elif o in ("-h", "--help"):
+            usage()
+            sys.exit()
+        elif o in ("-p", "--port"):
+            PORT=a
+        elif o in ("--host"):
+            HOST=a
+        else:
+            assert False, "unhandled option"
+            
+    if HOST=="0.0.0.0":
+        usage()
+        sys.exit()
+        
+    print "connecting to " + str(HOST) + ":" + str(PORT)
+    
+    global window
+    global thread
+    # For now we just pass glutInit one empty argument. I wasn't sure what should or could be passed in (tuple, list, ...)
+    # Once I find out the right stuff based on reading the PyOpenGL source, I'll address this.
+    glutInit(())
+    
+    # Select type of Display mode:   
+    #  Double buffer 
+    #  RGBA color
+    # Alpha components supported 
+    # Depth buffer
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
+    
+    # get a 640 x 480 window 
+    glutInitWindowSize(400, 400)
+    
+    # the window starts at the upper left corner of the screen 
+    glutInitWindowPosition(0, 0)
+	
+    # Okay, like the C version we retain the window id to use when closing, but for those of you new
+    # to Python (like my, remember this assignment would make the variable local and not global
+    # if it weren't for the global declaration at the start of main.
+    window = glutCreateWindow("Jeff Molofee's GL Code Tutorial ... NeHe '99")
+    
+    # Register the drawing function with glut, BUT in Python land, at least using PyOpenGL, we need to
+    # set the function pointer and invoke a function to actually register the callback, otherwise it
+    # would be very much like the C version of the code.	
+    glutDisplayFunc (DrawGLScene)
+    
+    # Uncomment this line to get full screen.
+    #glutFullScreen()
+    
+    # When we are doing nothing, redraw the scene.
+    glutIdleFunc(DrawGLScene)
+    
+    # Register the function called when our window is resized.
+    glutReshapeFunc (ReSizeGLScene)
+	
+    # Register the function called when the keyboard is pressed.  
+        
+    glutIgnoreKeyRepeat(1)
+    glutKeyboardFunc (keyPressed)
+    glutKeyboardUpFunc (key_released)
+    glutSpecialFunc (special_pressed)
+    glutSpecialUpFunc (special_released)
+    
+    # Initialize our window. 
+    InitGL(640, 480)
+    thread=threading.Thread(target=intercom)
+    thread.start()
+    
+    # Start Event Processing Engine	
+    glutMainLoop()
 
 # Print message to console, and kick off the main to get it rolling.
 print "Hit ESC key to quit."
