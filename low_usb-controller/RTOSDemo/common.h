@@ -10,7 +10,10 @@
 
 #define PA0  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
 #define PA1  {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}
-#define PA8  {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
+#define PA6  {1 << 6, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
+#define PA8  {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
+#define PA9  {1 << 9, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
+#define PA10 {1 << 10, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
 /// ADC_AD0 pin definition.
 #define PIN_ADC_AD0 {1 << 17, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}
 /// ADC_AD1 pin definition.
@@ -20,13 +23,16 @@
 /// ADC_AD3 pin definition. (mixed with PIN_PUSHBUTTON_2)
 #define PIN_ADC_AD3 {1 << 20, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}
 /// Pins ADC
-#define PINS_ADC PIN_ADC_AD0//, PIN_ADC_AD1, PIN_ADC_AD2, PIN_ADC_AD3
+#define PINS_ADC PIN_ADC_AD0, PIN_ADC_AD1, PIN_ADC_AD2, PIN_ADC_AD3
 
 static const Pin pins[] = {
   PA0,
   PA1,
+  PA6,
   PA8,
-  PINS_ADC
+  PA9,
+  PA10//,
+  //  PINS_ADC
 };
 
 #define CHANNEL_PWM_1 0
@@ -45,7 +51,8 @@ typedef struct
   unsigned int changecycle2;
   int led;
   int ledctr;
-  unsigned int adcvalue;
+  unsigned int adcvalue[8];
+  char leds[3];
 } spistat;
 
 spistat trspistat;
@@ -72,7 +79,7 @@ spistat trspistat;
 /// Track and hold Acquisition Time min (in ns)
 #define ADC_TRACK_HOLD_TIME_MIN   600
 
-#define BOARD_ADC_FREQ 5000000
-#define ADC_VREF       3300  // 3.3 * 1000
+//#define BOARD_ADC_FREQ 5000000
+//#define ADC_VREF       3300  // 3.3 * 1000
 
 #endif

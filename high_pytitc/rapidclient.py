@@ -21,7 +21,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
 
-HOST, PORT = "10.218.35.100", 30000
+HOST, PORT = "10.218.35.4", 30000
 
 # Some api in the chain is translating the keystrokes to this octal string
 # so instead of saying: ESCAPE = 27, we use the following.

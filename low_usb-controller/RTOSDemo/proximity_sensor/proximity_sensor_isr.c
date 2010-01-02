@@ -5,8 +5,6 @@
 #include "common.h"
 #include "proximity_sensor.h"
 
-unsigned char conversionDone;
-
 /* The ISR can cause a context switch so is declared naked. */
 void vADC_ISR_Wrapper( void ) __attribute__ ((naked));
 
@@ -24,31 +22,20 @@ vADC_ISR_Handler(void)
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   unsigned int status;
   unsigned int id_channel;
-
-
-  Pin led=PA8;
-  PIO_Set(&led);
   
   status = ADC_GetStatus(AT91C_BASE_ADC);
   
-  /*    for(id_channel=ADC_NUM_1;id_channel<=ADC_NUM_4;id_channel++) {
+  for(id_channel=ADC_NUM_1;id_channel<=ADC_NUM_8;id_channel++) {
 	
         if (ADC_IsChannelInterruptStatusSet(status, id_channel)) {
 	
-	ADC_DisableIt(AT91C_BASE_ADC, id_channel);
-	conversionDone |= 1<<id_channel;
+	  ADC_DisableIt(AT91C_BASE_ADC, id_channel);
+	  trspistat.adcvalue[id_channel] = ConvHex2mV(ADC_GetConvertedData(AT91C_BASE_ADC, id_channel));
         }
-	}*/
-  id_channel=ADC_NUM_1;
-  if (ADC_IsChannelInterruptStatusSet(status, id_channel)) 
-    {	
-      ADC_DisableIt(AT91C_BASE_ADC, id_channel);
-      conversionDone |= 1<<id_channel;
-    }
-
+  }
+  //  trspistat.counter=conversionDone;
   /* Clear AIC to complete ISR processing */
   AT91C_BASE_AIC->AIC_EOICR = 0;
-  
   /* Do a task switch if needed */
   if( xHigherPriorityTaskWoken )
     {

@@ -208,7 +208,27 @@ unsigned int ADC_GetConvertedData(AT91S_ADC *pAdc, unsigned int channel)
         #ifdef AT91C_ADC_CDR7
         case 7: data = pAdc->ADC_CDR7; break;    
         #endif
-    }
+	}
+    /*    switch(channel) {
+        case 0: data = pAdc->ADC_LCDR0; break;
+        case 1: data = pAdc->ADC_LCDR1; break;
+        case 2: data = pAdc->ADC_LCDR2; break;
+        case 3: data = pAdc->ADC_LCDR3; break;
+        #ifdef AT91C_ADC_CDR4
+        case 4: data = pAdc->ADC_LCDR4; break;
+        #endif
+        #ifdef AT91C_ADC_CDR5
+        case 5: data = pAdc->ADC_LCDR5; break;
+        #endif
+        #ifdef AT91C_ADC_CDR6
+        case 6: data = pAdc->ADC_LCDR6; break;
+        #endif
+        #ifdef AT91C_ADC_CDR7
+        case 7: data = pAdc->ADC_LCDR7; break;    
+        #endif
+	}*/
+
+
     return data;    
 }
 

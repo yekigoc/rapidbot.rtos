@@ -36,6 +36,9 @@ steerangle=defsteerangle
 lastpressed=[0.0, 0.0, 0.0, 0.0]
 maxpresseddiff=0.1
 dev=None
+light1=0
+light2=0
+light3=0
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
@@ -62,7 +65,17 @@ def InitGL(Width, Height):				# We call this right after our OpenGL window is cr
     dev.set_configuration()
     
     #       CTRL_OUT = [0x81, 0x0]
-    dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, [0])
+    led = struct.pack("BB", 1, 1)
+    dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+    time.sleep(0.2)
+    led = struct.pack("BB", 1, 0)
+    dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+    time.sleep(0.2)
+    led = struct.pack("BB", 1, 1)
+    dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+    time.sleep(0.2)
+    led = struct.pack("BB", 1, 0)
+    dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
 
 
 # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
@@ -125,32 +138,92 @@ def DrawGLScene():
             steerangle = 500
         if(steerangle < 293):
             steerangle = 293
-        print ("angle = "+str(steerangle) + "velocity = " + str(velocity) + str(velmult)+str(acceleration))
+#        print ("angle = "+str(steerangle) + "velocity = " + str(velocity) + str(velmult)+str(acceleration))
         vel = struct.pack("H", velocity)
         ang = struct.pack("H", steerangle)
         ret = dev.ctrl_transfer(0x01, 0x0, 0x05, 0, vel);
         ret = dev.ctrl_transfer(0x01, 0x0, 0x02, 0, ang);
 
+        led = struct.pack("BB", 0, light1)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+        led = struct.pack("BB", 1, light2)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+        led = struct.pack("BB", 2, light3)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+#        adcm = struct.pack("B", 0)
+        adc = dev.ctrl_transfer(0x81, 0x0, 0x08, 0x0, 4*8)
+#        print adc
+        adcv1 = struct.pack("BBBB", adc[0], adc[1], adc[2], adc[3])
+        adcv2 = struct.pack("BBBB", adc[4], adc[5], adc[6], adc[7])
+        adcv3 = struct.pack("BBBB", adc[8], adc[9], adc[10], adc[11])
+        adcv4 = struct.pack("BBBB", adc[12], adc[13], adc[14], adc[15])
+        adcv5 = struct.pack("BBBB", adc[16], adc[17], adc[18], adc[19])
+        adcv6 = struct.pack("BBBB", adc[20], adc[21], adc[22], adc[23])
+        adcv7 = struct.pack("BBBB", adc[24], adc[25], adc[26], adc[27])
+        adcv8 = struct.pack("BBBB", adc[28], adc[29], adc[30], adc[31])
+        adcv1 = struct.unpack("I", adcv1)
+        adcv2 = struct.unpack("I", adcv2)
+        adcv3 = struct.unpack("I", adcv3)
+        adcv4 = struct.unpack("I", adcv4)
+        adcv5 = struct.unpack("I", adcv5)
+        adcv6 = struct.unpack("I", adcv6)
+        adcv7 = struct.unpack("I", adcv7)
+        adcv8 = struct.unpack("I", adcv8)
+        ctr = dev.ctrl_transfer(0x81, 0x0, 0x03, 0x0, 4)
+        ctrv = struct.pack("BBBB", ctr[0], ctr[1], ctr[2], ctr[3])
+        ctrv = struct.unpack("I", ctrv)
+        print str(ctrv[0]) + ": adcv1 = " + str(adcv1[0]) + " adcv2 = " + str(adcv2[0]) + " adcv3 = " + str(adcv3[0]) + " adcv4 = " + str(adcv4[0]) + " adcv5 = " + str(adcv5[0]) + " adcv6 = " + str(adcv6[0]) + " adcv7 = " + str(adcv7[0]) + " adcv8 = " + str(adcv8[0])
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
 	# If escape is pressed, kill everything.
     global velmult
     global velocity
+    global light1
+    global light2
+    global light3
     if args[0] == ESCAPE:
+        led = struct.pack("BB", 0, 1)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+        time.sleep(0.2)
+        led = struct.pack("BB", 0, 0)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+        time.sleep(0.2)
+        led = struct.pack("BB", 0, 1)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
+        time.sleep(0.2)
+        led = struct.pack("BB", 0, 0)
+        dev.ctrl_transfer(0x01, 0x0, 0x07, 0x0, led)
         glutDestroyWindow(window)
         sys.exit()
     if args[0] == ' ':
         velocity = 400
         velmult=0.0
+    if args[0] == '1':
+        light1=1
+        print "1 pressed"
+    if args[0] == '2':
+        light2=1
+    if args[0] == '3':
+        light3=1
 
 def key_released(*args):
 	# If escape is pressed, kill everything.
     global velmult
     global velocity
     global defvelocity
+    global light1
+    global light2
+    global light3
     if args[0] == ' ':
         velocity = defvelocity
+    if args[0] == '1':
+        light1=0
+    if args[0] == '2':
+        light2=0
+    if args[0] == '3':
+        light3=0
+
 
 def special_pressed(*args):
 	# If escape is pressed, kill everything.

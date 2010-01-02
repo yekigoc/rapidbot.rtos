@@ -14,6 +14,7 @@
 #include "adc/adc.h"
 
 #include "proximity_sensor/proximity_sensor_task.h"
+Pin pioleds[]={PA6, PA8, PA10};
 
 /* Priorities for the demo application tasks. */
 #define mainUSB_PRIORITY			( tskIDLE_PRIORITY + 2 )
@@ -40,8 +41,9 @@ int main( void )
   trspistat.changecycle2 = 0;
   trspistat.led = 0;
   trspistat.ledctr = 0;
+  memset(trspistat.leds, 0, sizeof(char)*3);
 
-  //  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
+  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
@@ -74,7 +76,7 @@ static void prvSetupHardware( void )
 
   PWMC_EnableChannel(CHANNEL_PWM_1);
   PWMC_EnableChannel(CHANNEL_PWM_2);
-
+  adcinit();
 }
 /*-----------------------------------------------------------*/
 
@@ -94,7 +96,7 @@ portCHAR cTxByte;
        }
    }
  
- trspistat.counter++;
+
  if (trspistat.changecycle1==1)
    {
      PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.dutycycle1);
@@ -106,14 +108,13 @@ portCHAR cTxByte;
      trspistat.changecycle2=0;
    }
 
- if (trspistat.led==1)
+ int i = 0;
+
+ for (i; i<3; i++)
    {
-     Pin led=PA8;
-     PIO_Clear(&led);
-   }
- else
-   {
-     Pin led=PA8;
-     PIO_Set(&led);
+     if (trspistat.leds[i]==0)
+       PIO_Clear(&pioleds[i]);
+     else
+       PIO_Set(&pioleds[i]);
    }
 }
