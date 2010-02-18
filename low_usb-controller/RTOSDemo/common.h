@@ -25,13 +25,22 @@
 /// Pins ADC
 #define PINS_ADC PIN_ADC_AD0, PIN_ADC_AD1, PIN_ADC_AD2, PIN_ADC_AD3
 
+#define NPCS3 {1 << 5, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
+#define CDIN {1 << 12, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}
+#define CDOUT {1 << 13, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
+#define SPCK {1 << 14, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
+
 static const Pin pins[] = {
   PA0,
   PA1,
   PA6,
   PA8,
   PA9,
-  PA10//,
+  PA10,
+  NPCS3,
+  CDIN,
+  CDOUT,
+  SPCK
   //  PINS_ADC
 };
 
@@ -43,6 +52,7 @@ static const Pin pins[] = {
 
 typedef struct
 {
+  unsigned int compassstat;
   unsigned int counter;
   unsigned short usbinited;
   unsigned short dutycycle1;

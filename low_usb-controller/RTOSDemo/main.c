@@ -14,10 +14,11 @@
 #include "adc/adc.h"
 
 #include "proximity_sensor/proximity_sensor_task.h"
+#include "compass/compass_task.h"
 Pin pioleds[]={PA6, PA8, PA10};
 
 /* Priorities for the demo application tasks. */
-#define mainUSB_PRIORITY			( tskIDLE_PRIORITY + 2 )
+#define mainUSB_PRIORITY			( tskIDLE_PRIORITY +2 )
 #define mainUSB_TASK_STACK			( 200 )
 
 /* The rate at which the idle hook sends data to the USB port. */
@@ -41,9 +42,11 @@ int main( void )
   trspistat.changecycle2 = 0;
   trspistat.led = 0;
   trspistat.ledctr = 0;
+  trspistat.compassstat = 0;
   memset(trspistat.leds, 0, sizeof(char)*3);
 
   vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
+  vStartCompassTask( tskIDLE_PRIORITY + 3 );
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
@@ -58,7 +61,7 @@ static void prvSetupHardware( void )
 	
   AT91C_BASE_AIC->AIC_EOICR = 0;
 
-  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
+  //  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
 
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PWMC;
   PWMC_ConfigureClocks(PWM_FREQUENCY * MAX_DUTY_CYCLE, 0, BOARD_MCK);
@@ -95,7 +98,7 @@ portCHAR cTxByte;
 	 vUSBSendByte( cTxByte );
        }
    }
- 
+ trspistat.counter += 1;
 
  if (trspistat.changecycle1==1)
    {

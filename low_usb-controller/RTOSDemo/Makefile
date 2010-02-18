@@ -92,6 +92,7 @@ THUMB_SOURCE= \
 		USB/USB-CDC.c \
 		proximity_sensor/proximity_sensor.c \
 		proximity_sensor/proximity_sensor_task.c \
+		compass/compass_task.c \
 		adc/adc.c
 #		tr24a/tr24a.c \
 
@@ -166,7 +167,8 @@ ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_AT91SAM7S/portISR.c \
 		./SrcAtmel/Cstartup_SAM7.c \
 		USB/USBIsr.c \
-		proximity_sensor/proximity_sensor_isr.c
+		proximity_sensor/proximity_sensor_isr.c \
+		compass/compass_isr.c
 
 #		tr24a/spi_isr.c \
 

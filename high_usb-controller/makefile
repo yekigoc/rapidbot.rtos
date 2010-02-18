@@ -1,6 +1,6 @@
 
-#TGT=simple
-TGT=gtk
+TGT=simple
+#TGT=gtk
 CC=gcc
 DELETE=rm
 ECHO=echo -e
