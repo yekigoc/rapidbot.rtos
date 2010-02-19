@@ -33,7 +33,7 @@ void comp_writecommand(unsigned char command, unsigned int snpcs, unsigned char 
     asm("nop");
   PIO_Clear (&npcs);
   PIO_Set (&spck);
-  if ((command & 1<<3) == 1)
+  if ((command & 1<<3))
     PIO_Set (&cdout);
   else 
     PIO_Clear (&cdout);
@@ -42,7 +42,7 @@ void comp_writecommand(unsigned char command, unsigned int snpcs, unsigned char 
   PIO_Clear (&spck);
   for (i=0; i<22; i++)
     asm("nop");
-  if ((command & 1<<2) == 1)
+  if ((command & 1<<2))
     PIO_Set (&cdout);
   else 
     PIO_Clear (&cdout);
@@ -52,7 +52,7 @@ void comp_writecommand(unsigned char command, unsigned int snpcs, unsigned char 
   PIO_Clear (&spck);
   for (i=0; i<22; i++)
     asm("nop");
-  if ((command & 1<<1) == 1)
+  if ((command & 1<<1))
     PIO_Set (&cdout);
   else 
     PIO_Clear (&cdout);
@@ -62,12 +62,12 @@ void comp_writecommand(unsigned char command, unsigned int snpcs, unsigned char 
   PIO_Clear (&spck);
   for (i=0; i<22; i++)
     asm("nop");
-  if ((command & 1) == 1)
+  if ((command & 1))
     PIO_Set (&cdout);
   else 
     PIO_Clear (&cdout);
   PIO_Set (&spck);
-  for (i=0; i<22; i++)
+  for (i=0; i<10; i++)
     asm("nop");
   if (leavenpcslow==0)
     PIO_Set (&npcs);
@@ -81,11 +81,12 @@ void comp_readdata(unsigned int npcs, unsigned char leavenpcslow)
   cmpstat.currentoffset = 0;
   while (cmpstat.currentoffset < 4)
     {
-      PIO_Clear (&spck);
       cmpstat.header |= PIO_Get(&cdin)<<cmpstat.currentoffset;
       cmpstat.currentoffset += 1;
+      PIO_Clear (&spck);
       for (i=0; i<22; i++)
 	asm("nop");
+
       PIO_Set (&spck);
       for (i=0; i<22; i++)
 	asm("nop");
@@ -104,10 +105,10 @@ void comp_readaxis(unsigned int npcs, unsigned char leavenpcslow)
   while (cmpstat.currentoffset < 26)
     {
       PIO_Clear (&spck);
-      for (i=0; i<22; i++)
-	asm("nop");
       cmpstat.data |= PIO_Get(&cdin)<<cmpstat.currentoffset;
       cmpstat.currentoffset += 1;
+      for (i=0; i<22; i++)
+	asm("nop");
       PIO_Set (&spck);
       for (i=0; i<22; i++)
 	asm("nop");
@@ -138,7 +139,7 @@ void vCompassTask( void *pvParameters )
   command = 0x8;
   comp_writecommand(command, 3, 0);
   vTaskDelay( 50 / portTICK_RATE_MS );
-  /*  PIO_Clear (&npcs);
+  /*PIO_Clear (&npcs);
   for (i=0; i<22; i++)
     asm("nop");
   PIO_Set (&npcs);
@@ -156,26 +157,27 @@ void vCompassTask( void *pvParameters )
 
   for(;;)
     {
-      if (cmpstat.header == 15)
-	{
+      /*if (cmpstat.header == 15)
+	{*/
 	  vTaskDelay( 50 / portTICK_RATE_MS );
 	  command = 0x0;
 	  comp_writecommand(command, 3, 0);
 	  command = 0x8;
 	  comp_writecommand(command, 3, 0);
-	}
+	  /*}
       else if (cmpstat.header == 12)
 	{
 	  vTaskDelay( 50 / portTICK_RATE_MS );
 	  comp_readdata(3, 0);
-	}
+	  }*/
 
       vTaskDelay( 50 / portTICK_RATE_MS );
       command = 0xC;
       comp_writecommand(command, 3, 1);
-      vTaskDelay( 50 / portTICK_RATE_MS );
-      comp_readdata(3, 0);
+      //vTaskDelay( 50 / portTICK_RATE_MS );
+      comp_readdata(3,1);
       trspistat.compassstat = cmpstat.header;
+      comp_readaxis(3,0);
       /*      command = 0x8;
       comp_writecommand(command, 3, 1);
 
