@@ -79,6 +79,7 @@ void comp_readdata(unsigned int npcs, unsigned char leavenpcslow)
   Pin cdin = CDIN;
   int i = 0;
   cmpstat.currentoffset = 0;
+  cmpstat.header = 0;
   while (cmpstat.currentoffset < 4)
     {
       cmpstat.header |= PIO_Get(&cdin)<<cmpstat.currentoffset;
@@ -102,13 +103,14 @@ void comp_readaxis(unsigned int npcs, unsigned char leavenpcslow)
   int i = 0;
   cmpstat.currentoffset = 0;
   cmpstat.data = 0;
-  while (cmpstat.currentoffset < 26)
+  while (cmpstat.currentoffset < 22)
     {
-      PIO_Clear (&spck);
-      cmpstat.data |= PIO_Get(&cdin)<<cmpstat.currentoffset;
+      cmpstat.data |= PIO_Get(&cdin)<<(cmpstat.currentoffset);
       cmpstat.currentoffset += 1;
+      PIO_Clear (&spck);
       for (i=0; i<22; i++)
 	asm("nop");
+
       PIO_Set (&spck);
       for (i=0; i<22; i++)
 	asm("nop");
@@ -159,9 +161,9 @@ void vCompassTask( void *pvParameters )
     {
       /*if (cmpstat.header == 15)
 	{*/
-	  vTaskDelay( 50 / portTICK_RATE_MS );
 	  command = 0x0;
 	  comp_writecommand(command, 3, 0);
+	  vTaskDelay( 10 / portTICK_RATE_MS );
 	  command = 0x8;
 	  comp_writecommand(command, 3, 0);
 	  /*}
@@ -176,8 +178,9 @@ void vCompassTask( void *pvParameters )
       comp_writecommand(command, 3, 1);
       //vTaskDelay( 50 / portTICK_RATE_MS );
       comp_readdata(3,1);
-      trspistat.compassstat = cmpstat.header;
       comp_readaxis(3,0);
+      trspistat.compassstat = cmpstat.header;
+      trspistat.compassdata = cmpstat.data;
       /*      command = 0x8;
       comp_writecommand(command, 3, 1);
 

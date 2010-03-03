@@ -141,6 +141,7 @@ static int get_hwstat(unsigned char *status)
 	int done = 0;
 
 	unsigned int compassstat = 0;
+	unsigned int compassdata = 0;
 	
 	struct js_event jse;
 	
@@ -324,8 +325,20 @@ static int get_hwstat(unsigned char *status)
 		fprintf(stderr, "short write (%d)", r);
 		return -1;
 	      }
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x10, 0, &compassdata, 4, 0);
+	    if (r < 0) 
+	      {
+		fprintf(stderr, "set hwstat error %d\n", r);
+		return r;
+	      }
+	    if ((unsigned int) r < 1) 
+	      {
+		fprintf(stderr, "short write (%d)", r);
+		return -1;
+	      }
 
-	    printf("hwstat counter=%i dutycycle1 = %i, dutycycle2 = %i, adcvalue = %i, compass = %u\n", ctr, stat2, stat22, adcval, compassstat);
+
+	    printf("hwstat counter=%i, compass = %u, cmpdata = 0x%x\n", ctr, compassstat, compassdata);
 	   
 	    usleep(10000);
 	  }
