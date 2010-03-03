@@ -1,0 +1,19 @@
+package rgi;
+
+message setpwmchan {
+	required uint32 channel = 1;
+	required uint32 value = 2;
+}
+
+message setpwmchans {
+	required uint32 value1 = 1;
+	required uint32 value2 = 2;
+}
+
+message gpiolineon {
+	required uint32 line = 1;
+}
+
+message gpiolineoff {
+	required uint32 line = 1;
+}
