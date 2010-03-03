@@ -7,6 +7,10 @@ sys.path.append('/usr/local/lib/python2.6/dist-packages/usb/')
 import usb.core
 import usb.util
 import threading
+import pygame
+# allow multiple joysticks
+joy = []
+
 
 class rapidtcphandler(SocketServer.BaseRequestHandler):
     """
@@ -142,12 +146,17 @@ class rapidtcpserver(SocketServer.TCPServer):
     def shutdown(self):
         self.socket.close()
 
+def joystickhandle():
+    
+def joystickinit():
+
 
 def main():
     try:
         server=rapidtcpserver()
         server.init()
         dev = usb.core.find(idVendor=0xEB03, idProduct=0x0920)
+
 
         # was it found?
         if dev is None:

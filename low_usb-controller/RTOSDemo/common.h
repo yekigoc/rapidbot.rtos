@@ -53,6 +53,7 @@ static const Pin pins[] = {
 typedef struct
 {
   unsigned int compassstat;
+  unsigned int compassdata;
   unsigned int counter;
   unsigned short usbinited;
   unsigned short dutycycle1;

@@ -4,8 +4,8 @@ import getopt
 
 import sys
 sys.path.append('/usr/local/lib/python2.6/dist-packages/usb/')
-import usb.core
-import usb.util
+#import usb.core
+#import usb.util
 import threading
 import socket
 
