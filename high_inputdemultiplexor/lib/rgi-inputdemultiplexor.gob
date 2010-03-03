@@ -1,0 +1,102 @@
+/*
+ * This is a box drawable class
+ */
+requires 2.0.0
+%{
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+#include <gio/gio.h>
+%}
+
+%{
+  static gboolean
+    handler (GThreadedSocketService *service,
+	     GSocketConnection      *connection,
+	     GSocketListener        *listener,
+	     gpointer                user_data)
+  {
+    GOutputStream *out;
+    GInputStream *in;
+    GFileInputStream *file_in;
+    GDataInputStream *idata;
+    GDataOutputStream *odata;
+    char *line, *escaped, *tmp, *query, *unescaped, *path, *version;
+    GFile *f;
+    GError *error;
+    GFileInfo *info;
+    GString *s;
+    
+    gboolean ret = FALSE;
+    
+    in = g_io_stream_get_input_stream (G_IO_STREAM (connection));
+    out = g_io_stream_get_output_stream (G_IO_STREAM (connection));
+    
+    idata = g_data_input_stream_new (in);
+    odata = g_data_output_stream_new (out);
+    int head=0;
+    
+    printf ("handler called \n");
+    
+    g_object_unref (idata);
+    g_object_unref (odata);
+  }
+%}
+
+class Rgi:InputDemultiplexor from G:Object
+{
+  init(self)
+  {
+    pmsg("starting init sequence\n");
+    GSocketService *service;
+    GOptionContext *context;
+    GError *error = NULL;
+    
+    pmsg("before context new\n");
+    
+    context = g_option_context_new ("RGI server");
+    /*    g_option_context_add_main_entries (context, cmd_entries, NULL);
+    if (!g_option_context_parse (context, &argc, &argv, &error))
+      {
+	g_printerr ("%s: %s\n", argv[0], error->message);
+	return 1;
+	}*/
+    
+    /*  if (argc != 2)
+	{
+	g_printerr ("Root directory not specified\n");
+	return 1;
+	}*/
+    
+    //  root = g_strdup (argv[1]);
+
+    pmsg("creating service\n");    
+    service = g_threaded_socket_service_new (10);
+    if (!g_socket_listener_add_inet_port (G_SOCKET_LISTENER (service),
+					  30000,
+					  NULL,
+					  &error))
+      {
+	//	g_printerr ("%s: %s\n", argv[0], error->message);
+	return;
+      }
+    
+    g_print ("RGI server listening on port %d\n", 30000);
+    
+    g_signal_connect (service, "run", G_CALLBACK (handler), G_OBJECT(self));
+    
+    g_main_loop_run (g_main_loop_new (NULL, FALSE));
+    g_assert_not_reached ();
+  }
+
+  public RgiInputDemultiplexor *
+    new (void)
+  {
+    return (RgiInputDemultiplexor *)GET_NEW;
+  }
+  
+}
