@@ -1,5 +1,5 @@
 /*
- * This is a box drawable class
+ * This is a input demultiplexor class
  */
 requires 2.0.0
 %{
@@ -11,6 +11,11 @@ requires 2.0.0
 #include <unistd.h>
 #include <debug_macros.h>
 #include <gio/gio.h>
+#include <rgi.pb-c.h>
+%}
+
+%headertop{
+  #include "rgi-usbscheduler.h"
 %}
 
 %{
@@ -38,9 +43,26 @@ requires 2.0.0
     
     idata = g_data_input_stream_new (in);
     odata = g_data_output_stream_new (out);
-    int head=0;
     
-    printf ("handler called \n");
+    pmsg ("handler called \n");
+    
+    g_data_input_stream_set_byte_order (idata, G_DATA_STREAM_BYTE_ORDER_HOST_ENDIAN);
+    unsigned short head = g_data_input_stream_read_int16 (idata, NULL, NULL);
+    pmsg ("packettype = %i\n", head);
+    unsigned short len = g_data_input_stream_read_int16 (idata, NULL, NULL);
+    pmsg ("packetlen = %i\n", len);
+
+    unsigned char * packed = malloc(len);
+    for (int i = 0; i<len; i++)
+      {
+	packed[i] = g_data_input_stream_read_byte (idata, NULL, NULL);
+      }
+
+    Rgi__Setpwmchan *pwmchan;
+
+    pwmchan = rgi__setpwmchan__unpack(NULL, len, packed);
+    pmsg("pwmchan->channel = %i", pwmchan->channel);
+    pmsg("pwmchan->value = %i", pwmchan->value);
     
     g_object_unref (idata);
     g_object_unref (odata);
@@ -49,14 +71,18 @@ requires 2.0.0
 
 class Rgi:InputDemultiplexor from G:Object
 {
-  init(self)
+  public GAsyncQueue* fromusb;
+  public GAsyncQueue* tousb;
+  public RgiUsbScheduler * scheduler;
+
+  public
+  void
+  start(self)
   {
     pmsg("starting init sequence\n");
     GSocketService *service;
     GOptionContext *context;
     GError *error = NULL;
-    
-    pmsg("before context new\n");
     
     context = g_option_context_new ("RGI server");
     /*    g_option_context_add_main_entries (context, cmd_entries, NULL);
@@ -85,7 +111,7 @@ class Rgi:InputDemultiplexor from G:Object
 	return;
       }
     
-    g_print ("RGI server listening on port %d\n", 30000);
+    pmsg ("RGI server listening on port %d\n", 30000);
     
     g_signal_connect (service, "run", G_CALLBACK (handler), G_OBJECT(self));
     

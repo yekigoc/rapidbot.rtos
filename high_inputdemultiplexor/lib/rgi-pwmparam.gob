@@ -1,0 +1,112 @@
+/*
+ * This is a usb communication scheduler class
+ */
+requires 2.0.0
+%{
+#include <errno.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+#include "rgi-stateparam.h"
+%}
+
+%header{
+#include "rgi-stateparam.h"
+  typedef struct _pwmdata
+  {
+    unsigned int channel;
+    unsigned int value;
+  } pwmdata;
+  //#include <libusb.h>
+%}
+
+class Rgi:PwmParam from Rgi:StateParam
+{
+  public struct libusb_device_handle *devh;
+  private unsigned int channel = 0;
+  property UINT channel
+    (nick = "channel",
+     blurb = "PWM channel",
+     minimum = 0,
+     maximum = UINT_MAX,
+     default_value = 0,
+     export,
+     link);
+
+  private unsigned int pwmval = 0;
+  property UINT pwmval
+    (nick = "pwm value",
+     blurb = "PWM value",
+     minimum = 0,
+     maximum = UINT_MAX,
+     default_value = 100,
+     export,
+     link);
+
+  override (Rgi:StateParam)
+  int
+    pull(Rgi:StateParam * self (check null type))
+    {
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    int
+    push(Rgi:StateParam * self (check null type))
+    {
+      if (rgi_stateparam_get_changed(self))
+	{
+	  RgiPwmParam * me = RGI_PWMPARAM(self);
+      
+	  rgi_stateparam_set_changed(self, 0);
+	  unsigned short pwmval = rgi_pwmparam_get_pwmval(me);
+	  int r = libusb_control_transfer(me->devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, (char*)&pwmval, 2, 0);
+	  if (r < 0) 
+	    {
+	      perr("set hwstat error %d\n", r);
+	      return r;
+	    }
+	  if ((unsigned int) r < 1) 
+	    {
+	      perr("short write (%d)", r);
+	      return -1;
+	    }
+	}
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    void *
+    get(Rgi:StateParam * self (check null type))
+  {
+    return 0;
+  }
+
+  override (Rgi:StateParam)
+    int
+    set(Rgi:StateParam * self (check null type), void * data)
+  {
+    RgiPwmParam * me = RGI_PWMPARAM(self);
+    pwmdata * d = (pwmdata*)data;
+    rgi_pwmparam_set_pwmval(me, d->value);
+    rgi_pwmparam_set_channel(me, d->channel);
+    rgi_stateparam_set_changed(self, 1);
+  }
+
+  public RgiPwmParam *
+    new (void)
+  {
+    RgiPwmParam * me = (RgiPwmParam *)GET_NEW;
+    RgiStateParam * self = RGI_STATEPARAM(me);
+    rgi_stateparam_set_ondemand(self, 1);
+    rgi_stateparam_set_readonly(self, 2);
+    self->id = PER_PWM;
+    return me;
+  }
+  
+}
