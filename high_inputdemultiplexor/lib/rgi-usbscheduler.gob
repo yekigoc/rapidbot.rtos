@@ -1,0 +1,152 @@
+/*
+ * This is a usb communication scheduler class
+ */
+requires 2.0.0
+%{
+#include <errno.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+%}
+
+%headertop{
+#include "usbcommon.h"
+#include "rgi-stateparam.h"
+#include <glib.h>
+  //#include <libusb.h>
+%}
+
+class Rgi:UsbScheduler from G:Object
+{
+  private GHashTable * params;
+  public GAsyncQueue* fromusb;
+  public GAsyncQueue* tousb;
+  public struct libusb_device_handle *devh = NULL;
+  private GThread * a_thread ;
+  private unsigned int exit = 0;
+  /* exit flag */
+  property UINT exit
+    (nick = "exit",
+     blurb = "Exit flag",
+     minimum = 0,
+     maximum = 1,
+     default_value = 0,
+     export,
+     link);
+
+  init(self)
+  {
+    self->_priv->params = g_hash_table_new(g_int_hash, g_int_equal);
+  }
+
+  private
+    void 
+    out(self)
+  {
+    libusb_close(self->devh);
+    libusb_exit(NULL);
+  }
+
+  private
+    int
+    find_dpfp_device(self)
+  {
+    self->devh = libusb_open_device_with_vid_pid(NULL, 0xeb03, 0x0920);
+    return self->devh ? 0 : -EIO;
+  }
+  
+  private
+    void *
+    loop(self)
+  {
+    pmsg("starting loop\n");
+    GHashTableIter iter;
+    int * key;
+    RgiStateParam * value;
+    g_hash_table_iter_init(&iter, self->_priv->params);
+    while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
+      {
+	pmsg("got key %i\n", *key);
+	//	    printf ("%s, %i\n", (char*)key, *(int*)value);
+	value->devh=self->devh;
+      }
+    while(self->_priv->exit != 1)
+      {
+	pmsg("calling iter init\n");
+	g_hash_table_iter_init(&iter, self->_priv->params);
+	while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
+	  {
+	    pmsg("got key %i\n", *key);
+	    //	    printf ("%s, %i\n", (char*)key, *(int*)value);
+	    rgi_stateparam_pull(value);
+	  }
+	pmsg("calling iter init for pushing\n");
+	g_hash_table_iter_init(&iter, self->_priv->params);
+	while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
+	  {
+	    pmsg("got key %i\n", *key);
+	    //	    printf ("%s, %i\n", (char*)key, *(int*)value);
+	    rgi_stateparam_push(value);
+	  }
+      }
+    g_hash_table_destroy(self->_priv->params);
+    g_async_queue_unref (self->fromusb);
+    g_async_queue_unref (self->tousb);
+  }
+  
+  public
+    int 
+    start(self)
+  {
+    struct sigaction sigact;
+    int r = 1;
+    
+    r = libusb_init(NULL);
+    if (r < 0) 
+      {
+	perr("failed to initialise libusb\n");
+	return -1;
+      }
+    
+    r = rgi_usbscheduler_find_dpfp_device(self);
+    if (r < 0) 
+      {
+	perr("Could not find/open device\n");
+	rgi_usbscheduler_out(self);
+	return -3;
+      }
+    
+    r = libusb_claim_interface(self->devh, 0);
+    if (r < 0) 
+      {
+	perr("usb_claim_interface error %d\n", r);
+	rgi_usbscheduler_out(self);
+	return -2;
+      }
+    pmsg("claimed interface\n");
+    g_async_queue_ref (self->fromusb);
+    g_async_queue_ref (self->tousb);
+
+    self->_priv->a_thread=g_thread_create(rgi_usbscheduler_loop, self, FALSE, NULL); 
+  }
+
+  public 
+    void
+    pushparam (self, RgiStateParam * p)
+  {
+    g_hash_table_insert(self->_priv->params, &(p->id), p);
+    p->devh=self->devh;
+  }
+
+  public RgiUsbScheduler *
+    new (void)
+  {
+    return (RgiUsbScheduler *)GET_NEW;
+  }
+  
+}
