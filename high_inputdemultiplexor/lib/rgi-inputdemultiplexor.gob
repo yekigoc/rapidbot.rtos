@@ -12,6 +12,9 @@ requires 2.0.0
 #include <debug_macros.h>
 #include <gio/gio.h>
 #include <rgi.pb-c.h>
+#include "rgi-stateparam.h"
+#include "rgi-pwmparam.h"
+#include "rgi-adcparam.h"
 %}
 
 %headertop{
@@ -35,6 +38,9 @@ requires 2.0.0
     GError *error;
     GFileInfo *info;
     GString *s;
+
+    RgiInputDemultiplexor * self = (RgiInputDemultiplexor * )user_data;
+    RgiUsbScheduler * me = self->scheduler;
     
     gboolean ret = FALSE;
     
@@ -47,22 +53,32 @@ requires 2.0.0
     pmsg ("handler called \n");
     
     g_data_input_stream_set_byte_order (idata, G_DATA_STREAM_BYTE_ORDER_HOST_ENDIAN);
-    unsigned short head = g_data_input_stream_read_int16 (idata, NULL, NULL);
-    pmsg ("packettype = %i\n", head);
-    unsigned short len = g_data_input_stream_read_int16 (idata, NULL, NULL);
-    pmsg ("packetlen = %i\n", len);
-
-    unsigned char * packed = malloc(len);
-    for (int i = 0; i<len; i++)
+    while (1)
       {
-	packed[i] = g_data_input_stream_read_byte (idata, NULL, NULL);
+	unsigned short head = g_data_input_stream_read_int16 (idata, NULL, NULL);
+	pmsg ("packettype = %i\n", head);
+	unsigned short len = g_data_input_stream_read_int16 (idata, NULL, NULL);
+	pmsg ("packetlen = %i\n", len);
+	
+	unsigned char * packed = malloc(len);
+	for (int i = 0; i<len; i++)
+	  {
+	    packed[i] = g_data_input_stream_read_byte (idata, NULL, NULL);
+	  }
+	
+	Rgi__Setpwmchan *pwmchan;
+	
+	pwmchan = rgi__setpwmchan__unpack(NULL, len, packed);
+	pmsg("pwmchan->channel = %i", pwmchan->channel);
+	if (pwmchan->channel<2)
+	  {
+	    pmsg("pwmchan->value = %i", pwmchan->value);
+	    pwmdata p;
+	    p.valuesw[pwmchan->channel] = pwmchan->value;
+	    RgiStateParam * param = rgi_usbscheduler_getparam(me, PER_PWM);
+	    rgi_stateparam_set(param, &p);
+	  }
       }
-
-    Rgi__Setpwmchan *pwmchan;
-
-    pwmchan = rgi__setpwmchan__unpack(NULL, len, packed);
-    pmsg("pwmchan->channel = %i", pwmchan->channel);
-    pmsg("pwmchan->value = %i", pwmchan->value);
     
     g_object_unref (idata);
     g_object_unref (odata);
