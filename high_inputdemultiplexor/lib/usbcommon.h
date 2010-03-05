@@ -8,5 +8,7 @@
 
 #define PER_PWM                 0x1
 #define PER_ADC                 0x2
+#define PER_GETADC              0x3
+#define PER_TELLADC             0x4
 
 #endif// __USBCOMMON_H__
