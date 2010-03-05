@@ -216,47 +216,176 @@ void   rgi__tellid__free_unpacked
   PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellid__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
-void   rgi__setexclusiveon__init
-                     (Rgi__Setexclusiveon         *message)
+void   rgi__setlock__init
+                     (Rgi__Setlock         *message)
 {
-  static Rgi__Setexclusiveon init_value = RGI__SETEXCLUSIVEON__INIT;
+  static Rgi__Setlock init_value = RGI__SETLOCK__INIT;
   *message = init_value;
 }
-size_t rgi__setexclusiveon__get_packed_size
-                     (const Rgi__Setexclusiveon *message)
+size_t rgi__setlock__get_packed_size
+                     (const Rgi__Setlock *message)
 {
-  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setlock__descriptor);
   return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
 }
-size_t rgi__setexclusiveon__pack
-                     (const Rgi__Setexclusiveon *message,
+size_t rgi__setlock__pack
+                     (const Rgi__Setlock *message,
                       uint8_t       *out)
 {
-  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setlock__descriptor);
   return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
 }
-size_t rgi__setexclusiveon__pack_to_buffer
-                     (const Rgi__Setexclusiveon *message,
+size_t rgi__setlock__pack_to_buffer
+                     (const Rgi__Setlock *message,
                       ProtobufCBuffer *buffer)
 {
-  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setlock__descriptor);
   return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
 }
-Rgi__Setexclusiveon *
-       rgi__setexclusiveon__unpack
+Rgi__Setlock *
+       rgi__setlock__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data)
 {
-  return (Rgi__Setexclusiveon *)
-     protobuf_c_message_unpack (&rgi__setexclusiveon__descriptor,
+  return (Rgi__Setlock *)
+     protobuf_c_message_unpack (&rgi__setlock__descriptor,
                                 allocator, len, data);
 }
-void   rgi__setexclusiveon__free_unpacked
-                     (Rgi__Setexclusiveon *message,
+void   rgi__setlock__free_unpacked
+                     (Rgi__Setlock *message,
                       ProtobufCAllocator *allocator)
 {
-  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setlock__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__setunlock__init
+                     (Rgi__Setunlock         *message)
+{
+  static Rgi__Setunlock init_value = RGI__SETUNLOCK__INIT;
+  *message = init_value;
+}
+size_t rgi__setunlock__get_packed_size
+                     (const Rgi__Setunlock *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setunlock__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__setunlock__pack
+                     (const Rgi__Setunlock *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setunlock__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__setunlock__pack_to_buffer
+                     (const Rgi__Setunlock *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setunlock__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Setunlock *
+       rgi__setunlock__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Setunlock *)
+     protobuf_c_message_unpack (&rgi__setunlock__descriptor,
+                                allocator, len, data);
+}
+void   rgi__setunlock__free_unpacked
+                     (Rgi__Setunlock *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setunlock__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__telllocked__init
+                     (Rgi__Telllocked         *message)
+{
+  static Rgi__Telllocked init_value = RGI__TELLLOCKED__INIT;
+  *message = init_value;
+}
+size_t rgi__telllocked__get_packed_size
+                     (const Rgi__Telllocked *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telllocked__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__telllocked__pack
+                     (const Rgi__Telllocked *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telllocked__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__telllocked__pack_to_buffer
+                     (const Rgi__Telllocked *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telllocked__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Telllocked *
+       rgi__telllocked__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Telllocked *)
+     protobuf_c_message_unpack (&rgi__telllocked__descriptor,
+                                allocator, len, data);
+}
+void   rgi__telllocked__free_unpacked
+                     (Rgi__Telllocked *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telllocked__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__tellready__init
+                     (Rgi__Tellready         *message)
+{
+  static Rgi__Tellready init_value = RGI__TELLREADY__INIT;
+  *message = init_value;
+}
+size_t rgi__tellready__get_packed_size
+                     (const Rgi__Tellready *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellready__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__tellready__pack
+                     (const Rgi__Tellready *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellready__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__tellready__pack_to_buffer
+                     (const Rgi__Tellready *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellready__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Tellready *
+       rgi__tellready__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Tellready *)
+     protobuf_c_message_unpack (&rgi__tellready__descriptor,
+                                allocator, len, data);
+}
+void   rgi__tellready__free_unpacked
+                     (Rgi__Tellready *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellready__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
 void   rgi__getadcchannel__init
@@ -549,40 +678,148 @@ const ProtobufCMessageDescriptor rgi__tellid__descriptor =
   1,  rgi__tellid__number_ranges,
   NULL,NULL,NULL,NULL    /* reserved[1234] */
 };
-static const ProtobufCFieldDescriptor rgi__setexclusiveon__field_descriptors[1] =
+static const ProtobufCFieldDescriptor rgi__setlock__field_descriptors[1] =
 {
   {
-    "exclusiveon",
+    "lock",
     1,
     PROTOBUF_C_LABEL_REQUIRED,
     PROTOBUF_C_TYPE_UINT32,
     0,   /* quantifier_offset */
-    PROTOBUF_C_OFFSETOF(Rgi__Setexclusiveon, exclusiveon),
+    PROTOBUF_C_OFFSETOF(Rgi__Setlock, lock),
     NULL,
     NULL,
     NULL,NULL    /* reserved1, reserved2 */
   },
 };
-static const unsigned rgi__setexclusiveon__field_indices_by_name[] = {
-  0,   /* field[0] = exclusiveon */
+static const unsigned rgi__setlock__field_indices_by_name[] = {
+  0,   /* field[0] = lock */
 };
-static const ProtobufCIntRange rgi__setexclusiveon__number_ranges[1 + 1] =
+static const ProtobufCIntRange rgi__setlock__number_ranges[1 + 1] =
 {
   { 1, 0 },
   { 0, 1 }
 };
-const ProtobufCMessageDescriptor rgi__setexclusiveon__descriptor =
+const ProtobufCMessageDescriptor rgi__setlock__descriptor =
 {
   PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
-  "rgi.setexclusiveon",
-  "Setexclusiveon",
-  "Rgi__Setexclusiveon",
+  "rgi.setlock",
+  "Setlock",
+  "Rgi__Setlock",
   "rgi",
-  sizeof(Rgi__Setexclusiveon),
+  sizeof(Rgi__Setlock),
   1,
-  rgi__setexclusiveon__field_descriptors,
-  rgi__setexclusiveon__field_indices_by_name,
-  1,  rgi__setexclusiveon__number_ranges,
+  rgi__setlock__field_descriptors,
+  rgi__setlock__field_indices_by_name,
+  1,  rgi__setlock__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__setunlock__field_descriptors[1] =
+{
+  {
+    "lock",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Setunlock, lock),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__setunlock__field_indices_by_name[] = {
+  0,   /* field[0] = lock */
+};
+static const ProtobufCIntRange rgi__setunlock__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__setunlock__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.setunlock",
+  "Setunlock",
+  "Rgi__Setunlock",
+  "rgi",
+  sizeof(Rgi__Setunlock),
+  1,
+  rgi__setunlock__field_descriptors,
+  rgi__setunlock__field_indices_by_name,
+  1,  rgi__setunlock__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__telllocked__field_descriptors[1] =
+{
+  {
+    "lock",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Telllocked, lock),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__telllocked__field_indices_by_name[] = {
+  0,   /* field[0] = lock */
+};
+static const ProtobufCIntRange rgi__telllocked__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__telllocked__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.telllocked",
+  "Telllocked",
+  "Rgi__Telllocked",
+  "rgi",
+  sizeof(Rgi__Telllocked),
+  1,
+  rgi__telllocked__field_descriptors,
+  rgi__telllocked__field_indices_by_name,
+  1,  rgi__telllocked__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__tellready__field_descriptors[1] =
+{
+  {
+    "lock",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellready, lock),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__tellready__field_indices_by_name[] = {
+  0,   /* field[0] = lock */
+};
+static const ProtobufCIntRange rgi__tellready__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__tellready__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.tellready",
+  "Tellready",
+  "Rgi__Tellready",
+  "rgi",
+  sizeof(Rgi__Tellready),
+  1,
+  rgi__tellready__field_descriptors,
+  rgi__tellready__field_indices_by_name,
+  1,  rgi__tellready__number_ranges,
   NULL,NULL,NULL,NULL    /* reserved[1234] */
 };
 static const ProtobufCFieldDescriptor rgi__getadcchannel__field_descriptors[1] =

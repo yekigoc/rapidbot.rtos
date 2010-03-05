@@ -13,7 +13,10 @@ typedef struct _Rgi__Setpwmchans Rgi__Setpwmchans;
 typedef struct _Rgi__Gpiolineon Rgi__Gpiolineon;
 typedef struct _Rgi__Gpiolineoff Rgi__Gpiolineoff;
 typedef struct _Rgi__Tellid Rgi__Tellid;
-typedef struct _Rgi__Setexclusiveon Rgi__Setexclusiveon;
+typedef struct _Rgi__Setlock Rgi__Setlock;
+typedef struct _Rgi__Setunlock Rgi__Setunlock;
+typedef struct _Rgi__Telllocked Rgi__Telllocked;
+typedef struct _Rgi__Tellready Rgi__Tellready;
 typedef struct _Rgi__Getadcchannel Rgi__Getadcchannel;
 typedef struct _Rgi__Telladcchannel Rgi__Telladcchannel;
 
@@ -75,13 +78,43 @@ struct  _Rgi__Tellid
     , 0 }
 
 
-struct  _Rgi__Setexclusiveon
+struct  _Rgi__Setlock
 {
   ProtobufCMessage base;
-  uint32_t exclusiveon;
+  uint32_t lock;
 };
-#define RGI__SETEXCLUSIVEON__INIT \
- { PROTOBUF_C_MESSAGE_INIT (&rgi__setexclusiveon__descriptor) \
+#define RGI__SETLOCK__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__setlock__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Setunlock
+{
+  ProtobufCMessage base;
+  uint32_t lock;
+};
+#define RGI__SETUNLOCK__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__setunlock__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Telllocked
+{
+  ProtobufCMessage base;
+  uint32_t lock;
+};
+#define RGI__TELLLOCKED__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__telllocked__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Tellready
+{
+  ProtobufCMessage base;
+  uint32_t lock;
+};
+#define RGI__TELLREADY__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__tellready__descriptor) \
     , 0 }
 
 
@@ -201,24 +234,81 @@ Rgi__Tellid *
 void   rgi__tellid__free_unpacked
                      (Rgi__Tellid *message,
                       ProtobufCAllocator *allocator);
-/* Rgi__Setexclusiveon methods */
-void   rgi__setexclusiveon__init
-                     (Rgi__Setexclusiveon         *message);
-size_t rgi__setexclusiveon__get_packed_size
-                     (const Rgi__Setexclusiveon   *message);
-size_t rgi__setexclusiveon__pack
-                     (const Rgi__Setexclusiveon   *message,
+/* Rgi__Setlock methods */
+void   rgi__setlock__init
+                     (Rgi__Setlock         *message);
+size_t rgi__setlock__get_packed_size
+                     (const Rgi__Setlock   *message);
+size_t rgi__setlock__pack
+                     (const Rgi__Setlock   *message,
                       uint8_t             *out);
-size_t rgi__setexclusiveon__pack_to_buffer
-                     (const Rgi__Setexclusiveon   *message,
+size_t rgi__setlock__pack_to_buffer
+                     (const Rgi__Setlock   *message,
                       ProtobufCBuffer     *buffer);
-Rgi__Setexclusiveon *
-       rgi__setexclusiveon__unpack
+Rgi__Setlock *
+       rgi__setlock__unpack
                      (ProtobufCAllocator  *allocator,
                       size_t               len,
                       const uint8_t       *data);
-void   rgi__setexclusiveon__free_unpacked
-                     (Rgi__Setexclusiveon *message,
+void   rgi__setlock__free_unpacked
+                     (Rgi__Setlock *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Setunlock methods */
+void   rgi__setunlock__init
+                     (Rgi__Setunlock         *message);
+size_t rgi__setunlock__get_packed_size
+                     (const Rgi__Setunlock   *message);
+size_t rgi__setunlock__pack
+                     (const Rgi__Setunlock   *message,
+                      uint8_t             *out);
+size_t rgi__setunlock__pack_to_buffer
+                     (const Rgi__Setunlock   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Setunlock *
+       rgi__setunlock__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__setunlock__free_unpacked
+                     (Rgi__Setunlock *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Telllocked methods */
+void   rgi__telllocked__init
+                     (Rgi__Telllocked         *message);
+size_t rgi__telllocked__get_packed_size
+                     (const Rgi__Telllocked   *message);
+size_t rgi__telllocked__pack
+                     (const Rgi__Telllocked   *message,
+                      uint8_t             *out);
+size_t rgi__telllocked__pack_to_buffer
+                     (const Rgi__Telllocked   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Telllocked *
+       rgi__telllocked__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__telllocked__free_unpacked
+                     (Rgi__Telllocked *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Tellready methods */
+void   rgi__tellready__init
+                     (Rgi__Tellready         *message);
+size_t rgi__tellready__get_packed_size
+                     (const Rgi__Tellready   *message);
+size_t rgi__tellready__pack
+                     (const Rgi__Tellready   *message,
+                      uint8_t             *out);
+size_t rgi__tellready__pack_to_buffer
+                     (const Rgi__Tellready   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Tellready *
+       rgi__tellready__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__tellready__free_unpacked
+                     (Rgi__Tellready *message,
                       ProtobufCAllocator *allocator);
 /* Rgi__Getadcchannel methods */
 void   rgi__getadcchannel__init
@@ -275,8 +365,17 @@ typedef void (*Rgi__Gpiolineoff_Closure)
 typedef void (*Rgi__Tellid_Closure)
                  (const Rgi__Tellid *message,
                   void *closure_data);
-typedef void (*Rgi__Setexclusiveon_Closure)
-                 (const Rgi__Setexclusiveon *message,
+typedef void (*Rgi__Setlock_Closure)
+                 (const Rgi__Setlock *message,
+                  void *closure_data);
+typedef void (*Rgi__Setunlock_Closure)
+                 (const Rgi__Setunlock *message,
+                  void *closure_data);
+typedef void (*Rgi__Telllocked_Closure)
+                 (const Rgi__Telllocked *message,
+                  void *closure_data);
+typedef void (*Rgi__Tellready_Closure)
+                 (const Rgi__Tellready *message,
                   void *closure_data);
 typedef void (*Rgi__Getadcchannel_Closure)
                  (const Rgi__Getadcchannel *message,
@@ -295,7 +394,10 @@ extern const ProtobufCMessageDescriptor rgi__setpwmchans__descriptor;
 extern const ProtobufCMessageDescriptor rgi__gpiolineon__descriptor;
 extern const ProtobufCMessageDescriptor rgi__gpiolineoff__descriptor;
 extern const ProtobufCMessageDescriptor rgi__tellid__descriptor;
-extern const ProtobufCMessageDescriptor rgi__setexclusiveon__descriptor;
+extern const ProtobufCMessageDescriptor rgi__setlock__descriptor;
+extern const ProtobufCMessageDescriptor rgi__setunlock__descriptor;
+extern const ProtobufCMessageDescriptor rgi__telllocked__descriptor;
+extern const ProtobufCMessageDescriptor rgi__tellready__descriptor;
 extern const ProtobufCMessageDescriptor rgi__getadcchannel__descriptor;
 extern const ProtobufCMessageDescriptor rgi__telladcchannel__descriptor;
 
