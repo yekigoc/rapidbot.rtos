@@ -12,6 +12,10 @@ typedef struct _Rgi__Setpwmchan Rgi__Setpwmchan;
 typedef struct _Rgi__Setpwmchans Rgi__Setpwmchans;
 typedef struct _Rgi__Gpiolineon Rgi__Gpiolineon;
 typedef struct _Rgi__Gpiolineoff Rgi__Gpiolineoff;
+typedef struct _Rgi__Tellid Rgi__Tellid;
+typedef struct _Rgi__Setexclusiveon Rgi__Setexclusiveon;
+typedef struct _Rgi__Getadcchannel Rgi__Getadcchannel;
+typedef struct _Rgi__Telladcchannel Rgi__Telladcchannel;
 
 
 /* --- enums --- */
@@ -59,6 +63,47 @@ struct  _Rgi__Gpiolineoff
 #define RGI__GPIOLINEOFF__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&rgi__gpiolineoff__descriptor) \
     , 0 }
+
+
+struct  _Rgi__Tellid
+{
+  ProtobufCMessage base;
+  uint32_t id;
+};
+#define RGI__TELLID__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__tellid__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Setexclusiveon
+{
+  ProtobufCMessage base;
+  uint32_t exclusiveon;
+};
+#define RGI__SETEXCLUSIVEON__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__setexclusiveon__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Getadcchannel
+{
+  ProtobufCMessage base;
+  uint32_t channel;
+};
+#define RGI__GETADCCHANNEL__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__getadcchannel__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Telladcchannel
+{
+  ProtobufCMessage base;
+  uint32_t channel;
+  uint32_t value;
+};
+#define RGI__TELLADCCHANNEL__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__telladcchannel__descriptor) \
+    , 0, 0 }
 
 
 /* Rgi__Setpwmchan methods */
@@ -137,6 +182,82 @@ Rgi__Gpiolineoff *
 void   rgi__gpiolineoff__free_unpacked
                      (Rgi__Gpiolineoff *message,
                       ProtobufCAllocator *allocator);
+/* Rgi__Tellid methods */
+void   rgi__tellid__init
+                     (Rgi__Tellid         *message);
+size_t rgi__tellid__get_packed_size
+                     (const Rgi__Tellid   *message);
+size_t rgi__tellid__pack
+                     (const Rgi__Tellid   *message,
+                      uint8_t             *out);
+size_t rgi__tellid__pack_to_buffer
+                     (const Rgi__Tellid   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Tellid *
+       rgi__tellid__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__tellid__free_unpacked
+                     (Rgi__Tellid *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Setexclusiveon methods */
+void   rgi__setexclusiveon__init
+                     (Rgi__Setexclusiveon         *message);
+size_t rgi__setexclusiveon__get_packed_size
+                     (const Rgi__Setexclusiveon   *message);
+size_t rgi__setexclusiveon__pack
+                     (const Rgi__Setexclusiveon   *message,
+                      uint8_t             *out);
+size_t rgi__setexclusiveon__pack_to_buffer
+                     (const Rgi__Setexclusiveon   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Setexclusiveon *
+       rgi__setexclusiveon__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__setexclusiveon__free_unpacked
+                     (Rgi__Setexclusiveon *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Getadcchannel methods */
+void   rgi__getadcchannel__init
+                     (Rgi__Getadcchannel         *message);
+size_t rgi__getadcchannel__get_packed_size
+                     (const Rgi__Getadcchannel   *message);
+size_t rgi__getadcchannel__pack
+                     (const Rgi__Getadcchannel   *message,
+                      uint8_t             *out);
+size_t rgi__getadcchannel__pack_to_buffer
+                     (const Rgi__Getadcchannel   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Getadcchannel *
+       rgi__getadcchannel__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__getadcchannel__free_unpacked
+                     (Rgi__Getadcchannel *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Telladcchannel methods */
+void   rgi__telladcchannel__init
+                     (Rgi__Telladcchannel         *message);
+size_t rgi__telladcchannel__get_packed_size
+                     (const Rgi__Telladcchannel   *message);
+size_t rgi__telladcchannel__pack
+                     (const Rgi__Telladcchannel   *message,
+                      uint8_t             *out);
+size_t rgi__telladcchannel__pack_to_buffer
+                     (const Rgi__Telladcchannel   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Telladcchannel *
+       rgi__telladcchannel__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__telladcchannel__free_unpacked
+                     (Rgi__Telladcchannel *message,
+                      ProtobufCAllocator *allocator);
 /* --- per-message closures --- */
 
 typedef void (*Rgi__Setpwmchan_Closure)
@@ -151,6 +272,18 @@ typedef void (*Rgi__Gpiolineon_Closure)
 typedef void (*Rgi__Gpiolineoff_Closure)
                  (const Rgi__Gpiolineoff *message,
                   void *closure_data);
+typedef void (*Rgi__Tellid_Closure)
+                 (const Rgi__Tellid *message,
+                  void *closure_data);
+typedef void (*Rgi__Setexclusiveon_Closure)
+                 (const Rgi__Setexclusiveon *message,
+                  void *closure_data);
+typedef void (*Rgi__Getadcchannel_Closure)
+                 (const Rgi__Getadcchannel *message,
+                  void *closure_data);
+typedef void (*Rgi__Telladcchannel_Closure)
+                 (const Rgi__Telladcchannel *message,
+                  void *closure_data);
 
 /* --- services --- */
 
@@ -161,6 +294,10 @@ extern const ProtobufCMessageDescriptor rgi__setpwmchan__descriptor;
 extern const ProtobufCMessageDescriptor rgi__setpwmchans__descriptor;
 extern const ProtobufCMessageDescriptor rgi__gpiolineon__descriptor;
 extern const ProtobufCMessageDescriptor rgi__gpiolineoff__descriptor;
+extern const ProtobufCMessageDescriptor rgi__tellid__descriptor;
+extern const ProtobufCMessageDescriptor rgi__setexclusiveon__descriptor;
+extern const ProtobufCMessageDescriptor rgi__getadcchannel__descriptor;
+extern const ProtobufCMessageDescriptor rgi__telladcchannel__descriptor;
 
 PROTOBUF_C_END_DECLS
 

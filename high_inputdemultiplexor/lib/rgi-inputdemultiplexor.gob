@@ -18,10 +18,23 @@ requires 2.0.0
 %}
 
 %headertop{
-  #include "rgi-usbscheduler.h"
+#include <gio/gio.h>
+#include "rgi-usbscheduler.h"
 %}
 
 %{
+  typedef struct _idclient
+  {
+    unsigned int id;
+    int exclusive;
+  } idclient; //input demultiplexor client
+  typedef int (*h)(RgiInputDemultiplexor *, void*, unsigned int, GDataInputStream *, GDataOutputStream*);
+  typedef struct _idphandler
+  {
+    unsigned int id;
+    h callback;
+  } idphandler;
+
   static gboolean
     handler (GThreadedSocketService *service,
 	     GSocketConnection      *connection,
@@ -53,30 +66,46 @@ requires 2.0.0
     pmsg ("handler called \n");
     
     g_data_input_stream_set_byte_order (idata, G_DATA_STREAM_BYTE_ORDER_HOST_ENDIAN);
-    while (1)
+    GError *tmp_error;
+    int noway = 0;
+    while (noway == 0)
       {
 	unsigned short head = g_data_input_stream_read_int16 (idata, NULL, NULL);
+	if (tmp_error!= NULL)
+	  {
+	    pmsg("%s\n", tmp_error->message);
+	    noway = 1;
+	    break;
+	  }
 	pmsg ("packettype = %i\n", head);
-	unsigned short len = g_data_input_stream_read_int16 (idata, NULL, NULL);
+	unsigned short len = g_data_input_stream_read_int16 (idata, NULL, &tmp_error);
+	if (tmp_error!= NULL)
+	  {
+	    pmsg("%s\n", tmp_error->message);
+	    noway = 1;
+	    break;
+	  }
 	pmsg ("packetlen = %i\n", len);
 	
 	unsigned char * packed = malloc(len);
 	for (int i = 0; i<len; i++)
 	  {
 	    packed[i] = g_data_input_stream_read_byte (idata, NULL, NULL);
+	    if (tmp_error!= NULL)
+	      {
+		pmsg("%s\n", tmp_error->message);
+		noway = 1;
+		break;
+	      }
 	  }
-	
-	Rgi__Setpwmchan *pwmchan;
-	
-	pwmchan = rgi__setpwmchan__unpack(NULL, len, packed);
-	pmsg("pwmchan->channel = %i", pwmchan->channel);
-	if (pwmchan->channel<2)
+	if (noway==0)
 	  {
-	    pmsg("pwmchan->value = %i", pwmchan->value);
-	    pwmdata p;
-	    p.valuesw[pwmchan->channel] = pwmchan->value;
-	    RgiStateParam * param = rgi_usbscheduler_getparam(me, PER_PWM);
-	    rgi_stateparam_set(param, &p);
+	    idphandler * idph = (idphandler*)g_hash_table_lookup(self->_priv->packethandlers, (void*)&head);
+	    
+	    if (idph != NULL)
+	      {
+		idph->callback(self, packed, len, idata, odata);
+	      }
 	  }
       }
     
@@ -90,6 +119,59 @@ class Rgi:InputDemultiplexor from G:Object
   public GAsyncQueue* fromusb;
   public GAsyncQueue* tousb;
   public RgiUsbScheduler * scheduler;
+  private GHashTable * clients;
+  private GHashTable * packethandlers;
+
+  public 
+    int 
+    setpwm(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    Rgi__Setpwmchan *pwmchan;
+	
+    pwmchan = rgi__setpwmchan__unpack(NULL, len, data);
+
+    if (pwmchan->channel > 2)
+      return -1;
+    pmsg("pwmchan->value = %i", pwmchan->value);
+    pmsg("pwmchan->channel = %i", pwmchan->channel);
+    pwmdata p;
+    p.valuesw[pwmchan->channel] = pwmchan->value;
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_PWM);
+    rgi_stateparam_set(param, &p);
+  }
+
+  public 
+    int 
+    getadc(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    Rgi__Getadcchannel *adcchan;
+	
+    adcchan = rgi__getadcchannel__unpack(NULL, len, data);
+
+    if (adcchan->channel > 8)
+      return -1;
+    pmsg("adcchan->channel = %i", adcchan->channel);
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_ADC);
+    adcdata * p = rgi_stateparam_get(param);
+
+    Rgi__Telladcchannel telladcchan = RGI__TELLADCCHANNEL__INIT;
+    telladcchan.channel = adcchan->channel;
+    telladcchan.value = p->adcval[adcchan->channel];
+    int sz = rgi__telladcchannel__get_packed_size(&telladcchan);
+    char * buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__telladcchannel__pack(&telladcchan, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLADC, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    
+    free (buffer);
+  }
+
+  init(self)
+  {
+    self->_priv->packethandlers = g_hash_table_new(g_int_hash, g_int_equal);
+  }
 
   public
   void
@@ -99,22 +181,18 @@ class Rgi:InputDemultiplexor from G:Object
     GSocketService *service;
     GOptionContext *context;
     GError *error = NULL;
+
+    idphandler * pwm = malloc(sizeof(idphandler));
+    pwm->id = PER_PWM;
+    pwm->callback = rgi_inputdemultiplexor_setpwm;
+    g_hash_table_insert(self->_priv->packethandlers, &(pwm->id),pwm);
+
+    idphandler * adc = malloc(sizeof(idphandler));
+    adc->id = PER_GETADC;
+    adc->callback = rgi_inputdemultiplexor_getadc;
+    g_hash_table_insert(self->_priv->packethandlers, &(adc->id),adc);
     
     context = g_option_context_new ("RGI server");
-    /*    g_option_context_add_main_entries (context, cmd_entries, NULL);
-    if (!g_option_context_parse (context, &argc, &argv, &error))
-      {
-	g_printerr ("%s: %s\n", argv[0], error->message);
-	return 1;
-	}*/
-    
-    /*  if (argc != 2)
-	{
-	g_printerr ("Root directory not specified\n");
-	return 1;
-	}*/
-    
-    //  root = g_strdup (argv[1]);
 
     pmsg("creating service\n");    
     service = g_threaded_socket_service_new (10);
@@ -123,15 +201,25 @@ class Rgi:InputDemultiplexor from G:Object
 					  NULL,
 					  &error))
       {
-	//	g_printerr ("%s: %s\n", argv[0], error->message);
+	pmsg ("failed to add inet port\n");
 	return;
       }
     
-    pmsg ("RGI server listening on port %d\n", 30000);
+    pmsg ("RGI Input Demultiplexor is listening on port %d\n", 30000);
     
     g_signal_connect (service, "run", G_CALLBACK (handler), G_OBJECT(self));
     
     g_main_loop_run (g_main_loop_new (NULL, FALSE));
+
+    GHashTableIter iter;
+    int * key;
+    idphandler * value;
+    g_hash_table_iter_init(&iter, self->_priv->packethandlers);
+    while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
+      {
+	free(value);
+      }
+    g_hash_table_destroy(self->_priv->packethandlers);
     g_assert_not_reached ();
   }
 

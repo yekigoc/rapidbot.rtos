@@ -65,7 +65,7 @@ class Rgi:AdcParam from Rgi:StateParam
     get(Rgi:StateParam * self (check null type))
     {
       RgiAdcParam * me = RGI_ADCPARAM(self);
-      return (&(me->_priv->adc->adcval));
+      return ((me->_priv->adc));
     }
 
   override (Rgi:StateParam)

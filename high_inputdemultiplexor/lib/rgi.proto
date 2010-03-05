@@ -17,3 +17,20 @@ message gpiolineon {
 message gpiolineoff {
 	required uint32 line = 1;
 }
+
+message tellid {
+	required uint32 id = 1;
+}
+
+message setexclusiveon {
+	required uint32 exclusiveon = 1;
+}
+
+message getadcchannel {
+	required uint32 channel = 1;
+}
+
+message telladcchannel {
+	required uint32 channel = 1;
+	required uint32 value = 2;
+}

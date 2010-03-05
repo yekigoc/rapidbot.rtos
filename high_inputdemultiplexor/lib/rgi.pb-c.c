@@ -173,6 +173,178 @@ void   rgi__gpiolineoff__free_unpacked
   PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__gpiolineoff__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   rgi__tellid__init
+                     (Rgi__Tellid         *message)
+{
+  static Rgi__Tellid init_value = RGI__TELLID__INIT;
+  *message = init_value;
+}
+size_t rgi__tellid__get_packed_size
+                     (const Rgi__Tellid *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellid__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__tellid__pack
+                     (const Rgi__Tellid *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellid__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__tellid__pack_to_buffer
+                     (const Rgi__Tellid *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellid__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Tellid *
+       rgi__tellid__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Tellid *)
+     protobuf_c_message_unpack (&rgi__tellid__descriptor,
+                                allocator, len, data);
+}
+void   rgi__tellid__free_unpacked
+                     (Rgi__Tellid *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellid__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__setexclusiveon__init
+                     (Rgi__Setexclusiveon         *message)
+{
+  static Rgi__Setexclusiveon init_value = RGI__SETEXCLUSIVEON__INIT;
+  *message = init_value;
+}
+size_t rgi__setexclusiveon__get_packed_size
+                     (const Rgi__Setexclusiveon *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__setexclusiveon__pack
+                     (const Rgi__Setexclusiveon *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__setexclusiveon__pack_to_buffer
+                     (const Rgi__Setexclusiveon *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Setexclusiveon *
+       rgi__setexclusiveon__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Setexclusiveon *)
+     protobuf_c_message_unpack (&rgi__setexclusiveon__descriptor,
+                                allocator, len, data);
+}
+void   rgi__setexclusiveon__free_unpacked
+                     (Rgi__Setexclusiveon *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__setexclusiveon__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__getadcchannel__init
+                     (Rgi__Getadcchannel         *message)
+{
+  static Rgi__Getadcchannel init_value = RGI__GETADCCHANNEL__INIT;
+  *message = init_value;
+}
+size_t rgi__getadcchannel__get_packed_size
+                     (const Rgi__Getadcchannel *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__getadcchannel__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__getadcchannel__pack
+                     (const Rgi__Getadcchannel *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__getadcchannel__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__getadcchannel__pack_to_buffer
+                     (const Rgi__Getadcchannel *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__getadcchannel__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Getadcchannel *
+       rgi__getadcchannel__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Getadcchannel *)
+     protobuf_c_message_unpack (&rgi__getadcchannel__descriptor,
+                                allocator, len, data);
+}
+void   rgi__getadcchannel__free_unpacked
+                     (Rgi__Getadcchannel *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__getadcchannel__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__telladcchannel__init
+                     (Rgi__Telladcchannel         *message)
+{
+  static Rgi__Telladcchannel init_value = RGI__TELLADCCHANNEL__INIT;
+  *message = init_value;
+}
+size_t rgi__telladcchannel__get_packed_size
+                     (const Rgi__Telladcchannel *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telladcchannel__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__telladcchannel__pack
+                     (const Rgi__Telladcchannel *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telladcchannel__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__telladcchannel__pack_to_buffer
+                     (const Rgi__Telladcchannel *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telladcchannel__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Telladcchannel *
+       rgi__telladcchannel__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Telladcchannel *)
+     protobuf_c_message_unpack (&rgi__telladcchannel__descriptor,
+                                allocator, len, data);
+}
+void   rgi__telladcchannel__free_unpacked
+                     (Rgi__Telladcchannel *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telladcchannel__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 static const ProtobufCFieldDescriptor rgi__setpwmchan__field_descriptors[2] =
 {
   {
@@ -339,5 +511,161 @@ const ProtobufCMessageDescriptor rgi__gpiolineoff__descriptor =
   rgi__gpiolineoff__field_descriptors,
   rgi__gpiolineoff__field_indices_by_name,
   1,  rgi__gpiolineoff__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__tellid__field_descriptors[1] =
+{
+  {
+    "id",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellid, id),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__tellid__field_indices_by_name[] = {
+  0,   /* field[0] = id */
+};
+static const ProtobufCIntRange rgi__tellid__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__tellid__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.tellid",
+  "Tellid",
+  "Rgi__Tellid",
+  "rgi",
+  sizeof(Rgi__Tellid),
+  1,
+  rgi__tellid__field_descriptors,
+  rgi__tellid__field_indices_by_name,
+  1,  rgi__tellid__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__setexclusiveon__field_descriptors[1] =
+{
+  {
+    "exclusiveon",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Setexclusiveon, exclusiveon),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__setexclusiveon__field_indices_by_name[] = {
+  0,   /* field[0] = exclusiveon */
+};
+static const ProtobufCIntRange rgi__setexclusiveon__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__setexclusiveon__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.setexclusiveon",
+  "Setexclusiveon",
+  "Rgi__Setexclusiveon",
+  "rgi",
+  sizeof(Rgi__Setexclusiveon),
+  1,
+  rgi__setexclusiveon__field_descriptors,
+  rgi__setexclusiveon__field_indices_by_name,
+  1,  rgi__setexclusiveon__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__getadcchannel__field_descriptors[1] =
+{
+  {
+    "channel",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Getadcchannel, channel),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__getadcchannel__field_indices_by_name[] = {
+  0,   /* field[0] = channel */
+};
+static const ProtobufCIntRange rgi__getadcchannel__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__getadcchannel__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.getadcchannel",
+  "Getadcchannel",
+  "Rgi__Getadcchannel",
+  "rgi",
+  sizeof(Rgi__Getadcchannel),
+  1,
+  rgi__getadcchannel__field_descriptors,
+  rgi__getadcchannel__field_indices_by_name,
+  1,  rgi__getadcchannel__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__telladcchannel__field_descriptors[2] =
+{
+  {
+    "channel",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Telladcchannel, channel),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "value",
+    2,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Telladcchannel, value),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__telladcchannel__field_indices_by_name[] = {
+  0,   /* field[0] = channel */
+  1,   /* field[1] = value */
+};
+static const ProtobufCIntRange rgi__telladcchannel__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 2 }
+};
+const ProtobufCMessageDescriptor rgi__telladcchannel__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.telladcchannel",
+  "Telladcchannel",
+  "Rgi__Telladcchannel",
+  "rgi",
+  sizeof(Rgi__Telladcchannel),
+  2,
+  rgi__telladcchannel__field_descriptors,
+  rgi__telladcchannel__field_indices_by_name,
+  1,  rgi__telladcchannel__number_ranges,
   NULL,NULL,NULL,NULL    /* reserved[1234] */
 };
