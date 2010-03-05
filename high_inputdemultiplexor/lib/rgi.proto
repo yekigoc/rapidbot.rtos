@@ -22,8 +22,20 @@ message tellid {
 	required uint32 id = 1;
 }
 
-message setexclusiveon {
-	required uint32 exclusiveon = 1;
+message setlock {
+	required uint32 lock = 1;
+}
+
+message setunlock {
+	required uint32 lock = 1;
+}
+
+message telllocked {
+	required uint32 lock = 1;
+}
+
+message tellready {
+	required uint32 lock = 1;
 }
 
 message getadcchannel {
