@@ -76,7 +76,8 @@ class Rgi:PwmParam from Rgi:StateParam
     void *
     get(Rgi:StateParam * self (check null type))
   {
-    return 0;
+    RgiPwmParam * me = RGI_PWMPARAM(self);
+    return (void *)(me->_priv->pwm);
   }
 
   override (Rgi:StateParam)
@@ -85,16 +86,16 @@ class Rgi:PwmParam from Rgi:StateParam
   {
     RgiPwmParam * me = RGI_PWMPARAM(self);
     pwmdata * p = (pwmdata*)data;
-    if (p->valuesw[0]<293 || p->valuesw[0]>500)
-      {
-	me->_priv->pwm->valuesw[0] = 380;
-      }
+    if (p->valuesw[0]>500)
+      me->_priv->pwm->valuesw[0] = 500;
+    else if (p->valuesw[0]<293)
+      me->_priv->pwm->valuesw[0] = 293;
     else
       me->_priv->pwm->valuesw[0] = p->valuesw[0];
-    if (p->valuesw[1]<365 || p->valuesw[1]>410)
-      {
-	me->_priv->pwm->valuesw[1] = 374;
-      }
+    if (p->valuesw[1]<250)
+      me->_priv->pwm->valuesw[1] = 250;
+    else if (p->valuesw[1]>500)
+      me->_priv->pwm->valuesw[1] = 500;
     else
       me->_priv->pwm->valuesw[1] = p->valuesw[1];
     pmsg ("set valw[0]=%i, valw[1]=%i\n", me->_priv->pwm->valuesw[0], me->_priv->pwm->valuesw[1]);
@@ -112,9 +113,9 @@ class Rgi:PwmParam from Rgi:StateParam
   init (self)
   {
     self->_priv->pwm = (pwmdata*)malloc(sizeof(pwmdata));
-    self->_priv->pwm->valuesw[0] = 275;
+    self->_priv->pwm->valuesw[0] = 396;
     self->_priv->pwm->valuesw[1] = 374;
-    self->_priv->pwm->valuesr[0] = 275;
+    self->_priv->pwm->valuesr[0] = 396;
     self->_priv->pwm->valuesr[1] = 374;
   }
 

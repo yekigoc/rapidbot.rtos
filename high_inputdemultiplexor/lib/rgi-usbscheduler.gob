@@ -93,7 +93,7 @@ class Rgi:UsbScheduler from G:Object
 	    //	    printf ("%s, %i\n", (char*)key, *(int*)value);
 	    rgi_stateparam_push(value);
 	  }
-	usleep(300000);
+	usleep(30000);
       }
     g_hash_table_destroy(self->_priv->params);
     g_async_queue_unref (self->fromusb);
