@@ -130,25 +130,31 @@ requires 2.0.0
 	      {
 		if (head == PER_SETLOCK)
 		  {
+		    pmsg("cl->id (%i) is trying to obtain exclusive mode ... ", cl->id);
 		    r = rgi_inputdemultiplexor_lockusb(self, cl);
 		    if (r==0)
 		      {
+			pmsg (" success\n");
 			rgi_inputdemultiplexor_tellready(self, idata, odata);
 		      }
 		    else
 		      {
+			pmsg (" failed\n");
 			rgi_inputdemultiplexor_telllocked(self, idata, odata);
 		      }
 		  }
-		if (head == PER_SETUNLOCK)
+		else if (head == PER_SETUNLOCK)
 		  {
+		    pmsg("cl->id (%i) is trying to unlock hardware ... ", cl->id);
 		    r = rgi_inputdemultiplexor_unlockusb(self, cl);
 		    if (r==0)
 		      {
+			pmsg (" success\n");
 			rgi_inputdemultiplexor_tellready(self, idata, odata);
 		      }
 		    else
 		      {
+			pmsg (" failed\n");
 			rgi_inputdemultiplexor_telllocked(self, idata, odata);
 		      }
 		  }
@@ -156,11 +162,14 @@ requires 2.0.0
 		  {
 		    if (cl->id == self->_priv->ecid)
 		      {
+			pmsg("handling request type %i; hash size = %i\n", head, g_hash_table_size(self->_priv->packethandlers));
 			idph = (idphandler*)g_hash_table_lookup(self->_priv->packethandlers, (void*)&head);
 			if (idph != NULL)
 			  {
 			    idph->callback(self, packed, len, idata, odata);
 			  }
+			else
+			  pwar ("idph is NULL ptr\n");
 		      }
 		  }
 	      }
@@ -190,6 +199,7 @@ requires 2.0.0
     
     g_object_unref (idata);
     g_object_unref (odata);
+    return TRUE;
   }
 %}
 
@@ -247,7 +257,7 @@ class Rgi:InputDemultiplexor from G:Object
   {
     if (self->_priv->ecid != 0)
       {
-	if (self->_priv->ecid > client->id)
+	if (self->_priv->ecid >= client->id)
 	  {
 	    idclient * idc = (idclient*)g_hash_table_lookup(self->_priv->clients, (void*)&(self->_priv->ecid));
 	    if (idc != NULL)
@@ -267,7 +277,7 @@ class Rgi:InputDemultiplexor from G:Object
   {
     if (self->_priv->ecid != 0)
       {
-	if (self->_priv->ecid > client->id)
+	if (self->_priv->ecid >= client->id)
 	  {
 
 	    idclient * idc = (idclient*)g_hash_table_lookup(self->_priv->clients, (void*)&(self->_priv->ecid));
@@ -300,10 +310,12 @@ class Rgi:InputDemultiplexor from G:Object
       return -1;
     pmsg("pwmchan->value = %i", pwmchan->value);
     pmsg("pwmchan->channel = %i", pwmchan->channel);
-    pwmdata p;
-    p.valuesw[pwmchan->channel] = pwmchan->value;
+
     RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_PWM);
-    rgi_stateparam_set(param, &p);
+    pwmdata * pptr = (pwmdata *)rgi_stateparam_get(param);
+    pptr->valuesw[pwmchan->channel] = pwmchan->value;
+
+    rgi_stateparam_set(param, pptr);
   }
 
   public 
@@ -386,6 +398,7 @@ class Rgi:InputDemultiplexor from G:Object
       {
 	free(value);
       }
+    pmsg ("exiting\n");
     g_hash_table_destroy(self->_priv->packethandlers);
     g_hash_table_destroy(self->_priv->clients);
     g_assert_not_reached ();
