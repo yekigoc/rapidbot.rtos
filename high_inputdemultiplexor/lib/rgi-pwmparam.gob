@@ -1,0 +1,133 @@
+/*
+ * This is a usb communication scheduler class
+ */
+requires 2.0.0
+%{
+#include <errno.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+#include "rgi-stateparam.h"
+%}
+
+%header{
+#include "rgi-stateparam.h"
+  typedef struct _pwmdata
+  {
+    unsigned short valuesw[2];
+    unsigned short valuesr[2];
+  } pwmdata;
+  //#include <libusb.h>
+%}
+
+class Rgi:PwmParam from Rgi:StateParam
+{
+  private pwmdata * pwm;
+
+  override (Rgi:StateParam)
+  int
+    pull(Rgi:StateParam * self (check null type))
+    {
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    int
+    push(Rgi:StateParam * self (check null type))
+    {
+      if (rgi_stateparam_get_changed(self))
+	{
+	  RgiPwmParam * me = RGI_PWMPARAM(self);
+          pmsg ("set valw[0]=%i, valw[1]=%i\n", me->_priv->pwm->valuesw[0], me->_priv->pwm->valuesw[1]);
+	  rgi_stateparam_set_changed(self, 0);
+	  int r = libusb_control_transfer(self->devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, (unsigned char*)&me->_priv->pwm->valuesw[0], 2, 0);
+	  if (r < 0) 
+	    {
+	      perr("set hwstat error %d\n", r);
+	      return r;
+	    }
+	  if ((unsigned int) r < 1) 
+	    {
+	      perr("short write (%d)", r);
+	      return -1;
+	    }
+	  r = libusb_control_transfer(self->devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, (unsigned char*)&me->_priv->pwm->valuesw[1], 2, 0);
+	  if (r < 0) 
+	    {
+	      perr("set hwstat error %d\n", r);
+	      return r;
+	    }
+	  if ((unsigned int) r < 1) 
+	    {
+	      perr("short write (%d)", r);
+	      return -1;
+	    }
+
+	}
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    void *
+    get(Rgi:StateParam * self (check null type))
+  {
+    RgiPwmParam * me = RGI_PWMPARAM(self);
+    return (void *)(me->_priv->pwm);
+  }
+
+  override (Rgi:StateParam)
+    int
+    set(Rgi:StateParam * self (check null type), void * data)
+  {
+    RgiPwmParam * me = RGI_PWMPARAM(self);
+    pwmdata * p = (pwmdata*)data;
+    if (p->valuesw[0]>500)
+      me->_priv->pwm->valuesw[0] = 500;
+    else if (p->valuesw[0]<293)
+      me->_priv->pwm->valuesw[0] = 293;
+    else
+      me->_priv->pwm->valuesw[0] = p->valuesw[0];
+    if (p->valuesw[1]<250)
+      me->_priv->pwm->valuesw[1] = 250;
+    else if (p->valuesw[1]>500)
+      me->_priv->pwm->valuesw[1] = 500;
+    else
+      me->_priv->pwm->valuesw[1] = p->valuesw[1];
+    pmsg ("set valw[0]=%i, valw[1]=%i\n", me->_priv->pwm->valuesw[0], me->_priv->pwm->valuesw[1]);
+    rgi_stateparam_set_changed(self, 1);
+  }
+
+  override (Rgi:StateParam)
+    void 
+    terminate(Rgi:StateParam * self (check null type))
+  {
+    RgiPwmParam * me = RGI_PWMPARAM(self);
+    free(me->_priv->pwm);
+  }
+
+  init (self)
+  {
+    self->_priv->pwm = (pwmdata*)malloc(sizeof(pwmdata));
+    self->_priv->pwm->valuesw[0] = 396;
+    self->_priv->pwm->valuesw[1] = 374;
+    self->_priv->pwm->valuesr[0] = 396;
+    self->_priv->pwm->valuesr[1] = 374;
+  }
+
+  public RgiPwmParam *
+    new (void)
+  {
+    RgiPwmParam * me = (RgiPwmParam *)GET_NEW;
+    RgiStateParam * self = RGI_STATEPARAM(me);
+    rgi_stateparam_set_ondemand(self, 1);
+    rgi_stateparam_set_readonly(self, 2);
+    self->id = PER_PWM;
+    return me;
+  }
+  
+}

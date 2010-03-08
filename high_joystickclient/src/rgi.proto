@@ -1,0 +1,48 @@
+package rgi;
+
+message setpwmchan {
+	required uint32 channel = 1;
+	required uint32 value = 2;
+}
+
+message setpwmchans {
+	required uint32 value1 = 1;
+	required uint32 value2 = 2;
+}
+
+message gpiolineon {
+	required uint32 line = 1;
+}
+
+message gpiolineoff {
+	required uint32 line = 1;
+}
+
+message tellid {
+	required uint32 id = 1;
+}
+
+message setlock {
+	required uint32 lock = 1;
+}
+
+message setunlock {
+	required uint32 lock = 1;
+}
+
+message telllocked {
+	required uint32 lock = 1;
+}
+
+message tellready {
+	required uint32 lock = 1;
+}
+
+message getadcchannel {
+	required uint32 channel = 1;
+}
+
+message telladcchannel {
+	required uint32 channel = 1;
+	required uint32 value = 2;
+}

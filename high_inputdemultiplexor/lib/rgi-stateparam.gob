@@ -1,0 +1,111 @@
+/*
+ * This is a usb communication scheduler class
+ */
+requires 2.0.0
+%{
+#include <errno.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+%}
+
+%headertop{
+#include "usbcommon.h"
+  //#include <libusb.h>
+%}
+
+class Rgi:StateParam from G:Object
+{
+  public struct libusb_device_handle *devh;
+  public unsigned int id = 0;
+
+  private unsigned int readonly = 0;
+  property UINT readonly
+    (nick = "readonly",
+     blurb = "readonly",
+     minimum = 0,
+     maximum = 2, //2-rw, 1-wo, 0-ro
+     default_value = 0,
+     export,
+     link);
+  private int changed = 0;
+  property UINT changed
+    (nick = "changed",
+     blurb = "wether parameter is changed",
+     minimum = 0,
+     maximum = 1, //1-yes, 0-no
+     default_value = 0,
+     export,
+     link);
+
+  private unsigned int ondemand = 0;
+  property UINT ondemand
+    (nick = "ondemand",
+     blurb = "wether parameter is set on demand",
+     minimum = 0,
+     maximum = 1, //1-on demand, 0-scheduled
+     default_value = 0,
+     export,
+     link);
+
+  private unsigned int interval = 0;
+  property UINT interval
+    (nick = "call intervale",
+     blurb = "interval between calls in scheduled mode, measured int loop times",
+     minimum = 0,
+     maximum = UINT_MAX,
+     default_value = 0, //means called every time
+     export,
+     link);
+
+  public unsigned int counter = 0;
+  //  public int changed = 0;
+
+  virtual
+  int
+    pull(self)
+  {
+    
+  }
+
+  virtual
+  int
+    push(self)
+  {
+    
+  }
+
+  virtual 
+    int
+    set(self, void * data)
+  {
+    
+  }
+
+  virtual
+    void *
+    get(self)
+  {
+    
+  }
+
+  virtual
+    void
+    terminate(self)
+  {
+    
+  }
+
+
+  public RgiStateParam *
+    new (void)
+  {
+    return (RgiStateParam *)GET_NEW;
+  }
+  
+}

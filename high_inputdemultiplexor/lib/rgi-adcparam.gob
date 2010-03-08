@@ -1,0 +1,102 @@
+/*
+ * This is a usb communication scheduler class
+ */
+requires 2.0.0
+%{
+#include <errno.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+#include "rgi-stateparam.h"
+%}
+
+%header{
+#include "rgi-stateparam.h"
+  typedef struct _adcdata
+  {
+    unsigned int adcval[8];
+  } adcdata;
+  //#include <libusb.h>
+%}
+
+class Rgi:AdcParam from Rgi:StateParam
+{
+  private adcdata * adc;
+  override (Rgi:StateParam)
+    int
+    pull(Rgi:StateParam * self (check null type))
+    {
+      self->counter++;
+      if (self->counter > rgi_stateparam_get_interval(self))
+	{
+	  self->counter = 0;
+	  RgiAdcParam * me = RGI_ADCPARAM(self);
+      
+	  int r = libusb_control_transfer(self->devh, CTRL_IN, USB_RQ_STAT, 0x08, 0, me->_priv->adc->adcval, 4*8, 0);
+	  if (r < 0) 
+	    {
+	      perr("set hwstat error %d\n", r);
+	      return r;
+	    }
+	  if ((unsigned int) r < 1) 
+	    {
+	      perr("short write (%d)", r);
+	      return -1;
+	    }
+	  pmsg("adcv[0]=%i, adcv[1]=%i, adcv[2]=%i, adcv[3]=%i, adcv[4]=%i, adcv[5]=%i, adcv[6]=%i, adcv[7]=%i\n", me->_priv->adc->adcval[0], me->_priv->adc->adcval[1], me->_priv->adc->adcval[2], me->_priv->adc->adcval[3], me->_priv->adc->adcval[4], me->_priv->adc->adcval[5], me->_priv->adc->adcval[6], me->_priv->adc->adcval[7]);
+	}
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    int
+    push(Rgi:StateParam * self (check null type))
+    {
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    void *
+    get(Rgi:StateParam * self (check null type))
+    {
+      RgiAdcParam * me = RGI_ADCPARAM(self);
+      return ((me->_priv->adc));
+    }
+
+  override (Rgi:StateParam)
+    int
+    set(Rgi:StateParam * self (check null type), void * data)
+    {
+      return 0;
+    }
+
+  init(self)
+  {
+    self->_priv->adc = malloc(sizeof(adcdata));
+  }
+
+  override (Rgi:StateParam)
+    void
+    terminate(Rgi:StateParam * self (check null type))
+    {
+      RgiAdcParam * me = RGI_ADCPARAM(self);
+      free(me->_priv->adc);
+    }
+
+  public RgiAdcParam *
+    new (void)
+  {
+    RgiAdcParam * me = (RgiAdcParam *)GET_NEW;
+    RgiStateParam * self = RGI_STATEPARAM(me);
+    rgi_stateparam_set_ondemand(self, 0);
+    rgi_stateparam_set_readonly(self, 1);
+    self->id = PER_ADC;
+    return me;
+  }
+  
+}
