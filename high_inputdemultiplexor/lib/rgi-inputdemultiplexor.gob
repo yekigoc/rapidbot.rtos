@@ -93,7 +93,8 @@ requires 2.0.0
 	      }
 	    prevexclusive = cl->exclusive;
 	  }
-	unsigned short head = g_data_input_stream_read_int16 (idata, NULL, NULL);
+	tmp_error=NULL;
+	unsigned short head = g_data_input_stream_read_int16 (idata, NULL, &tmp_error);
 	if (head == 0 && tmp_error!= NULL)
 	  {
 	    pmsg("%s\n", tmp_error->message);
@@ -102,6 +103,7 @@ requires 2.0.0
 	    break;
 	  }
 	pmsg ("packettype = %i\n", head);
+	tmp_error=NULL;
 	unsigned short len = g_data_input_stream_read_int16 (idata, NULL, &tmp_error);
 	if (len == 0 && tmp_error!= NULL)
 	  {
@@ -112,11 +114,12 @@ requires 2.0.0
 	  }
 	pmsg ("packetlen = %i\n", len);
 	
-	unsigned char *packed = malloc(len);
+	unsigned char *packed = malloc(sizeof(char)*len);
 	for (int i = 0; i<len; i++)
 	  {
-	    packed[i] = g_data_input_stream_read_byte (idata, NULL, NULL);
-	if (packed[i] == 0 && tmp_error!= NULL)
+	    tmp_error=NULL;
+	    packed[i] = g_data_input_stream_read_byte (idata, NULL, &tmp_error);
+	    if (packed[i] == 0 && tmp_error!= NULL)
 	      {
 		pmsg("%s\n", tmp_error->message);
 		g_clear_error(&tmp_error);
@@ -163,13 +166,27 @@ requires 2.0.0
 		    if (cl->id == self->_priv->ecid)
 		      {
 			pmsg("handling request type %i; hash size = %i\n", head, g_hash_table_size(self->_priv->packethandlers));
-			idph = (idphandler*)g_hash_table_lookup(self->_priv->packethandlers, (void*)&head);
-			if (idph != NULL)
+			//			idph = (idphandler*)g_hash_table_lookup(self->_priv->packethandlers, (void*)&head);
+			GHashTableIter iter;
+			int *key;
+			idphandler * value;
+			int called = 0;
+			g_hash_table_iter_init(&iter, self->_priv->packethandlers);
+			while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
 			  {
-			    idph->callback(self, packed, len, idata, odata);
+			    if (*key == head)
+			      {
+				if (value != NULL)
+				  {
+				    value->callback(self, packed, len, idata, odata);
+				    called = 1;
+				  }
+				else
+				  pwar ("idph is NULL ptr\n");
+			      }
 			  }
-			else
-			  pwar ("idph is NULL ptr\n");
+			if (called == 0)
+			  pwar ("key %i not found\n", head);
 		      }
 		  }
 	      }
