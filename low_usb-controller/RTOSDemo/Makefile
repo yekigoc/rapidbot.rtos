@@ -93,6 +93,8 @@ THUMB_SOURCE= \
 		proximity_sensor/proximity_sensor.c \
 		proximity_sensor/proximity_sensor_task.c \
 		compass/compass_task.c \
+		locator/locator_task.c \
+		fft/fix_fft.c \
 		adc/adc.c
 #		tr24a/tr24a.c \
 
