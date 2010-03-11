@@ -15,6 +15,7 @@
 
 #include "proximity_sensor/proximity_sensor_task.h"
 #include "compass/compass_task.h"
+#include "locator/locator_task.h"
 Pin pioleds[]={PA6, PA8, PA10};
 
 /* Priorities for the demo application tasks. */
@@ -47,6 +48,7 @@ int main( void )
 
   vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
   vStartCompassTask( tskIDLE_PRIORITY + 3 );
+  vStartLocatorTask( tskIDLE_PRIORITY + 4 );
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
