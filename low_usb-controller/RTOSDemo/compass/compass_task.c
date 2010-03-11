@@ -200,9 +200,5 @@ void vCompassTask( void *pvParameters )
 	  }*/
 
       /* Delay */
-      trspistat.leds[1] = 1;
-      vTaskDelay( 300 / portTICK_RATE_MS );
-      trspistat.leds[1] = 0;
-      vTaskDelay( 300 / portTICK_RATE_MS );
     }
 }
