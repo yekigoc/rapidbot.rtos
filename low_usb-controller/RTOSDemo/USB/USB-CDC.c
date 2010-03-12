@@ -740,46 +740,31 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
       //LCDPutStr("h", 100, 20, SMALL, BLACK, WHITE);
       switch (pxRequest->usValue)
 	{
-	case 0x1:
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle1, sizeof( trspistat.dutycycle1 ), sizeof( trspistat.dutycycle1 ), pdFALSE );
+	case 0x1: //getpwm
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.pwmp, sizeof( trspistat.pwmp ), sizeof( trspistat.pwmp ), pdFALSE );
 	  break;
 	case 0x2:
-	  trspistat.changecycle1 = 1;
+       	  //trspistat.pwmp.cyclechange = ;
 	  prvSendZLP();
-	  memcpy( &trspistat.dutycycle1, pxControlRx.ucBuffer, sizeof( trspistat.dutycycle1 ) );
+	  memcpy( &trspistat.pwmp, pxControlRx.ucBuffer, sizeof( trspistat.pwmp ) );
 	  //prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
 	  break;
 	case 0x3:
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.counter, sizeof( trspistat.counter ), sizeof( trspistat.counter ), pdFALSE );
 	  break;
 	case 0x4:
-	  prvSendControlData( ( unsigned portCHAR * ) &a, sizeof( a ), sizeof( a ), pdFALSE );
+	  prvSendZLP();
+	  memcpy( &trspistat.leds, pxControlRx.ucBuffer, sizeof( trspistat.leds ) );
 	  break;
 	case 0x5:
-	  trspistat.changecycle2 = 1;
-	  prvSendZLP();
-	  memcpy( &trspistat.dutycycle2, pxControlRx.ucBuffer, sizeof( trspistat.dutycycle2 ) );
-	  break;
-	case 0x6:
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle2, sizeof( trspistat.dutycycle2 ), sizeof( trspistat.dutycycle2 ), pdFALSE );
-	  break;
-	case 0x7:
-	  prvSendZLP();
-	  unsigned char ledindex = 0;
-	  unsigned char ledstate = 0;
-	  memcpy( &ledindex, pxControlRx.ucBuffer, sizeof( ledindex ) );
-	  memcpy( &ledstate, pxControlRx.ucBuffer+1, sizeof( ledstate ) );
-	  trspistat.leds[ledindex]=ledstate;
-	  break;
-	case 0x8:
 	  prvSendControlData( ( unsigned portCHAR * ) trspistat.adcvalue, sizeof( trspistat.adcvalue ), sizeof( trspistat.adcvalue ), pdFALSE );
 	  break;
-	case 0x9:
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.compassstat, sizeof( trspistat.compassstat ), sizeof( trspistat.compassstat ), pdFALSE );
+	case 0x6:
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.cmpp, sizeof( trspistat.cmpp ), sizeof( trspistat.cmpp ), pdFALSE );
 	  break;
-	case 0x10:
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.compassdata, sizeof( trspistat.compassdata ), sizeof( trspistat.compassdata ), pdFALSE );
-	  break;
+	  //case 0x7:
+	  //reserved for hall effect sensors
+	  //break;
 	default:
 	  prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );
 	  break;

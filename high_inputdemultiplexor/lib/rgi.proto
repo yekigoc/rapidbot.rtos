@@ -42,6 +42,10 @@ message getadcchannel {
 	required uint32 channel = 1;
 }
 
+message tellalladcchannels {
+
+}
+
 message telladcchannel {
 	required uint32 channel = 1;
 	required uint32 value = 2;
