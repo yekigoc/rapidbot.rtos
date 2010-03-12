@@ -21,7 +21,7 @@ unsigned portBASE_TYPE uxLEDTask;
 }
 /*-----------------------------------------------------------*/
 
-void comp_writecommand(unsigned char command, unsigned int snpcs, unsigned char leavenpcslow)
+void comp_writecommand(unsigned char command, unsigned char leavenpcslow)
 {
   Pin npcs = NPCS3;
   Pin cdin = CDIN;
@@ -73,8 +73,9 @@ void comp_writecommand(unsigned char command, unsigned int snpcs, unsigned char 
     PIO_Set (&npcs);
 }
 
-void comp_readdata(unsigned int npcs, unsigned char leavenpcslow)
+void comp_readdata(unsigned char leavenpcslow)
 {
+  Pin npcs3 = NPCS3;
   Pin spck = SPCK;
   Pin cdin = CDIN;
   int i = 0;
@@ -93,13 +94,14 @@ void comp_readdata(unsigned int npcs, unsigned char leavenpcslow)
 	asm("nop");
     }
   if (leavenpcslow==0)
-    PIO_Set (&npcs);
+    PIO_Set (&npcs3);
 }
 
-void comp_readaxis(unsigned int npcs, unsigned char leavenpcslow)
+void comp_readaxis(unsigned char leavenpcslow)
 {
   Pin spck = SPCK;
   Pin cdin = CDIN;
+  Pin npcs3 = NPCS3;
   int i = 0;
   cmpstat.currentoffset = 0;
   cmpstat.data = 0;
@@ -116,14 +118,14 @@ void comp_readaxis(unsigned int npcs, unsigned char leavenpcslow)
 	asm("nop");
     }
   if (leavenpcslow==0)
-    PIO_Set (&npcs);
+    PIO_Set (&npcs3);
 }
 
 void vCompassTask( void *pvParameters )
 {
   int i = 0;
   Pin npcs = NPCS3;
-  trspistat.compassstat = 0;
+  trspistat.cmpp.compassstat = 0;
   cmpstat.header = 0;
   cmpstat.currentoffset = 0;
   extern void ( vSPI_ISR_Wrapper )( void );
@@ -134,12 +136,12 @@ void vCompassTask( void *pvParameters )
 
   unsigned char command = 0x0;
 
-  trspistat.compassstat = 1;
-  comp_writecommand(command, 3, 0);
+  trspistat.cmpp.compassstat = 1;
+  comp_writecommand(command, 0);
   vTaskDelay( 50 / portTICK_RATE_MS );
-  trspistat.compassstat = 2;
+  trspistat.cmpp.compassstat = 2;
   command = 0x8;
-  comp_writecommand(command, 3, 0);
+  comp_writecommand(command, 0);
   vTaskDelay( 50 / portTICK_RATE_MS );
   /*PIO_Clear (&npcs);
   for (i=0; i<22; i++)
@@ -150,22 +152,22 @@ void vCompassTask( void *pvParameters )
   PIO_Clear (&npcs);
   for (i=0; i<22; i++)
   asm("nop");*/
-  trspistat.compassstat = 3;
+  trspistat.cmpp.compassstat = 3;
   command = 0xC;
-  comp_writecommand(command, 3, 1);
-  trspistat.compassstat = 4;
-  comp_readdata(3, 0);
-  trspistat.compassstat = cmpstat.header;
+  comp_writecommand(command, 1);
+  trspistat.cmpp.compassstat = 4;
+  comp_readdata(0);
+  trspistat.cmpp.compassstat = cmpstat.header;
 
   for(;;)
     {
       /*if (cmpstat.header == 15)
 	{*/
 	  command = 0x0;
-	  comp_writecommand(command, 3, 0);
+	  comp_writecommand(command, 0);
 	  vTaskDelay( 10 / portTICK_RATE_MS );
 	  command = 0x8;
-	  comp_writecommand(command, 3, 0);
+	  comp_writecommand(command, 0);
 	  /*}
       else if (cmpstat.header == 12)
 	{
@@ -175,12 +177,12 @@ void vCompassTask( void *pvParameters )
 
       vTaskDelay( 50 / portTICK_RATE_MS );
       command = 0xC;
-      comp_writecommand(command, 3, 1);
+      comp_writecommand(command, 1);
       //vTaskDelay( 50 / portTICK_RATE_MS );
-      comp_readdata(3,1);
-      comp_readaxis(3,0);
-      trspistat.compassstat = cmpstat.header;
-      trspistat.compassdata = cmpstat.data;
+      comp_readdata(1);
+      comp_readaxis(0);
+      trspistat.cmpp.compassstat = cmpstat.header;
+      trspistat.cmpp.compassdata = cmpstat.data;
       /*      command = 0x8;
       comp_writecommand(command, 3, 1);
 

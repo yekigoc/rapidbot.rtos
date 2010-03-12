@@ -12,6 +12,7 @@
 #include "pwm/pwm.h"
 
 #include "adc/adc.h"
+//#include <memory.h>
 
 #include "proximity_sensor/proximity_sensor_task.h"
 #include "compass/compass_task.h"
@@ -35,7 +36,7 @@ int main( void )
 {
   prvSetupHardware();
 
-  memset(trspistat, 0, sizeof(trspistat));
+  memset(&trspistat, 0, sizeof(trspistat));
 
   vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
   vStartCompassTask( tskIDLE_PRIORITY + 3 );
@@ -83,7 +84,7 @@ portCHAR cTxByte;
 
 /* The idle hook simply sends a string of characters to the USB port.
    The characters will be buffered and sent once the port is connected. */
- trspistat.counter = xTaskGetTickCount()
+ trspistat.counter = xTaskGetTickCount();
  if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
    {
      xLastTx = xTaskGetTickCount();
@@ -93,22 +94,22 @@ portCHAR cTxByte;
        }
    }
 
- if ((trspistat.pwmp.cyclechange && 1<<0) !=0)
+ if ((trspistat.pwmp.cyclechange & 1<<0) !=0)
    {
-     PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.pwmp.dutycycle[0]);
-     trspistat.pwmp.cyclechange|=0;
+     PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.pwmp.dutycycles[0]);
+     trspistat.pwmp.cyclechange&=~1<<0;
    }
- if (trspistat.changecycle2==1)
+ if ((trspistat.pwmp.cyclechange & 1<<1) != 0)
    {
-     PWMC_SetDutyCycle(CHANNEL_PWM_2, trspistat.dutycycle2);
-     trspistat.changecycle2=0;
+     PWMC_SetDutyCycle(CHANNEL_PWM_2, trspistat.pwmp.dutycycles[1]);
+     trspistat.pwmp.cyclechange&=~1<<1;
    }
 
  int i = 0;
 
  for (i; i<3; i++)
    {
-     if ((trspistat.leds && (1<<i))==0)
+     if ((trspistat.leds & (1<<i))==0)
        PIO_Clear(&pioleds[i]);
      else
        PIO_Set(&pioleds[i]);

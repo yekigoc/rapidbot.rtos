@@ -17,6 +17,7 @@ requires 2.0.0
 
 %header{
 #include "rgi-stateparam.h"
+#include "common_structs.h"
   typedef struct _pwmdata
   {
     unsigned short valuesw[2];
@@ -45,7 +46,11 @@ class Rgi:PwmParam from Rgi:StateParam
 	  RgiPwmParam * me = RGI_PWMPARAM(self);
           pmsg ("set valw[0]=%i, valw[1]=%i\n", me->_priv->pwm->valuesw[0], me->_priv->pwm->valuesw[1]);
 	  rgi_stateparam_set_changed(self, 0);
-	  int r = libusb_control_transfer(self->devh, CTRL_OUT, USB_RQ_STAT, 0x02, 0, (unsigned char*)&me->_priv->pwm->valuesw[0], 2, 0);
+	  pwmparams pwmp;
+	  pwmp.cyclechange = 3;
+	  pwmp.dutycycles[0]=me->_priv->pwm->valuesw[0];
+	  pwmp.dutycycles[1]=me->_priv->pwm->valuesw[1];
+	  int r = libusb_control_transfer(self->devh, CTRL_OUT, USB_RQ_STAT, USB_PWM_W, 0, (unsigned char*)&pwmp, sizeof(pwmparams), 0);
 	  if (r < 0) 
 	    {
 	      perr("set hwstat error %d\n", r);
@@ -56,18 +61,6 @@ class Rgi:PwmParam from Rgi:StateParam
 	      perr("short write (%d)", r);
 	      return -1;
 	    }
-	  r = libusb_control_transfer(self->devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, (unsigned char*)&me->_priv->pwm->valuesw[1], 2, 0);
-	  if (r < 0) 
-	    {
-	      perr("set hwstat error %d\n", r);
-	      return r;
-	    }
-	  if ((unsigned int) r < 1) 
-	    {
-	      perr("short write (%d)", r);
-	      return -1;
-	    }
-
 	}
       return 0;
     }

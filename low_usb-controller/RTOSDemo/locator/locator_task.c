@@ -85,11 +85,6 @@ void vLocatorTask( void *pvParameters )
       vTaskDelay( 500 / portTICK_RATE_MS );
       command = 0xF;
       loc_writecommand(command, 3, 0);
-      trspistat.leds[1] = 1;
-      vTaskDelay( 300 / portTICK_RATE_MS );
-      trspistat.leds[1] = 0;
-      vTaskDelay( 300 / portTICK_RATE_MS );
-
       //      vTaskDelay( 50 / portTICK_RATE_MS );
     }
 }

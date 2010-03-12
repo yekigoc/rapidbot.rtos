@@ -17,6 +17,7 @@ requires 2.0.0
 
 %header{
 #include "rgi-stateparam.h"
+#include "common_structs.h"
   typedef struct _adcdata
   {
     unsigned int adcval[8];
@@ -37,7 +38,7 @@ class Rgi:AdcParam from Rgi:StateParam
 	  self->counter = 0;
 	  RgiAdcParam * me = RGI_ADCPARAM(self);
       
-	  int r = libusb_control_transfer(self->devh, CTRL_IN, USB_RQ_STAT, 0x08, 0, me->_priv->adc->adcval, 4*8, 0);
+	  int r = libusb_control_transfer(self->devh, CTRL_IN, USB_RQ_STAT, USB_ADC_R, 0, me->_priv->adc->adcval, 4*8, 0);
 	  if (r < 0) 
 	    {
 	      perr("set hwstat error %d\n", r);
