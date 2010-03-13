@@ -15,6 +15,8 @@
 #define PER_SETUNLOCK           0x7
 #define PER_TELLLOCKED          0x8
 #define PER_TELLREADY           0x9
+//#define PER_                    0xA
+
 #define PER_GETTIME             0x10
 #define PER_TELLTIME            0x11
 #define PER_TIME                0x12
