@@ -431,6 +431,92 @@ void   rgi__getadcchannel__free_unpacked
   PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__getadcchannel__descriptor);
   protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
 }
+void   rgi__tellbatchadc__init
+                     (Rgi__Tellbatchadc         *message)
+{
+  static Rgi__Tellbatchadc init_value = RGI__TELLBATCHADC__INIT;
+  *message = init_value;
+}
+size_t rgi__tellbatchadc__get_packed_size
+                     (const Rgi__Tellbatchadc *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellbatchadc__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__tellbatchadc__pack
+                     (const Rgi__Tellbatchadc *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellbatchadc__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__tellbatchadc__pack_to_buffer
+                     (const Rgi__Tellbatchadc *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellbatchadc__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Tellbatchadc *
+       rgi__tellbatchadc__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Tellbatchadc *)
+     protobuf_c_message_unpack (&rgi__tellbatchadc__descriptor,
+                                allocator, len, data);
+}
+void   rgi__tellbatchadc__free_unpacked
+                     (Rgi__Tellbatchadc *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__tellbatchadc__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
+void   rgi__telltime__init
+                     (Rgi__Telltime         *message)
+{
+  static Rgi__Telltime init_value = RGI__TELLTIME__INIT;
+  *message = init_value;
+}
+size_t rgi__telltime__get_packed_size
+                     (const Rgi__Telltime *message)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telltime__descriptor);
+  return protobuf_c_message_get_packed_size ((const ProtobufCMessage*)(message));
+}
+size_t rgi__telltime__pack
+                     (const Rgi__Telltime *message,
+                      uint8_t       *out)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telltime__descriptor);
+  return protobuf_c_message_pack ((const ProtobufCMessage*)message, out);
+}
+size_t rgi__telltime__pack_to_buffer
+                     (const Rgi__Telltime *message,
+                      ProtobufCBuffer *buffer)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telltime__descriptor);
+  return protobuf_c_message_pack_to_buffer ((const ProtobufCMessage*)message, buffer);
+}
+Rgi__Telltime *
+       rgi__telltime__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data)
+{
+  return (Rgi__Telltime *)
+     protobuf_c_message_unpack (&rgi__telltime__descriptor,
+                                allocator, len, data);
+}
+void   rgi__telltime__free_unpacked
+                     (Rgi__Telltime *message,
+                      ProtobufCAllocator *allocator)
+{
+  PROTOBUF_C_ASSERT (message->base.descriptor == &rgi__telltime__descriptor);
+  protobuf_c_message_free_unpacked ((ProtobufCMessage*)message, allocator);
+}
 void   rgi__telladcchannel__init
                      (Rgi__Telladcchannel         *message)
 {
@@ -856,6 +942,162 @@ const ProtobufCMessageDescriptor rgi__getadcchannel__descriptor =
   rgi__getadcchannel__field_descriptors,
   rgi__getadcchannel__field_indices_by_name,
   1,  rgi__getadcchannel__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__tellbatchadc__field_descriptors[8] =
+{
+  {
+    "c0",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c0),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c1",
+    2,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c1),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c2",
+    3,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c2),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c3",
+    4,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c3),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c4",
+    5,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c4),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c5",
+    6,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c5),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c6",
+    7,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c6),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+  {
+    "c7",
+    8,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Tellbatchadc, c7),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__tellbatchadc__field_indices_by_name[] = {
+  0,   /* field[0] = c0 */
+  1,   /* field[1] = c1 */
+  2,   /* field[2] = c2 */
+  3,   /* field[3] = c3 */
+  4,   /* field[4] = c4 */
+  5,   /* field[5] = c5 */
+  6,   /* field[6] = c6 */
+  7,   /* field[7] = c7 */
+};
+static const ProtobufCIntRange rgi__tellbatchadc__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 8 }
+};
+const ProtobufCMessageDescriptor rgi__tellbatchadc__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.tellbatchadc",
+  "Tellbatchadc",
+  "Rgi__Tellbatchadc",
+  "rgi",
+  sizeof(Rgi__Tellbatchadc),
+  8,
+  rgi__tellbatchadc__field_descriptors,
+  rgi__tellbatchadc__field_indices_by_name,
+  1,  rgi__tellbatchadc__number_ranges,
+  NULL,NULL,NULL,NULL    /* reserved[1234] */
+};
+static const ProtobufCFieldDescriptor rgi__telltime__field_descriptors[1] =
+{
+  {
+    "time",
+    1,
+    PROTOBUF_C_LABEL_REQUIRED,
+    PROTOBUF_C_TYPE_UINT32,
+    0,   /* quantifier_offset */
+    PROTOBUF_C_OFFSETOF(Rgi__Telltime, time),
+    NULL,
+    NULL,
+    NULL,NULL    /* reserved1, reserved2 */
+  },
+};
+static const unsigned rgi__telltime__field_indices_by_name[] = {
+  0,   /* field[0] = time */
+};
+static const ProtobufCIntRange rgi__telltime__number_ranges[1 + 1] =
+{
+  { 1, 0 },
+  { 0, 1 }
+};
+const ProtobufCMessageDescriptor rgi__telltime__descriptor =
+{
+  PROTOBUF_C_MESSAGE_DESCRIPTOR_MAGIC,
+  "rgi.telltime",
+  "Telltime",
+  "Rgi__Telltime",
+  "rgi",
+  sizeof(Rgi__Telltime),
+  1,
+  rgi__telltime__field_descriptors,
+  rgi__telltime__field_indices_by_name,
+  1,  rgi__telltime__number_ranges,
   NULL,NULL,NULL,NULL    /* reserved[1234] */
 };
 static const ProtobufCFieldDescriptor rgi__telladcchannel__field_descriptors[2] =

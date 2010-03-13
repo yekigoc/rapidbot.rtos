@@ -18,6 +18,8 @@ typedef struct _Rgi__Setunlock Rgi__Setunlock;
 typedef struct _Rgi__Telllocked Rgi__Telllocked;
 typedef struct _Rgi__Tellready Rgi__Tellready;
 typedef struct _Rgi__Getadcchannel Rgi__Getadcchannel;
+typedef struct _Rgi__Tellbatchadc Rgi__Tellbatchadc;
+typedef struct _Rgi__Telltime Rgi__Telltime;
 typedef struct _Rgi__Telladcchannel Rgi__Telladcchannel;
 
 
@@ -125,6 +127,33 @@ struct  _Rgi__Getadcchannel
 };
 #define RGI__GETADCCHANNEL__INIT \
  { PROTOBUF_C_MESSAGE_INIT (&rgi__getadcchannel__descriptor) \
+    , 0 }
+
+
+struct  _Rgi__Tellbatchadc
+{
+  ProtobufCMessage base;
+  uint32_t c0;
+  uint32_t c1;
+  uint32_t c2;
+  uint32_t c3;
+  uint32_t c4;
+  uint32_t c5;
+  uint32_t c6;
+  uint32_t c7;
+};
+#define RGI__TELLBATCHADC__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__tellbatchadc__descriptor) \
+    , 0, 0, 0, 0, 0, 0, 0, 0 }
+
+
+struct  _Rgi__Telltime
+{
+  ProtobufCMessage base;
+  uint32_t time;
+};
+#define RGI__TELLTIME__INIT \
+ { PROTOBUF_C_MESSAGE_INIT (&rgi__telltime__descriptor) \
     , 0 }
 
 
@@ -329,6 +358,44 @@ Rgi__Getadcchannel *
 void   rgi__getadcchannel__free_unpacked
                      (Rgi__Getadcchannel *message,
                       ProtobufCAllocator *allocator);
+/* Rgi__Tellbatchadc methods */
+void   rgi__tellbatchadc__init
+                     (Rgi__Tellbatchadc         *message);
+size_t rgi__tellbatchadc__get_packed_size
+                     (const Rgi__Tellbatchadc   *message);
+size_t rgi__tellbatchadc__pack
+                     (const Rgi__Tellbatchadc   *message,
+                      uint8_t             *out);
+size_t rgi__tellbatchadc__pack_to_buffer
+                     (const Rgi__Tellbatchadc   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Tellbatchadc *
+       rgi__tellbatchadc__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__tellbatchadc__free_unpacked
+                     (Rgi__Tellbatchadc *message,
+                      ProtobufCAllocator *allocator);
+/* Rgi__Telltime methods */
+void   rgi__telltime__init
+                     (Rgi__Telltime         *message);
+size_t rgi__telltime__get_packed_size
+                     (const Rgi__Telltime   *message);
+size_t rgi__telltime__pack
+                     (const Rgi__Telltime   *message,
+                      uint8_t             *out);
+size_t rgi__telltime__pack_to_buffer
+                     (const Rgi__Telltime   *message,
+                      ProtobufCBuffer     *buffer);
+Rgi__Telltime *
+       rgi__telltime__unpack
+                     (ProtobufCAllocator  *allocator,
+                      size_t               len,
+                      const uint8_t       *data);
+void   rgi__telltime__free_unpacked
+                     (Rgi__Telltime *message,
+                      ProtobufCAllocator *allocator);
 /* Rgi__Telladcchannel methods */
 void   rgi__telladcchannel__init
                      (Rgi__Telladcchannel         *message);
@@ -380,6 +447,12 @@ typedef void (*Rgi__Tellready_Closure)
 typedef void (*Rgi__Getadcchannel_Closure)
                  (const Rgi__Getadcchannel *message,
                   void *closure_data);
+typedef void (*Rgi__Tellbatchadc_Closure)
+                 (const Rgi__Tellbatchadc *message,
+                  void *closure_data);
+typedef void (*Rgi__Telltime_Closure)
+                 (const Rgi__Telltime *message,
+                  void *closure_data);
 typedef void (*Rgi__Telladcchannel_Closure)
                  (const Rgi__Telladcchannel *message,
                   void *closure_data);
@@ -399,6 +472,8 @@ extern const ProtobufCMessageDescriptor rgi__setunlock__descriptor;
 extern const ProtobufCMessageDescriptor rgi__telllocked__descriptor;
 extern const ProtobufCMessageDescriptor rgi__tellready__descriptor;
 extern const ProtobufCMessageDescriptor rgi__getadcchannel__descriptor;
+extern const ProtobufCMessageDescriptor rgi__tellbatchadc__descriptor;
+extern const ProtobufCMessageDescriptor rgi__telltime__descriptor;
 extern const ProtobufCMessageDescriptor rgi__telladcchannel__descriptor;
 
 PROTOBUF_C_END_DECLS
