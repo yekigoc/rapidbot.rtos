@@ -174,6 +174,7 @@ requires 2.0.0
 			g_hash_table_iter_init(&iter, self->_priv->packethandlers);
 			while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
 			  {
+			    pmsg ("found key %i\n", *key);
 			    if (*key == head)
 			      {
 				if (value != NULL)
@@ -368,6 +369,8 @@ class Rgi:InputDemultiplexor from G:Object
     gettime(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
   {
     RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_TIME);
+    if (param == NULL)
+      pwar("parameter is NULL\n");
     rgi_stateparam_set_requested(param, 1);
     while (rgi_stateparam_get_requested(param)!=0)
       {
@@ -447,8 +450,8 @@ class Rgi:InputDemultiplexor from G:Object
     g_hash_table_insert(self->_priv->packethandlers, &(time->id),time);
 
     idphandler * batchadc = malloc(sizeof(idphandler));
-    time->id = PER_GETBATCHADC;
-    time->callback = rgi_inputdemultiplexor_getbatchadc;
+    batchadc->id = PER_GETBATCHADC;
+    batchadc->callback = rgi_inputdemultiplexor_getbatchadc;
     g_hash_table_insert(self->_priv->packethandlers, &(batchadc->id),batchadc);
     
     context = g_option_context_new ("RGI server");
