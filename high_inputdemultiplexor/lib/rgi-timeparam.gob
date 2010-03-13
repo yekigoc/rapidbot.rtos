@@ -1,0 +1,100 @@
+/*
+ * This is a usb communication scheduler class
+ */
+requires 2.0.0
+%{
+#include <errno.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+#include "rgi-stateparam.h"
+%}
+
+%header{
+#include <common_structs.h>
+#include "rgi-stateparam.h"
+  //#include <libusb.h>
+%}
+
+class Rgi:TimeParam from Rgi:StateParam
+{
+  private unsigned long time;
+
+  override (Rgi:StateParam)
+  int
+    pull(Rgi:StateParam * self (check null type))
+    {
+      if (rgi_stateparam_get_requested(self) == 1)
+	{
+	  RgiTimeParam * me = RGI_TIMEPARAM(self);
+      
+	  int r = libusb_control_transfer(self->devh, CTRL_IN, USB_RQ_STAT, USB_TIME_R, 0, &me->_priv->time, sizeof(unsigned long), 0);
+	  if (r < 0) 
+	    {
+	      perr("set hwstat error %d\n", r);
+	      return r;
+	    }
+	  if ((unsigned int) r < 1) 
+	    {
+	      perr("short write (%d)", r);
+	      return -1;
+	    }
+	  pmsg("time = %i\n", me->_priv->time);
+	  rgi_stateparam_set_requested(self, 0);
+	}
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    int
+    push(Rgi:StateParam * self (check null type))
+    {
+      return 0;
+    }
+
+  override (Rgi:StateParam)
+    void *
+    get(Rgi:StateParam * self (check null type))
+  {
+    RgiTimeParam * me = RGI_TIMEPARAM(self);
+    return (void *)(&me->_priv->time);
+  }
+
+  override (Rgi:StateParam)
+    int
+    set(Rgi:StateParam * self (check null type), void * data)
+  {
+    return 0;
+  }
+
+  override (Rgi:StateParam)
+    void 
+    terminate(Rgi:StateParam * self (check null type))
+  {
+    RgiTimeParam * me = RGI_TIMEPARAM(self);
+    free(me->_priv->time);
+  }
+
+  init (self)
+  {
+    self->_priv->time = 0;
+  }
+
+  public RgiTimeParam *
+    new (void)
+  {
+    RgiTimeParam * me = (RgiTimeParam *)GET_NEW;
+    RgiStateParam * self = RGI_STATEPARAM(me);
+    rgi_stateparam_set_ondemand(self, 1);
+    rgi_stateparam_set_readonly(self, 0);
+    rgi_stateparam_set_requested(self, 0);
+    self->id = PER_TIME;
+    return me;
+  }
+  
+}

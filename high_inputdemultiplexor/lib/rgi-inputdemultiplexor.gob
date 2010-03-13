@@ -363,6 +363,59 @@ class Rgi:InputDemultiplexor from G:Object
     free (buffer);
   }
 
+  public 
+    int 
+    gettime(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_TIME);
+    rgi_stateparam_set_requested(param, 1);
+    while (rgi_stateparam_get_requested(param)!=0)
+      {
+	usleep(100);
+      }
+    unsigned long * p = rgi_stateparam_get(param);
+
+    Rgi__Telltime telltime = RGI__TELLTIME__INIT;
+    telltime.time = *p;
+    int sz = rgi__telltime__get_packed_size(&telltime);
+    char * buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__telltime__pack(&telltime, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLTIME, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    
+    free (buffer);
+  }
+
+  public 
+    int 
+    getbatchadc(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_ADC);
+    adcdata * p = rgi_stateparam_get(param);
+
+    Rgi__Tellbatchadc telladc = RGI__TELLBATCHADC__INIT;
+    telladc.c0 = p->adcval[0];
+    telladc.c1 = p->adcval[1];
+    telladc.c2 = p->adcval[2];
+    telladc.c3 = p->adcval[3];
+    telladc.c4 = p->adcval[4];
+    telladc.c5 = p->adcval[5];
+    telladc.c6 = p->adcval[6];
+    telladc.c7 = p->adcval[7];
+
+    int sz = rgi__tellbatchadc__get_packed_size(&telladc);
+    char * buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__tellbatchadc__pack(&telladc, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLBATCHADC, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    
+    free (buffer);
+  }
+
   init(self)
   {
     self->_priv->packethandlers = g_hash_table_new(g_int_hash, g_int_equal);
@@ -387,6 +440,16 @@ class Rgi:InputDemultiplexor from G:Object
     adc->id = PER_GETADC;
     adc->callback = rgi_inputdemultiplexor_getadc;
     g_hash_table_insert(self->_priv->packethandlers, &(adc->id),adc);
+
+    idphandler * time = malloc(sizeof(idphandler));
+    time->id = PER_GETTIME;
+    time->callback = rgi_inputdemultiplexor_gettime;
+    g_hash_table_insert(self->_priv->packethandlers, &(time->id),time);
+
+    idphandler * batchadc = malloc(sizeof(idphandler));
+    time->id = PER_GETBATCHADC;
+    time->callback = rgi_inputdemultiplexor_getbatchadc;
+    g_hash_table_insert(self->_priv->packethandlers, &(batchadc->id),batchadc);
     
     context = g_option_context_new ("RGI server");
 

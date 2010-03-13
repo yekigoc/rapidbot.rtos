@@ -42,8 +42,19 @@ message getadcchannel {
 	required uint32 channel = 1;
 }
 
-message tellalladcchannels {
+message tellbatchadc {
+	required uint32 c0 = 1;
+	required uint32 c1 = 2;
+	required uint32 c2 = 3;
+	required uint32 c3 = 4;
+	required uint32 c4 = 5;
+	required uint32 c5 = 6;
+	required uint32 c6 = 7;
+	required uint32 c7 = 8;
+}
 
+message telltime {
+	required uint32 time = 1;
 }
 
 message telladcchannel {

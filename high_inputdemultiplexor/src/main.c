@@ -17,6 +17,8 @@ int main(void)
   rgi_usbscheduler_pushparam(scheduler, p);
   p = RGI_STATEPARAM(rgi_pwmparam_new());
   rgi_usbscheduler_pushparam(scheduler, p);
+  p = RGI_STATEPARAM(rgi_timeparam_new());
+  rgi_usbscheduler_pushparam(scheduler, p);
   
   if (rgi_usbscheduler_start(scheduler)<0)
     return -1;

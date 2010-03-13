@@ -53,9 +53,19 @@ class Rgi:StateParam from G:Object
      export,
      link);
 
+  private unsigned int requested = 0;
+  property UINT requested
+    (nick = "requested",
+     blurb = "wether parameter is requested",
+     minimum = 0,
+     maximum = 1, //1-on demand, 0-scheduled
+     default_value = 0,
+     export,
+     link);
+
   private unsigned int interval = 0;
   property UINT interval
-    (nick = "call intervale",
+    (nick = "call interval",
      blurb = "interval between calls in scheduled mode, measured int loop times",
      minimum = 0,
      maximum = UINT_MAX,

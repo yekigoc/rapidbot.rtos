@@ -15,5 +15,10 @@
 #define PER_SETUNLOCK           0x7
 #define PER_TELLLOCKED          0x8
 #define PER_TELLREADY           0x9
+#define PER_GETTIME             0x10
+#define PER_TELLTIME            0x11
+#define PER_TIME                0x12
+#define PER_GETBATCHADC         0x13
+#define PER_TELLBATCHADC        0x14
 
 #endif// __USBCOMMON_H__
