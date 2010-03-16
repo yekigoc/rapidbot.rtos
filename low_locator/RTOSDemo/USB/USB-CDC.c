@@ -73,6 +73,8 @@
 #include "descriptors.h"
 
 #include "common.h"
+#include <adc/adc.h>
+#include "locator/locator.h"
 
 #define usbNO_BLOCK ( ( portTickType ) 0 )
 
@@ -740,31 +742,51 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
       //LCDPutStr("h", 100, 20, SMALL, BLACK, WHITE);
       switch (pxRequest->usValue)
 	{
-	case 0x1: //getpwm
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.pwmp, sizeof( trspistat.pwmp ), sizeof( trspistat.pwmp ), pdFALSE );
-	  break;
 	case 0x2:
        	  //trspistat.pwmp.cyclechange = ;
 	  prvSendZLP();
-	  memcpy( &trspistat.pwmp, pxControlRx.ucBuffer, sizeof( trspistat.pwmp ) );
+	  memcpy( &trspistat.amp, pxControlRx.ucBuffer, sizeof( trspistat.amp ) );
 	  //prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
 	  break;
 	case 0x3:
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.counter, sizeof( trspistat.counter ), sizeof( trspistat.counter ), pdFALSE );
 	  break;
-	case 0x4:
-	  prvSendZLP();
-	  memcpy( &trspistat.leds, pxControlRx.ucBuffer, sizeof( trspistat.leds ) );
-	  break;
 	case 0x5:
-	  prvSendControlData( ( unsigned portCHAR * ) trspistat.adcvalue, sizeof( trspistat.adcvalue ), sizeof( trspistat.adcvalue ), pdFALSE );
+	  prvSendZLP();
+	  memcpy( &trspistat.part, pxControlRx.ucBuffer, sizeof( trspistat.part ) );
 	  break;
 	case 0x6:
-	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.cmpp, sizeof( trspistat.cmpp ), sizeof( trspistat.cmpp ), pdFALSE );
+	  if (trspistat.part == 0)
+	    {
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1, 128, 128, pdFALSE ); //sending in two stages
+	    }
+	  else if (trspistat.part == 1)
+	    {
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1+128, 128, 128, pdFALSE ); //sending in two stages
+	    }
+	  else if (trspistat.part == 2)
+	    {
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1+256, 128, 128, pdFALSE ); //sending in two stages
+	    }
+	  else if (trspistat.part == 3)
+	    {
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1+384, 128, 128, pdFALSE ); //sending in two stages
+	      trspistat.readingadcbuf =0;
+	      trspistat.usbdataready = 0;
+	      ADC_EnableIt(AT91C_BASE_ADC, ADC_NUM_1);
+	      
+	      // Start measurement
+	      ADC_StartConversion(AT91C_BASE_ADC);
+	    }
+
 	  break;
-	  //case 0x7:
-	  //reserved for hall effect sensors
-	  //break;
+	case 0x7:
+	  if (trspistat.usbdataready == 1)
+	    {
+	      trspistat.readingadcbuf = 1;
+	    }
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.usbdataready, sizeof( trspistat.usbdataready ), sizeof( trspistat.usbdataready ), pdFALSE );
+	  break;
 	default:
 	  prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );
 	  break;

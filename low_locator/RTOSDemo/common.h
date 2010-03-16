@@ -9,8 +9,6 @@
 
 //#define PB21   {1 << 21, AT91C_BASE_PIOB, AT91C_ID_PIOB, PIO_OUTPUT_0, PIO_DEFAULT}
 
-#define PA0  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}             //pwm
-#define PA1  {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}             //pwm
 #define PA6  {1 << 6, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT} 
 #define PA8  {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
 #define PA9  {1 << 9, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
@@ -23,13 +21,6 @@
 
 #define PINS_ADC PIN_ADC_AD0, PIN_ADC_AD1, PIN_ADC_AD2, PIN_ADC_AD3 // Pins ADC
 
-#define NPCS3 {1 << 5, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}            //compass npcs
-#define CDIN {1 << 12, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}               //compass controller data in
-#define CDOUT {1 << 13, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}           //compass controller data out
-#define SPCK {1 << 14, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}            //compass clock
-
-#define PINS_COMPASS NPCS3, CDIN, CDOUT, SPCK // Pins for Compass
-
 #define NPCS_LOC {1 << 4, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}         //locator amplifier npcs
 #define CDOUT_LOC {1 << 6, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}        //locator amplifier controller data out
 #define SPCK_LOC {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}         //locator amplifier clock
@@ -37,19 +28,14 @@
 #define PINS_LOC_AMP NPCS_LOC, CDOUT_LOC, SPCK_LOC // Pins for Locator Amplifier
 
 static const Pin pins[] = {
-  PA0,
-  PA1,
   PA6,
   PA8,
   PA9,
   PA10,
-  PINS_COMPASS,
   PINS_LOC_AMP
   //  PINS_ADC
 };
 
-#define CHANNEL_PWM_1 0
-#define CHANNEL_PWM_2 1
 #define MIN_DUTY_CYCLE 0
 #define MAX_DUTY_CYCLE 5000
 #define PWM_FREQUENCY  50
@@ -58,9 +44,14 @@ typedef struct
 {
   unsigned long counter;
   unsigned short usbinited;
-  pwmparams pwmp;
-  compassparams cmpp;
-  unsigned int adcvalue[8];
+  unsigned short adcbuf1[256];
+  char converted;               //wether conversion is over
+  unsigned char readingadcbuf;  //usb reading buf flag
+  unsigned char usbdataready;
+  unsigned char wbufidx;        //current write index
+  unsigned char amp;            //amplifierstate (0-16)
+  unsigned char part;
+  unsigned char ampchanged;     //wether amplification changed
   char leds;
 } spistat;
 

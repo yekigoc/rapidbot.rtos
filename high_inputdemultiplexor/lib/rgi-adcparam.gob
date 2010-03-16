@@ -49,7 +49,7 @@ class Rgi:AdcParam from Rgi:StateParam
 	      perr("short write (%d)", r);
 	      return -1;
 	    }
-	  //	  pmsg("adcv[0]=%i, adcv[1]=%i, adcv[2]=%i, adcv[3]=%i, adcv[4]=%i, adcv[5]=%i, adcv[6]=%i, adcv[7]=%i\n", me->_priv->adc->adcval[0], me->_priv->adc->adcval[1], me->_priv->adc->adcval[2], me->_priv->adc->adcval[3], me->_priv->adc->adcval[4], me->_priv->adc->adcval[5], me->_priv->adc->adcval[6], me->_priv->adc->adcval[7]);
+	  pmsg("adcv[0]=%i, adcv[1]=%i, adcv[2]=%i, adcv[3]=%i, adcv[4]=%i, adcv[5]=%i, adcv[6]=%i, adcv[7]=%i\n", me->_priv->adc->adcval[0], me->_priv->adc->adcval[1], me->_priv->adc->adcval[2], me->_priv->adc->adcval[3], me->_priv->adc->adcval[4], me->_priv->adc->adcval[5], me->_priv->adc->adcval[6], me->_priv->adc->adcval[7]);
 	}
       return 0;
     }

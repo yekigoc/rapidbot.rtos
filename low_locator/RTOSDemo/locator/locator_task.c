@@ -5,6 +5,7 @@
 #include "task.h"
 #include "pio/pio.h"
 
+
 #define locatorSTACK_SIZE		(200)
 #define SPI_PCS(npcs)       ((~(1 << npcs) & 0xF) << 16)
 
@@ -57,6 +58,27 @@ void loc_writecommand(unsigned char command, unsigned int snpcs, unsigned char l
 
 void vLocatorTask( void *pvParameters )
 {
+  extern void ( vLOC_ISR_Wrapper )( void );
+  unsigned int id_channel;
+  
+  ADC_Initialize( AT91C_BASE_ADC,
+		  AT91C_ID_ADC,
+		  AT91C_ADC_TRGEN_DIS,
+		  0,
+		  AT91C_ADC_SLEEP_NORMAL_MODE,
+		  AT91C_ADC_LOWRES_10_BIT,
+		  BOARD_MCK,
+		  BOARD_ADC_FREQ,
+		  20,
+		  600);
+  
+
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_NUM_1);
+
+  AIC_ConfigureIT(AT91C_ID_ADC, 0, vLOC_ISR_Wrapper);
+
+  AIC_EnableIT(AT91C_ID_ADC);
+
   int i = 0;
   Pin npcs = NPCS_LOC;
   //  extern void ( vSPI_ISR_Wrapper )( void );
@@ -73,18 +95,22 @@ void vLocatorTask( void *pvParameters )
   command = 0x0;
   loc_writecommand(command, 3, 0);
   vTaskDelay( 50 / portTICK_RATE_MS );
+  ADC_EnableIt(AT91C_BASE_ADC, ADC_NUM_1);
+  
+  // Start measurement
+  ADC_StartConversion(AT91C_BASE_ADC);
 
   for(;;)
     {
-      vTaskDelay( 500 / portTICK_RATE_MS );
-      /*command = 0x0;
-      loc_writecommand(command, 3, 0);
-      vTaskDelay( 500 / portTICK_RATE_MS );
-      command = 0x1;
-      loc_writecommand(command, 3, 0);
-      vTaskDelay( 500 / portTICK_RATE_MS );
-      command = 0xF;
-      loc_writecommand(command, 3, 0);*/
-      //      vTaskDelay( 50 / portTICK_RATE_MS );
+      vTaskDelay(1 / portTICK_RATE_MS );
+      if (trspistat.ampchanged == 1)
+	{
+	  loc_writecommand(command, trspistat.amp, 0);
+	  trspistat.ampchanged =0;
+	}
+      if ((trspistat.readingadcbuf == 1))
+	{
+	  vTaskDelay(5 / portTICK_RATE_MS );
+	}
     }
 }

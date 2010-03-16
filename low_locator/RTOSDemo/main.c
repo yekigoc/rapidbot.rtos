@@ -7,15 +7,12 @@
 
 #include "partest.h"
 #include "USB-CDC.h"
-
+#include "common.h"
 #include "pio/pio.h"
-#include "pwm/pwm.h"
 
 #include "adc/adc.h"
 //#include <memory.h>
 
-#include "proximity_sensor/proximity_sensor_task.h"
-#include "compass/compass_task.h"
 #include "locator/locator_task.h"
 Pin pioleds[]={PA6, PA8, PA10};
 
@@ -38,9 +35,8 @@ int main( void )
 
   memset(&trspistat, 0, sizeof(trspistat));
 
-  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
-  vStartCompassTask( tskIDLE_PRIORITY + 3 );
-  vStartLocatorTask( tskIDLE_PRIORITY + 4 );
+  //  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
+  vStartLocatorTask( tskIDLE_PRIORITY + 2 );
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
@@ -56,24 +52,7 @@ static void prvSetupHardware( void )
   AT91C_BASE_AIC->AIC_EOICR = 0;
 
   //  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
-
-  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PWMC;
-  PWMC_ConfigureClocks(PWM_FREQUENCY * MAX_DUTY_CYCLE, 0, BOARD_MCK);
-  PIO_Configure(pins, PIO_LISTSIZE(pins));
-  	
-  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
-
-  PWMC_ConfigureChannel(CHANNEL_PWM_1, AT91C_PWMC_CPRE_MCKA, 0, 0);
-  PWMC_SetPeriod(CHANNEL_PWM_1, MAX_DUTY_CYCLE);
-  PWMC_SetDutyCycle(CHANNEL_PWM_1, MIN_DUTY_CYCLE);
-
-  PWMC_ConfigureChannel(CHANNEL_PWM_2, AT91C_PWMC_CPRE_MCKA, 0, 0);
-  PWMC_SetPeriod(CHANNEL_PWM_2, MAX_DUTY_CYCLE);
-  PWMC_SetDutyCycle(CHANNEL_PWM_2, MIN_DUTY_CYCLE);
-
-  PWMC_EnableChannel(CHANNEL_PWM_1);
-  PWMC_EnableChannel(CHANNEL_PWM_2);
-  adcinit();
+  //  adcinit();
 }
 /*-----------------------------------------------------------*/
 
@@ -92,17 +71,6 @@ portCHAR cTxByte;
        {
 	 vUSBSendByte( cTxByte );
        }
-   }
-
- if ((trspistat.pwmp.cyclechange & 1<<0) !=0)
-   {
-     PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.pwmp.dutycycles[0]);
-     trspistat.pwmp.cyclechange&=~1<<0;
-   }
- if ((trspistat.pwmp.cyclechange & 1<<1) != 0)
-   {
-     PWMC_SetDutyCycle(CHANNEL_PWM_2, trspistat.pwmp.dutycycles[1]);
-     trspistat.pwmp.cyclechange&=~1<<1;
    }
 
  int i = 0;
