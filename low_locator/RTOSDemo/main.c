@@ -14,7 +14,7 @@
 //#include <memory.h>
 
 #include "locator/locator_task.h"
-Pin pioleds[]={PA6, PA8, PA10};
+Pin pioleds[]={PA10, PA10, PA10};
 
 /* Priorities for the demo application tasks. */
 #define mainUSB_PRIORITY			( tskIDLE_PRIORITY +2 )
@@ -36,7 +36,7 @@ int main( void )
   memset(&trspistat, 0, sizeof(trspistat));
 
   //  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
-  vStartLocatorTask( tskIDLE_PRIORITY + 2 );
+  vStartLocatorTask( tskIDLE_PRIORITY + 1 );
   xTaskCreate( vUSBCDCTask, ( signed portCHAR * ) "USB", mainUSB_TASK_STACK, NULL, mainUSB_PRIORITY, NULL );
 
   vTaskStartScheduler();
@@ -50,7 +50,7 @@ static void prvSetupHardware( void )
   portDISABLE_INTERRUPTS();
 	
   AT91C_BASE_AIC->AIC_EOICR = 0;
-
+  PIO_Configure(pins, PIO_LISTSIZE(pins));
   //  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
   //  adcinit();
 }

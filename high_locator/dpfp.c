@@ -128,7 +128,13 @@ static int get_hwstat(unsigned char *status)
 
   unsigned int j = 0;
   char buf[256];
-  memset (buf, 0 ,256);
+  memset(buf, 0 ,256);
+
+  amp=0xF;
+
+
+  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x2, 0, &amp, 1, 0);
+
   while (1)
     {
       r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x03, 0, &counter, 4, 0);
