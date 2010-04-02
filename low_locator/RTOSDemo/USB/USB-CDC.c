@@ -746,6 +746,7 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
        	  //trspistat.pwmp.cyclechange = ;
 	  prvSendZLP();
 	  memcpy( &trspistat.amp, pxControlRx.ucBuffer, sizeof( trspistat.amp ) );
+	  trspistat.ampchanged = 1;
 	  //prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
 	  break;
 	case 0x3:
