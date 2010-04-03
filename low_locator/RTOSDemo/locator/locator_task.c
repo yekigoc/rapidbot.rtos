@@ -76,9 +76,8 @@ void vLocatorTask( void *pvParameters )
 		  AT91C_ADC_LOWRES_10_BIT,
 		  BOARD_MCK,
 		  BOARD_ADC_FREQ,
-
-		  10,
-		  20);
+		  20,
+		  800);
   
 
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_NUM_1);

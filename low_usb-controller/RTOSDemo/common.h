@@ -62,6 +62,7 @@ typedef struct
   compassparams cmpp;
   unsigned int adcvalue[8];
   char leds;
+  unsigned char ledschanged;
 } spistat;
 
 spistat trspistat;

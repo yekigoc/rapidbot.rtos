@@ -3,7 +3,7 @@ TGT=simple
 CC=gcc
 DELETE=rm
 ECHO=echo -e
-CFLAGS+=-I/usr/include -fPIC -I/usr/include/libusb-1.0/ -std=gnu99
+CFLAGS+=-I/usr/include -fPIC -I/usr/include/libusb-1.0/ -std=gnu99 -g -O0
 LDFLAGS+=-L/usr/lib -lusb-1.0
 
 ifeq ($(TGT), gtk)

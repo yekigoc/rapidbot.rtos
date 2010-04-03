@@ -14,7 +14,7 @@
 //#include <memory.h>
 
 #include "locator/locator_task.h"
-Pin pioleds[]={PA10, PA10, PA10};
+Pin pioleds[]={PA8, PA10, PA10};
 
 /* Priorities for the demo application tasks. */
 #define mainUSB_PRIORITY			( tskIDLE_PRIORITY +2 )
@@ -34,6 +34,26 @@ int main( void )
   prvSetupHardware();
 
   memset(&trspistat, 0, sizeof(trspistat));
+  /*
+  int ledstat = 0;
+  int i = 0;
+  while (i<1000000)
+    {
+      if (i%10000 == 0)
+	{
+	  if (ledstat==0)
+	    {
+	      PIO_Clear(&pioleds[0]);
+	      ledstat = 1;
+	    }
+	  else
+	    {
+	      PIO_Set(&pioleds[0]);
+	      ledstat = 0;
+	    }
+	}
+      i=i+1;
+    }*/
 
   //  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
   vStartLocatorTask( tskIDLE_PRIORITY + 1 );
@@ -64,14 +84,14 @@ portCHAR cTxByte;
 /* The idle hook simply sends a string of characters to the USB port.
    The characters will be buffered and sent once the port is connected. */
  trspistat.counter = xTaskGetTickCount();
- if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
+ /*if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
    {
      xLastTx = xTaskGetTickCount();
      for( cTxByte = mainFIRST_TX_CHAR; cTxByte <= mainLAST_TX_CHAR; cTxByte++ )
        {
 	 vUSBSendByte( cTxByte );
        }
-   }
+   }*/
 
  int i = 0;
 
