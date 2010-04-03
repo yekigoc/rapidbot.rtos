@@ -755,6 +755,7 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	case 0x4:
 	  prvSendZLP();
 	  memcpy( &trspistat.leds, pxControlRx.ucBuffer, sizeof( trspistat.leds ) );
+	  trspistat.ledschanged = 1;
 	  break;
 	case 0x5:
 	  prvSendControlData( ( unsigned portCHAR * ) trspistat.adcvalue, sizeof( trspistat.adcvalue ), sizeof( trspistat.adcvalue ), pdFALSE );

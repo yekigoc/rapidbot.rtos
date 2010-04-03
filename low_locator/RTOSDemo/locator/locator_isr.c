@@ -81,3 +81,53 @@ vLOC_ISR_Wrapper(void)
   /* Restore the context of whichever task will execute next. */
   portRESTORE_CONTEXT();
 }
+
+//------------------------------------------------------------------------------
+/// Interrupt handler wrapper for the PIT.
+//------------------------------------------------------------------------------
+void 
+vLOC_PIT_Wrapper(void)
+{
+  /* Save the context of the interrupted task. */
+  portSAVE_CONTEXT();
+  
+  vLOC_PIT_Handler();
+  
+  /* Restore the context of whichever task will execute next. */
+  portRESTORE_CONTEXT();
+}
+
+//------------------------------------------------------------------------------
+/// Interrupt handler for the PIT.
+//------------------------------------------------------------------------------
+
+void
+vLOC_PIT_Handler(void)
+{
+  portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+  
+  if (trspistat.wbufidx<255)
+    {
+      trspistat.wbufidx++;
+      ADC_EnableIt(AT91C_BASE_ADC, ADC_NUM_1);
+      
+      // Start measurement
+      ADC_StartConversion(AT91C_BASE_ADC);
+    }
+  else
+    {
+      trspistat.wbufidx=0;
+      trspistat.usbdataready = 1;
+    }
+
+  //  trspistat.counter=conversionDone;
+  /* Clear AIC to complete ISR processing */
+  /* Do a task switch if needed */
+  if( xHigherPriorityTaskWoken )
+    {
+      /* This call will ensure that the unblocked task will be executed
+	 immediately upon completion of the ISR if it has a priority higher
+	 than the interrupted task. */
+      portYIELD_FROM_ISR();
+    }
+}

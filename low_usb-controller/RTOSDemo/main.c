@@ -109,9 +109,13 @@ portCHAR cTxByte;
 
  for (i; i<3; i++)
    {
-     if ((trspistat.leds & (1<<i))==0)
-       PIO_Clear(&pioleds[i]);
-     else
-       PIO_Set(&pioleds[i]);
+     if (trspistat.ledschanged == 1)
+       {
+	 trspistat.ledschanged = 0;
+	 if ((trspistat.leds & (1<<i))==0)
+	   PIO_Clear(&pioleds[i]);
+	 else
+	   PIO_Set(&pioleds[i]);
+       }
    }
 }
