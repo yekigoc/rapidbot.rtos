@@ -43,6 +43,7 @@ THUMB_SOURCE= \
 		locator/locator_task.c \
 		fft/fix_fft.c \
 		adc/adc.c \
+		tc/tc.c \
 		locator/locator.c
 #		proximity_sensor/proximity_sensor.c \
 #		proximity_sensor/proximity_sensor_task.c \

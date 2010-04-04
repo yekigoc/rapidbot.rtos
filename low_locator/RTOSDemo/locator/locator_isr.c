@@ -9,9 +9,17 @@
 /* The ISR can cause a context switch so is declared naked. */
 void vLOC_ISR_Wrapper( void ) __attribute__ ((naked));
 
+/* The ISR can cause a context switch so is declared naked. */
+void vLOC_TC_ISR_Wrapper( void ) __attribute__ ((naked));
+
 /* The function that actually performs the ISR work.  This must be separate
-from the wrapper function to ensure the correct stack frame gets set up. */
+   from the wrapper function to ensure the correct stack frame gets set up. */
 void vLOC_ISR_Handler( void );
+
+/* The function that actually performs the ISR work.  This must be separate
+   from the wrapper function to ensure the correct stack frame gets set up. */
+void ISR_Tc0( void );
+
 
 //------------------------------------------------------------------------------
 /// Interrupt handler for the ADC. Signals that the conversion is finished by
@@ -23,39 +31,25 @@ vLOC_ISR_Handler(void)
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
   unsigned int status;
   unsigned int id_channel;
-  
+
   status = ADC_GetStatus(AT91C_BASE_ADC);
   
-  id_channel=ADC_NUM_1;
-  
-  if (ADC_IsChannelInterruptStatusSet(status, id_channel)) 
+  for(id_channel=ADC_CHANNEL_5;id_channel<=ADC_CHANNEL_5;id_channel++) 
     {
-      ADC_DisableIt(AT91C_BASE_ADC, id_channel);
-      if (trspistat.wbufidx==255)
+      if (ADC_IsChannelInterruptStatusSet(status, id_channel)) 
 	{
-	  ADC_GetConvertedData(AT91C_BASE_ADC, id_channel);
+	  ADC_DisableIt(AT91C_BASE_ADC, id_channel);
+	  //	  ADC_GetConvertedData(AT91C_BASE_ADC, id_channel);
+	  trspistat.adcvals[id_channel] = ConvHex2mV(ADC_GetConvertedData(AT91C_BASE_ADC, id_channel));
+	  ADC_EnableIt(AT91C_BASE_ADC,id_channel);
 	}
-      else
-	{
-	  trspistat.adcbuf1[trspistat.wbufidx] = ConvHex2mV(ADC_GetConvertedData(AT91C_BASE_ADC, id_channel));
-	}
-    }
-  AT91C_BASE_AIC->AIC_EOICR = 0;
-  if (trspistat.wbufidx<255)
-    {
-      trspistat.wbufidx++;
-      ADC_EnableIt(AT91C_BASE_ADC, ADC_NUM_1);
-      
-      // Start measurement
-      ADC_StartConversion(AT91C_BASE_ADC);
-    }
-  else
-    {
-      trspistat.wbufidx=0;
-      trspistat.usbdataready = 1;
     }
 
-  //  trspistat.counter=conversionDone;
+  // Start measurement
+  ADC_StartConversion(AT91C_BASE_ADC);
+
+  AT91C_BASE_AIC->AIC_EOICR = 0;
+
   /* Clear AIC to complete ISR processing */
   /* Do a task switch if needed */
   if( xHigherPriorityTaskWoken )
@@ -83,45 +77,45 @@ vLOC_ISR_Wrapper(void)
 }
 
 //------------------------------------------------------------------------------
-/// Interrupt handler wrapper for the PIT.
+/// Interrupt handler for TC0. Displays the number of bytes received during the
+/// last second and the total number of bytes received, then restarts a read
+/// transfer on the USART if it was stopped.
 //------------------------------------------------------------------------------
-void 
-vLOC_PIT_Wrapper(void)
-{
-  /* Save the context of the interrupted task. */
-  portSAVE_CONTEXT();
-  
-  vLOC_PIT_Handler();
-  
-  /* Restore the context of whichever task will execute next. */
-  portRESTORE_CONTEXT();
-}
-
-//------------------------------------------------------------------------------
-/// Interrupt handler for the PIT.
-//------------------------------------------------------------------------------
-
-void
-vLOC_PIT_Handler(void)
+void ISR_Tc0(void)
 {
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
-  
-  if (trspistat.wbufidx<255)
-    {
-      trspistat.wbufidx++;
-      ADC_EnableIt(AT91C_BASE_ADC, ADC_NUM_1);
-      
-      // Start measurement
-      ADC_StartConversion(AT91C_BASE_ADC);
-    }
-  else
-    {
-      trspistat.wbufidx=0;
-      trspistat.usbdataready = 1;
-    }
 
-  //  trspistat.counter=conversionDone;
+  unsigned int status;
+
+  // Read TC0 status
+  status = AT91C_BASE_TC0->TC_SR;
+  int i = 0;
+
+  // RC compare
+  if ((status & AT91C_TC_CPCS) == AT91C_TC_CPCS) 
+    {
+      if (trspistat.usbdataready == 0)
+	{
+	  for (i = 0; i< LOC_NUMADCCHANNELS; i++)
+	    {
+	      if (trspistat.channels[i].wbufidx<256)
+		{
+		  trspistat.channels[i].adcbuf[trspistat.channels[i].wbufidx] = trspistat.adcvals[i];
+		  
+		  trspistat.channels[i].wbufidx++;  
+		}
+	      else
+		{
+		  if (i == (LOC_NUMADCCHANNELS - 1))
+		    trspistat.usbdataready = 1;
+		  trspistat.channels[i].wbufidx=0;
+		  TC_Stop(AT91C_BASE_TC0);
+		}
+	    }
+	}
+    }
   /* Clear AIC to complete ISR processing */
+  AT91C_BASE_AIC->AIC_EOICR = 0;
   /* Do a task switch if needed */
   if( xHigherPriorityTaskWoken )
     {
@@ -130,4 +124,19 @@ vLOC_PIT_Handler(void)
 	 than the interrupted task. */
       portYIELD_FROM_ISR();
     }
+}
+
+//------------------------------------------------------------------------------
+/// Interrupt handler wrapper for the TC.
+//------------------------------------------------------------------------------
+void 
+vLOC_TC_ISR_Wrapper(void)
+{
+  /* Save the context of the interrupted task. */
+  portSAVE_CONTEXT();
+  
+  ISR_Tc0();
+  
+  /* Restore the context of whichever task will execute next. */
+  portRESTORE_CONTEXT();
 }

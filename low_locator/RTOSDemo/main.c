@@ -5,7 +5,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "partest.h"
+//#include "partest.h"
 #include "USB-CDC.h"
 #include "common.h"
 #include "pio/pio.h"
@@ -14,7 +14,6 @@
 //#include <memory.h>
 
 #include "locator/locator_task.h"
-Pin pioleds[]={PA8, PA10, PA10};
 
 /* Priorities for the demo application tasks. */
 #define mainUSB_PRIORITY			( tskIDLE_PRIORITY +2 )
@@ -34,26 +33,8 @@ int main( void )
   prvSetupHardware();
 
   memset(&trspistat, 0, sizeof(trspistat));
-  /*
-  int ledstat = 0;
-  int i = 0;
-  while (i<1000000)
-    {
-      if (i%10000 == 0)
-	{
-	  if (ledstat==0)
-	    {
-	      PIO_Clear(&pioleds[0]);
-	      ledstat = 1;
-	    }
-	  else
-	    {
-	      PIO_Set(&pioleds[0]);
-	      ledstat = 0;
-	    }
-	}
-      i=i+1;
-    }*/
+  Pin a = PA8;
+  trspistat.leds[0].pioled = a ;
 
   //  vStartProximitySensorTask( tskIDLE_PRIORITY + 1 );
   vStartLocatorTask( tskIDLE_PRIORITY + 1 );
@@ -78,28 +59,37 @@ static void prvSetupHardware( void )
 
 void vApplicationIdleHook( void )
 {
-static portTickType xLastTx = 0;
-portCHAR cTxByte;
-
-/* The idle hook simply sends a string of characters to the USB port.
-   The characters will be buffered and sent once the port is connected. */
- trspistat.counter = xTaskGetTickCount();
- /*if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
-   {
-     xLastTx = xTaskGetTickCount();
-     for( cTxByte = mainFIRST_TX_CHAR; cTxByte <= mainLAST_TX_CHAR; cTxByte++ )
-       {
-	 vUSBSendByte( cTxByte );
-       }
-   }*/
-
- int i = 0;
-
- for (i; i<3; i++)
-   {
-     if ((trspistat.leds & (1<<i))==0)
-       PIO_Clear(&pioleds[i]);
-     else
-       PIO_Set(&pioleds[i]);
-   }
+  static portTickType xLastTx = 0;
+  portCHAR cTxByte;
+  
+  /* The idle hook simply sends a string of characters to the USB port.
+     The characters will be buffered and sent once the port is connected. */
+  trspistat.counter = xTaskGetTickCount();
+  /*if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
+    {
+    xLastTx = xTaskGetTickCount();
+    for( cTxByte = mainFIRST_TX_CHAR; cTxByte <= mainLAST_TX_CHAR; cTxByte++ )
+    {
+    vUSBSendByte( cTxByte );
+    }
+    }*/
+  
+  int i = 0;
+  
+  for (i; i<LOC_NUMLEDS; i++)
+    {
+      if ((trspistat.leds[i].changed)==1)
+	{
+	  if ((trspistat.leds[i].state)==0)
+	    {
+	      trspistat.leds[i].changed = 0;
+	      PIO_Clear(&trspistat.leds[i].pioled);
+	    }
+	  else
+	    {
+	      trspistat.leds[i].changed = 0;
+	      PIO_Set(&trspistat.leds[i].pioled);
+	    }
+	}
+    }
 }

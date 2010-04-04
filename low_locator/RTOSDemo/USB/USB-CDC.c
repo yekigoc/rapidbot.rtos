@@ -734,6 +734,10 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 {
   unsigned portCHAR usStatus = 0xFF;
   int a = 0;
+  unsigned char numchannels;
+  unsigned short ampdata;
+  unsigned short chan;
+  unsigned short amp;
 
   switch( pxRequest->ucRequest )
     {
@@ -742,50 +746,59 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
       //LCDPutStr("h", 100, 20, SMALL, BLACK, WHITE);
       switch (pxRequest->usValue)
 	{
+	case 0x1:
+	  prvSendZLP();
+	  memcpy( &trspistat.channelread, pxControlRx.ucBuffer, sizeof( trspistat.channelread ) );
+	  if (trspistat.channelread >= LOC_NUMADCCHANNELS)
+	    trspistat.channelread = LOC_NUMADCCHANNELS-1;
+	  break;
 	case 0x2:
        	  //trspistat.pwmp.cyclechange = ;
 	  prvSendZLP();
-	  memcpy( &trspistat.amp, pxControlRx.ucBuffer, sizeof( trspistat.amp ) );
-	  trspistat.ampchanged = 1;
+
+	  memcpy( &ampdata, pxControlRx.ucBuffer, sizeof( ampdata ) );
+	  chan = ampdata & 0xFF;
+	  amp = (ampdata & 0xFF00) >> 16;
+	  trspistat.channels[chan].amp = amp;
+	  trspistat.channels[chan].ampchanged = 1;
 	  //prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
 	  break;
 	case 0x3:
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.counter, sizeof( trspistat.counter ), sizeof( trspistat.counter ), pdFALSE );
 	  break;
+	case 0x4:
+	  numchannels = LOC_NUMADCCHANNELS;
+	  prvSendControlData( ( unsigned portCHAR * ) &numchannels, sizeof( numchannels ), sizeof( numchannels ), pdFALSE );
+	  break;
 	case 0x5:
 	  prvSendZLP();
-	  memcpy( &trspistat.part, pxControlRx.ucBuffer, sizeof( trspistat.part ) );
+	  memcpy( &trspistat.channels[trspistat.channelread].part, pxControlRx.ucBuffer, sizeof( trspistat.channels[trspistat.channelread].part ) );
 	  break;
 	case 0x6:
-	  if (trspistat.part == 0)
+	  if (trspistat.channels[trspistat.channelread].part == 0)
 	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1, 128, 128, pdFALSE ); //sending in two stages
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf, 128, 128, pdFALSE ); //sending in two stages
 	    }
-	  else if (trspistat.part == 1)
+	  else if (trspistat.channels[trspistat.channelread].part == 1)
 	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1+128, 128, 128, pdFALSE ); //sending in two stages
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf+128, 128, 128, pdFALSE ); //sending in two stages
 	    }
-	  else if (trspistat.part == 2)
+	  else if (trspistat.channels[trspistat.channelread].part == 2)
 	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1+256, 128, 128, pdFALSE ); //sending in two stages
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf+256, 128, 128, pdFALSE ); //sending in two stages
 	    }
-	  else if (trspistat.part == 3)
+	  else if (trspistat.channels[trspistat.channelread].part == 3)
 	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.adcbuf1+384, 128, 128, pdFALSE ); //sending in two stages
-	      trspistat.readingadcbuf =0;
-	      trspistat.usbdataready = 0;
-	      ADC_EnableIt(AT91C_BASE_ADC, ADC_NUM_1);
-	      
-	      // Start measurement
-	      ADC_StartConversion(AT91C_BASE_ADC);
+	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf+384, 128, 128, pdFALSE ); //sending in two stages
+	      if (trspistat.channelread == LOC_NUMADCCHANNELS-1)
+		{
+		  trspistat.usbdataready = 0;
+		  TC_Start(AT91C_BASE_TC0);
+		}
 	    }
 
 	  break;
 	case 0x7:
-	  if (trspistat.usbdataready == 1)
-	    {
-	      trspistat.readingadcbuf = 1;
-	    }
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.usbdataready, sizeof( trspistat.usbdataready ), sizeof( trspistat.usbdataready ), pdFALSE );
 	  break;
 	default:
