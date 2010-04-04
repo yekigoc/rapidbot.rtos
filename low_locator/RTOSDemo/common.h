@@ -42,17 +42,34 @@ static const Pin pins[] = {
 
 typedef struct
 {
-  unsigned long counter;
-  unsigned short usbinited;
-  unsigned short adcbuf1[256];
+  Pin pioled;
+  char state;
+  char changed;
+}ledstat;
+
+typedef struct
+{
+  unsigned int channel;
+  unsigned short adcbuf[256];
   char converted;               //wether conversion is over
-  unsigned char readingadcbuf;  //usb reading buf flag
-  unsigned char usbdataready;
-  unsigned char wbufidx;        //current write index
+  unsigned short wbufidx;        //current write index
   unsigned char amp;            //amplifierstate (0-16)
   unsigned char part;
   unsigned char ampchanged;     //wether amplification changed
-  char leds;
+} adcchan;
+
+#define LOC_NUMADCCHANNELS 8
+#define LOC_NUMLEDS 1
+
+typedef struct
+{
+  adcchan channels[LOC_NUMADCCHANNELS];
+  unsigned short adcvals[LOC_NUMADCCHANNELS];
+  unsigned char usbdataready;
+  unsigned char channelread;
+  unsigned long counter;
+  unsigned short usbinited;
+  ledstat leds[LOC_NUMLEDS];
 } spistat;
 
 spistat trspistat;

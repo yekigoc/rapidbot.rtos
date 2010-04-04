@@ -2,8 +2,6 @@ Archive member included because of file (symbol)
 
 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
                               adc/adc.o (__udivsi3)
-/home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
-                              main.o (__modsi3)
 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
                               /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o) (__div0)
 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
@@ -94,6 +92,8 @@ Archive member included because of file (symbol)
                               /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o) (__divsi3)
 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
                               /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o) (__umodsi3)
+/home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
+                              /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o) (__modsi3)
 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
                               /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o) (__subdf3)
 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_muldivdf3.o)
@@ -107,7 +107,7 @@ Allocating common symbols
 Common symbol       size              file
 
 errno               0x4               /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
-trspistat           0x210             locator/locator_isr.o
+trspistat           0x108c            locator/locator_isr.o
 xUSBInterruptQueue  0x4               USB/USB-CDC.o
 locstat             0x104             locator/locator_isr.o
 
@@ -136,8 +136,9 @@ LOAD USB/USB-CDC.o
 LOAD locator/locator_task.o
 LOAD fft/fix_fft.o
 LOAD adc/adc.o
+LOAD tc/tc.o
 LOAD locator/locator.o
-LOAD /tmp/ccT8M2QT.o
+LOAD /tmp/cc1wcC5v.o
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a
 LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a
@@ -146,9 +147,9 @@ LOAD /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/li
 
 startup         0x0000000000100000       0x44
  *(.startup)
- .startup       0x0000000000100000       0x44 /tmp/ccT8M2QT.o
+ .startup       0x0000000000100000       0x44 /tmp/cc1wcC5v.o
 
-prog            0x0000000000100044     0x9984
+prog            0x0000000000100044     0x9db8
  *(.text)
  .text          0x0000000000100044      0x254 ../../low_rtos/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S/portISR.o
                 0x0000000000100134                vPreemptiveTick
@@ -163,474 +164,481 @@ prog            0x0000000000100044     0x9984
  .text          0x0000000000100344      0x268 USB/USBIsr.o
                 0x0000000000100344                vUSB_ISR_Handler
                 0x0000000000100504                vUSB_ISR_Wrapper
- .text          0x00000000001005ac      0x178 locator/locator_isr.o
+ .text          0x00000000001005ac      0x3b8 locator/locator_isr.o
+                0x00000000001006dc                ISR_Tc0
                 0x00000000001005ac                vLOC_ISR_Handler
-                0x000000000010067c                vLOC_ISR_Wrapper
- .text          0x0000000000100724       0xf8 main.o
-                0x0000000000100724                main
-                0x00000000001007c8                vApplicationIdleHook
- .text          0x000000000010081c       0xac ../../low_rtos/FreeRTOS/Source/list.o
-                0x000000000010083c                vListInsertEnd
-                0x00000000001008a4                vListRemove
-                0x0000000000100834                vListInitialiseItem
-                0x000000000010081c                vListInitialise
-                0x0000000000100858                vListInsert
- .text          0x00000000001008c8      0x584 ../../low_rtos/FreeRTOS/Source/queue.o
-                0x00000000001009d0                xQueueGenericSendFromISR
-                0x00000000001008c8                xQueueCreate
-                0x0000000000100950                vQueueDelete
-                0x0000000000100c90                xQueueGenericSend
-                0x0000000000100968                xQueueReceiveFromISR
-                0x0000000000100b08                xQueueIsQueueFullFromISR
-                0x0000000000100b1c                xQueueGenericReceive
-                0x0000000000100934                uxQueueMessagesWaiting
-                0x000000000010094c                uxQueueMessagesWaitingFromISR
-                0x0000000000100afc                xQueueIsQueueEmptyFromISR
-                0x0000000000100e04                xQueueCreateMutex
- .text          0x0000000000100e4c      0xbf0 ../../low_rtos/FreeRTOS/Source/tasks.o
-                0x0000000000100e5c                uxTaskPriorityGet
-                0x0000000000100e84                vTaskPrioritySet
-                0x0000000000100f28                vTaskEndScheduler
-                0x0000000000101170                vTaskPlaceOnEventList
-                0x0000000000101070                ulTaskEndTrace
-                0x000000000010100c                xTaskGetTickCount
-                0x00000000001011c8                xTaskRemoveFromEventList
-                0x0000000000101034                vTaskStartTrace
-                0x0000000000101554                xTaskCheckForTimeOut
-                0x0000000000100e4c                vTaskSuspendAll
-                0x0000000000101508                vTaskPriorityDisinherit
-                0x000000000010149c                vTaskPriorityInherit
-                0x000000000010109c                vTaskSwitchContext
-                0x0000000000101028                uxTaskGetNumberOfTasks
-                0x0000000000100f40                vTaskIncrementTick
-                0x0000000000101750                vTaskList
-                0x00000000001019b0                vTaskDelayUntil
-                0x0000000000101490                xTaskGetCurrentTaskHandle
-                0x0000000000101474                usTaskCheckFreeStackSpace
-                0x00000000001015ac                xTaskResumeAll
-                0x000000000010142c                vTaskStartScheduler
-                0x000000000010125c                vTaskMissedYield
-                0x0000000000101280                xTaskCreate
-                0x0000000000101948                vTaskDelay
-                0x0000000000101244                vTaskSetTimeOutState
- .text          0x0000000000101a3c       0xec ../../low_rtos/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S/port.o
-                0x0000000000101ae0                xPortStartScheduler
-                0x0000000000101b24                vPortEndScheduler
-                0x0000000000101a3c                pxPortInitialiseStack
- .text          0x0000000000101b28       0xe8 ../../low_rtos/FreeRTOS/Source/portable/MemMang/heap_2.o
-                0x0000000000101be0                vPortFree
-                0x0000000000101b28                pvPortMalloc
- .text          0x0000000000101c10       0x54 aic/aic.o
-                0x0000000000101c50                AIC_DisableIT
-                0x0000000000101c3c                AIC_EnableIT
-                0x0000000000101c10                AIC_ConfigureIT
- .text          0x0000000000101c64      0x170 pio/pio.o
-                0x0000000000101d84                PIO_Get
-                0x0000000000101c64                PIO_Configure
-                0x0000000000101d7c                PIO_Clear
-                0x0000000000101db0                PIO_GetOutputDataStatus
-                0x0000000000101d74                PIO_Set
-                0x0000000000101dcc                PIO_GetISR
- .text          0x0000000000101dd4      0x9a4 USB/USB-CDC.o
-                0x0000000000101dd4                vUSBSendByte
-                0x0000000000101efc                vUSBCDCTask
- .text          0x0000000000102778      0x178 locator/locator_task.o
-                0x000000000010279c                loc_writecommand
-                0x0000000000102778                vStartLocatorTask
-                0x0000000000102868                vLocatorTask
- .text          0x00000000001028f0      0x34c fft/fix_fft.o
-                0x000000000010290c                fix_fft
-                0x00000000001028f0                FIX_MPY
-                0x0000000000102bc4                fix_fftr
- .text          0x0000000000102c3c      0x1a4 adc/adc.o
-                0x0000000000102c5c                ADC_StartConversion
-                0x0000000000102c58                ADC_GetChannelStatus
-                0x0000000000102c50                ADC_DisableChannel
-                0x0000000000102c9c                ADC_EnableIt
-                0x0000000000102c44                ADC_GetModeReg
-                0x0000000000102c3c                ADC_SoftReset
-                0x0000000000102cec                ADC_GetStatus
-                0x0000000000102cf0                ADC_GetInterruptMaskStatus
-                0x0000000000102d14                ADC_IsInterruptMasked
-                0x0000000000102d1c                ADC_Initialize
-                0x0000000000102cc8                ADC_DisableIt
-                0x0000000000102cf4                ADC_IsChannelInterruptStatusSet
-                0x0000000000102d0c                ADC_IsStatusSet
-                0x0000000000102c68                ADC_GetConvertedData
-                0x0000000000102c64                ADC_GetLastConvertedData
-                0x0000000000102c48                ADC_EnableChannel
-                0x0000000000102cc0                ADC_EnableDataReadyIt
- .text          0x0000000000102de0       0x18 locator/locator.o
-                0x0000000000102de0                ConvHex2mV
- .text          0x0000000000102df8       0xd0 /tmp/ccT8M2QT.o
-                0x0000000000102df8                start
-                0x0000000000102ea8                endless_loop
- .text          0x0000000000102ec8       0x8c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
-                0x0000000000102ec8                __udivsi3
-                0x0000000000102f44                __aeabi_uidivmod
- .text          0x0000000000102f54       0xd8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
-                0x0000000000102f54                __modsi3
- .text          0x000000000010302c        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
-                0x000000000010302c                __aeabi_ldiv0
-                0x000000000010302c                __div0
-                0x000000000010302c                __aeabi_idiv0
- .text          0x0000000000103030       0x68 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
-                0x0000000000103030                memcpy
- .text          0x0000000000103098       0x68 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
-                0x0000000000103098                memset
- .text          0x0000000000103100       0x84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
-                0x0000000000103100                _sprintf_r
-                0x0000000000103140                sprintf
- .text          0x0000000000103184       0x50 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
-                0x0000000000103184                strcat
- .text          0x00000000001031d4       0x60 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
-                0x00000000001031d4                strcpy
- .text          0x0000000000103234       0x84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
-                0x0000000000103234                strncpy
- .text          0x00000000001032b8     0x1900 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
-                0x00000000001032d8                _vfprintf_r
-                0x0000000000104b98                vfprintf
- .text          0x0000000000104bb8       0x54 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
-                0x0000000000104bb8                _wcrtomb_r
-                0x0000000000104bec                wcrtomb
- .text          0x0000000000104c0c      0x100 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
-                0x0000000000104c0c                _wcsrtombs_r
-                0x0000000000104ce4                wcsrtombs
- .text          0x0000000000104d0c      0x2a8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
-                0x0000000000104d0c                _wctomb_r
- .text          0x0000000000104fb4       0xa8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
-                0x0000000000104fb4                __swsetup
- .text          0x000000000010505c      0xf08 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
-                0x00000000001051ac                _dtoa_r
- .text          0x0000000000105f64       0x90 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
-                0x0000000000105f64                fflush
- .text          0x0000000000105ff4      0x1c0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
-                0x0000000000106094                __sinit
-                0x000000000010602c                __sfmoreglue
-                0x0000000000106078                _cleanup
-                0x0000000000106068                _cleanup_r
-                0x0000000000106184                __fp_lock_all
-                0x0000000000106060                __sfp_lock_acquire
-                0x00000000001060f0                __sfp
-                0x0000000000106090                __sinit_lock_release
-                0x000000000010619c                __fp_unlock_all
-                0x0000000000106064                __sfp_lock_release
-                0x000000000010608c                __sinit_lock_acquire
- .text          0x00000000001061b4      0x260 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
-                0x0000000000106254                _free_r
-                0x00000000001061b4                _malloc_trim_r
- .text          0x0000000000106414      0x2a8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
-                0x0000000000106414                __sfvwrite
- .text          0x00000000001066bc       0xe0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
-                0x00000000001066bc                _fwalk
-                0x0000000000106728                _fwalk_reent
- .text          0x000000000010679c       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
-                0x000000000010679c                _setlocale_r
-                0x00000000001067d8                __locale_charset
-                0x00000000001067e4                _localeconv_r
-                0x00000000001067ec                setlocale
-                0x0000000000106808                localeconv
- .text          0x000000000010681c       0xe0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
-                0x000000000010681c                __smakebuf
- .text          0x00000000001068fc      0x548 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
-                0x00000000001068fc                _malloc_r
- .text          0x0000000000106e44       0x90 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
-                0x0000000000106e44                memchr
- .text          0x0000000000106ed4       0x90 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
-                0x0000000000106ed4                memmove
- .text          0x0000000000106f64        0x8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
-                0x0000000000106f68                __malloc_unlock
-                0x0000000000106f64                __malloc_lock
- .text          0x0000000000106f6c      0x8f4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
-                0x000000000010781c                _mprec_log10
-                0x0000000000107118                _hi0bits
-                0x0000000000106f6c                _Balloc
-                0x00000000001076e0                _d2b
-                0x00000000001071ec                _multiply
-                0x00000000001077c8                _ratio
-                0x0000000000107078                _s2b
-                0x00000000001071d4                _i2b
-                0x0000000000107168                _lo0bits
-                0x000000000010748c                __mcmp
-                0x0000000000107338                _pow5mult
-                0x00000000001075c8                _ulp
-                0x000000000010761c                _b2d
-                0x0000000000106fdc                _multadd
-                0x00000000001074d0                __mdiff
-                0x00000000001073d8                _lshift
-                0x0000000000106fc4                _Bfree
- .text          0x0000000000107860      0x3ac /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
-                0x0000000000107860                _realloc_r
- .text          0x0000000000107c0c       0x28 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
-                0x0000000000107c0c                _sbrk_r
- .text          0x0000000000107c34       0x24 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
-                0x0000000000107c34                isinf
- .text          0x0000000000107c58       0x1c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
-                0x0000000000107c58                isnan
- .text          0x0000000000107c74       0xe4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
-                0x0000000000107cfc                __sseek
-                0x0000000000107c74                __sread
-                0x0000000000107d3c                __sclose
-                0x0000000000107cb0                __swrite
- .text          0x0000000000107d58       0x88 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
-                0x0000000000107d58                strcmp
- .text          0x0000000000107de0       0x48 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
-                0x0000000000107de0                strlen
- .text          0x0000000000107e28      0x504 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
-                0x0000000000107e94                _getpid
-                0x0000000000107f5c                initialise_monitor_handles
-                0x0000000000107f2c                isatty
-                0x0000000000107ed0                _fstat
-                0x00000000001081e0                _open
-                0x0000000000107e98                _sbrk
-                0x0000000000107f04                _raise
-                0x0000000000107f08                _times
-                0x00000000001081f4                _stat
-                0x0000000000108144                _lseek
-                0x0000000000107ef4                _link
-                0x0000000000108098                _swiwrite
-                0x0000000000107f48                _rename
-                0x000000000010800c                _swilseek
-                0x00000000001080c0                _swiclose
-                0x0000000000108154                _swiopen
-                0x0000000000107efc                _unlink
-                0x0000000000108230                _write
-                0x00000000001082e4                _kill
-                0x0000000000108300                _gettimeofday
-                0x0000000000108280                _read
-                0x00000000001082cc                _exit
-                0x0000000000107f30                _system
-                0x0000000000107fe4                _swiread
-                0x0000000000108134                _close
- .text          0x000000000010832c       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
-                0x000000000010832c                _write_r
- .text          0x0000000000108358       0x64 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
-                0x0000000000108358                _calloc_r
- .text          0x00000000001083bc       0x28 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
-                0x00000000001083bc                _close_r
- .text          0x00000000001083e4        0xc /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
-                0x00000000001083e4                __errno
- .text          0x00000000001083f0       0xbc /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
-                0x00000000001083f0                _fclose_r
-                0x0000000000108494                fclose
- .text          0x00000000001084ac       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
-                0x00000000001084ac                _fstat_r
- .text          0x00000000001084d8       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
-                0x00000000001084d8                _lseek_r
- .text          0x0000000000108504       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
-                0x0000000000108504                _read_r
- .text          0x0000000000108530      0x118 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
-                0x0000000000108530                cleanup_glue
-                0x0000000000108550                _reclaim_reent
-                0x00000000001085e4                _wrapup_reent
- .text          0x0000000000108648       0xa4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
-                0x0000000000108648                __divsi3
-                0x00000000001086dc                __aeabi_idivmod
- .text          0x00000000001086ec       0xc8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
-                0x00000000001086ec                __umodsi3
- .text          0x00000000001087b4      0x430 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
-                0x0000000000108b78                __floatdidf
-                0x0000000000108af8                __floatsidf
-                0x0000000000108ad0                __aeabi_ui2d
-                0x00000000001087b4                __aeabi_drsub
-                0x0000000000108b24                __extendsfdf2
-                0x00000000001087c0                __adddf3
-                0x0000000000108ad0                __floatunsidf
-                0x00000000001087c0                __aeabi_dadd
-                0x0000000000108b64                __aeabi_ul2d
-                0x00000000001087bc                __aeabi_dsub
-                0x0000000000108b64                __floatundidf
-                0x0000000000108af8                __aeabi_i2d
-                0x0000000000108b78                __aeabi_l2d
-                0x0000000000108b24                __aeabi_f2d
-                0x00000000001087bc                __subdf3
- .text          0x0000000000108be4      0x49c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_muldivdf3.o)
-                0x0000000000108e74                __aeabi_ddiv
-                0x0000000000108be4                __aeabi_dmul
-                0x0000000000108e74                __divdf3
-                0x0000000000108be4                __muldf3
- .text          0x0000000000109080      0x140 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_cmpdf2.o)
-                0x0000000000109178                __aeabi_dcmple
-                0x0000000000109090                __cmpdf2
-                0x0000000000109090                __eqdf2
-                0x0000000000109080                __gtdf2
-                0x0000000000109130                __aeabi_cdcmple
-                0x0000000000109114                __aeabi_cdrcmple
-                0x0000000000109088                __ltdf2
-                0x0000000000109160                __aeabi_dcmplt
-                0x0000000000109088                __ledf2
-                0x00000000001091a8                __aeabi_dcmpgt
-                0x0000000000109190                __aeabi_dcmpge
-                0x0000000000109090                __nedf2
-                0x0000000000109148                __aeabi_dcmpeq
-                0x0000000000109130                __aeabi_cdcmpeq
-                0x0000000000109080                __gedf2
- .text          0x00000000001091c0       0x5c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_fixdfsi.o)
-                0x00000000001091c0                __fixdfsi
-                0x00000000001091c0                __aeabi_d2iz
+                0x000000000010063c                vLOC_ISR_Wrapper
+                0x00000000001007d4                vLOC_TC_ISR_Wrapper
+ .text          0x0000000000100964       0xd0 main.o
+                0x0000000000100964                main
+                0x00000000001009e4                vApplicationIdleHook
+ .text          0x0000000000100a34       0xac ../../low_rtos/FreeRTOS/Source/list.o
+                0x0000000000100a54                vListInsertEnd
+                0x0000000000100abc                vListRemove
+                0x0000000000100a4c                vListInitialiseItem
+                0x0000000000100a34                vListInitialise
+                0x0000000000100a70                vListInsert
+ .text          0x0000000000100ae0      0x584 ../../low_rtos/FreeRTOS/Source/queue.o
+                0x0000000000100be8                xQueueGenericSendFromISR
+                0x0000000000100ae0                xQueueCreate
+                0x0000000000100b68                vQueueDelete
+                0x0000000000100ea8                xQueueGenericSend
+                0x0000000000100b80                xQueueReceiveFromISR
+                0x0000000000100d20                xQueueIsQueueFullFromISR
+                0x0000000000100d34                xQueueGenericReceive
+                0x0000000000100b4c                uxQueueMessagesWaiting
+                0x0000000000100b64                uxQueueMessagesWaitingFromISR
+                0x0000000000100d14                xQueueIsQueueEmptyFromISR
+                0x000000000010101c                xQueueCreateMutex
+ .text          0x0000000000101064      0xbf0 ../../low_rtos/FreeRTOS/Source/tasks.o
+                0x0000000000101074                uxTaskPriorityGet
+                0x000000000010109c                vTaskPrioritySet
+                0x0000000000101140                vTaskEndScheduler
+                0x0000000000101388                vTaskPlaceOnEventList
+                0x0000000000101288                ulTaskEndTrace
+                0x0000000000101224                xTaskGetTickCount
+                0x00000000001013e0                xTaskRemoveFromEventList
+                0x000000000010124c                vTaskStartTrace
+                0x000000000010176c                xTaskCheckForTimeOut
+                0x0000000000101064                vTaskSuspendAll
+                0x0000000000101720                vTaskPriorityDisinherit
+                0x00000000001016b4                vTaskPriorityInherit
+                0x00000000001012b4                vTaskSwitchContext
+                0x0000000000101240                uxTaskGetNumberOfTasks
+                0x0000000000101158                vTaskIncrementTick
+                0x0000000000101968                vTaskList
+                0x0000000000101bc8                vTaskDelayUntil
+                0x00000000001016a8                xTaskGetCurrentTaskHandle
+                0x000000000010168c                usTaskCheckFreeStackSpace
+                0x00000000001017c4                xTaskResumeAll
+                0x0000000000101644                vTaskStartScheduler
+                0x0000000000101474                vTaskMissedYield
+                0x0000000000101498                xTaskCreate
+                0x0000000000101b60                vTaskDelay
+                0x000000000010145c                vTaskSetTimeOutState
+ .text          0x0000000000101c54       0xec ../../low_rtos/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S/port.o
+                0x0000000000101cf8                xPortStartScheduler
+                0x0000000000101d3c                vPortEndScheduler
+                0x0000000000101c54                pxPortInitialiseStack
+ .text          0x0000000000101d40       0xe8 ../../low_rtos/FreeRTOS/Source/portable/MemMang/heap_2.o
+                0x0000000000101df8                vPortFree
+                0x0000000000101d40                pvPortMalloc
+ .text          0x0000000000101e28       0x54 aic/aic.o
+                0x0000000000101e68                AIC_DisableIT
+                0x0000000000101e54                AIC_EnableIT
+                0x0000000000101e28                AIC_ConfigureIT
+ .text          0x0000000000101e7c      0x170 pio/pio.o
+                0x0000000000101f9c                PIO_Get
+                0x0000000000101e7c                PIO_Configure
+                0x0000000000101f94                PIO_Clear
+                0x0000000000101fc8                PIO_GetOutputDataStatus
+                0x0000000000101f8c                PIO_Set
+                0x0000000000101fe4                PIO_GetISR
+ .text          0x0000000000101fec      0xa38 USB/USB-CDC.o
+                0x0000000000101fec                vUSBSendByte
+                0x0000000000102114                vUSBCDCTask
+ .text          0x0000000000102a24      0x210 locator/locator_task.o
+                0x0000000000102a48                loc_writecommand
+                0x0000000000102a24                vStartLocatorTask
+                0x0000000000102b14                vLocatorTask
+ .text          0x0000000000102c34      0x34c fft/fix_fft.o
+                0x0000000000102c50                fix_fft
+                0x0000000000102c34                FIX_MPY
+                0x0000000000102f08                fix_fftr
+ .text          0x0000000000102f80      0x1a4 adc/adc.o
+                0x0000000000102fa0                ADC_StartConversion
+                0x0000000000102f9c                ADC_GetChannelStatus
+                0x0000000000102f94                ADC_DisableChannel
+                0x0000000000102fe0                ADC_EnableIt
+                0x0000000000102f88                ADC_GetModeReg
+                0x0000000000102f80                ADC_SoftReset
+                0x0000000000103030                ADC_GetStatus
+                0x0000000000103034                ADC_GetInterruptMaskStatus
+                0x0000000000103058                ADC_IsInterruptMasked
+                0x0000000000103060                ADC_Initialize
+                0x000000000010300c                ADC_DisableIt
+                0x0000000000103038                ADC_IsChannelInterruptStatusSet
+                0x0000000000103050                ADC_IsStatusSet
+                0x0000000000102fac                ADC_GetConvertedData
+                0x0000000000102fa8                ADC_GetLastConvertedData
+                0x0000000000102f8c                ADC_EnableChannel
+                0x0000000000103004                ADC_EnableDataReadyIt
+ .text          0x0000000000103124       0xc4 tc/tc.o
+                0x0000000000103144                TC_FindMckDivisor
+                0x0000000000103124                TC_Configure
+                0x000000000010313c                TC_Stop
+                0x0000000000103134                TC_Start
+ .text          0x00000000001031e8       0x18 locator/locator.o
+                0x00000000001031e8                ConvHex2mV
+ .text          0x0000000000103200       0xd0 /tmp/cc1wcC5v.o
+                0x0000000000103200                start
+                0x00000000001032b0                endless_loop
+ .text          0x00000000001032d0       0x8c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
+                0x00000000001032d0                __udivsi3
+                0x000000000010334c                __aeabi_uidivmod
+ .text          0x000000000010335c        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
+                0x000000000010335c                __aeabi_ldiv0
+                0x000000000010335c                __div0
+                0x000000000010335c                __aeabi_idiv0
+ .text          0x0000000000103360       0x68 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+                0x0000000000103360                memcpy
+ .text          0x00000000001033c8       0x68 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+                0x00000000001033c8                memset
+ .text          0x0000000000103430       0x84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+                0x0000000000103430                _sprintf_r
+                0x0000000000103470                sprintf
+ .text          0x00000000001034b4       0x50 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+                0x00000000001034b4                strcat
+ .text          0x0000000000103504       0x60 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+                0x0000000000103504                strcpy
+ .text          0x0000000000103564       0x84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+                0x0000000000103564                strncpy
+ .text          0x00000000001035e8     0x1900 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+                0x0000000000103608                _vfprintf_r
+                0x0000000000104ec8                vfprintf
+ .text          0x0000000000104ee8       0x54 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+                0x0000000000104ee8                _wcrtomb_r
+                0x0000000000104f1c                wcrtomb
+ .text          0x0000000000104f3c      0x100 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+                0x0000000000104f3c                _wcsrtombs_r
+                0x0000000000105014                wcsrtombs
+ .text          0x000000000010503c      0x2a8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+                0x000000000010503c                _wctomb_r
+ .text          0x00000000001052e4       0xa8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+                0x00000000001052e4                __swsetup
+ .text          0x000000000010538c      0xf08 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+                0x00000000001054dc                _dtoa_r
+ .text          0x0000000000106294       0x90 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+                0x0000000000106294                fflush
+ .text          0x0000000000106324      0x1c0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+                0x00000000001063c4                __sinit
+                0x000000000010635c                __sfmoreglue
+                0x00000000001063a8                _cleanup
+                0x0000000000106398                _cleanup_r
+                0x00000000001064b4                __fp_lock_all
+                0x0000000000106390                __sfp_lock_acquire
+                0x0000000000106420                __sfp
+                0x00000000001063c0                __sinit_lock_release
+                0x00000000001064cc                __fp_unlock_all
+                0x0000000000106394                __sfp_lock_release
+                0x00000000001063bc                __sinit_lock_acquire
+ .text          0x00000000001064e4      0x260 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+                0x0000000000106584                _free_r
+                0x00000000001064e4                _malloc_trim_r
+ .text          0x0000000000106744      0x2a8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+                0x0000000000106744                __sfvwrite
+ .text          0x00000000001069ec       0xe0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+                0x00000000001069ec                _fwalk
+                0x0000000000106a58                _fwalk_reent
+ .text          0x0000000000106acc       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x0000000000106acc                _setlocale_r
+                0x0000000000106b08                __locale_charset
+                0x0000000000106b14                _localeconv_r
+                0x0000000000106b1c                setlocale
+                0x0000000000106b38                localeconv
+ .text          0x0000000000106b4c       0xe0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+                0x0000000000106b4c                __smakebuf
+ .text          0x0000000000106c2c      0x548 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x0000000000106c2c                _malloc_r
+ .text          0x0000000000107174       0x90 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+                0x0000000000107174                memchr
+ .text          0x0000000000107204       0x90 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+                0x0000000000107204                memmove
+ .text          0x0000000000107294        0x8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+                0x0000000000107298                __malloc_unlock
+                0x0000000000107294                __malloc_lock
+ .text          0x000000000010729c      0x8f4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+                0x0000000000107b4c                _mprec_log10
+                0x0000000000107448                _hi0bits
+                0x000000000010729c                _Balloc
+                0x0000000000107a10                _d2b
+                0x000000000010751c                _multiply
+                0x0000000000107af8                _ratio
+                0x00000000001073a8                _s2b
+                0x0000000000107504                _i2b
+                0x0000000000107498                _lo0bits
+                0x00000000001077bc                __mcmp
+                0x0000000000107668                _pow5mult
+                0x00000000001078f8                _ulp
+                0x000000000010794c                _b2d
+                0x000000000010730c                _multadd
+                0x0000000000107800                __mdiff
+                0x0000000000107708                _lshift
+                0x00000000001072f4                _Bfree
+ .text          0x0000000000107b90      0x3ac /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+                0x0000000000107b90                _realloc_r
+ .text          0x0000000000107f3c       0x28 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
+                0x0000000000107f3c                _sbrk_r
+ .text          0x0000000000107f64       0x24 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+                0x0000000000107f64                isinf
+ .text          0x0000000000107f88       0x1c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+                0x0000000000107f88                isnan
+ .text          0x0000000000107fa4       0xe4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+                0x000000000010802c                __sseek
+                0x0000000000107fa4                __sread
+                0x000000000010806c                __sclose
+                0x0000000000107fe0                __swrite
+ .text          0x0000000000108088       0x88 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+                0x0000000000108088                strcmp
+ .text          0x0000000000108110       0x48 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+                0x0000000000108110                strlen
+ .text          0x0000000000108158      0x504 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+                0x00000000001081c4                _getpid
+                0x000000000010828c                initialise_monitor_handles
+                0x000000000010825c                isatty
+                0x0000000000108200                _fstat
+                0x0000000000108510                _open
+                0x00000000001081c8                _sbrk
+                0x0000000000108234                _raise
+                0x0000000000108238                _times
+                0x0000000000108524                _stat
+                0x0000000000108474                _lseek
+                0x0000000000108224                _link
+                0x00000000001083c8                _swiwrite
+                0x0000000000108278                _rename
+                0x000000000010833c                _swilseek
+                0x00000000001083f0                _swiclose
+                0x0000000000108484                _swiopen
+                0x000000000010822c                _unlink
+                0x0000000000108560                _write
+                0x0000000000108614                _kill
+                0x0000000000108630                _gettimeofday
+                0x00000000001085b0                _read
+                0x00000000001085fc                _exit
+                0x0000000000108260                _system
+                0x0000000000108314                _swiread
+                0x0000000000108464                _close
+ .text          0x000000000010865c       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
+                0x000000000010865c                _write_r
+ .text          0x0000000000108688       0x64 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+                0x0000000000108688                _calloc_r
+ .text          0x00000000001086ec       0x28 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
+                0x00000000001086ec                _close_r
+ .text          0x0000000000108714        0xc /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+                0x0000000000108714                __errno
+ .text          0x0000000000108720       0xbc /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+                0x0000000000108720                _fclose_r
+                0x00000000001087c4                fclose
+ .text          0x00000000001087dc       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
+                0x00000000001087dc                _fstat_r
+ .text          0x0000000000108808       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
+                0x0000000000108808                _lseek_r
+ .text          0x0000000000108834       0x2c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
+                0x0000000000108834                _read_r
+ .text          0x0000000000108860      0x118 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+                0x0000000000108860                cleanup_glue
+                0x0000000000108880                _reclaim_reent
+                0x0000000000108914                _wrapup_reent
+ .text          0x0000000000108978       0xa4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
+                0x0000000000108978                __divsi3
+                0x0000000000108a0c                __aeabi_idivmod
+ .text          0x0000000000108a1c       0xc8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+                0x0000000000108a1c                __umodsi3
+ .text          0x0000000000108ae4       0xd8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
+                0x0000000000108ae4                __modsi3
+ .text          0x0000000000108bbc      0x430 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
+                0x0000000000108f80                __floatdidf
+                0x0000000000108f00                __floatsidf
+                0x0000000000108ed8                __aeabi_ui2d
+                0x0000000000108bbc                __aeabi_drsub
+                0x0000000000108f2c                __extendsfdf2
+                0x0000000000108bc8                __adddf3
+                0x0000000000108ed8                __floatunsidf
+                0x0000000000108bc8                __aeabi_dadd
+                0x0000000000108f6c                __aeabi_ul2d
+                0x0000000000108bc4                __aeabi_dsub
+                0x0000000000108f6c                __floatundidf
+                0x0000000000108f00                __aeabi_i2d
+                0x0000000000108f80                __aeabi_l2d
+                0x0000000000108f2c                __aeabi_f2d
+                0x0000000000108bc4                __subdf3
+ .text          0x0000000000108fec      0x49c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_muldivdf3.o)
+                0x000000000010927c                __aeabi_ddiv
+                0x0000000000108fec                __aeabi_dmul
+                0x000000000010927c                __divdf3
+                0x0000000000108fec                __muldf3
+ .text          0x0000000000109488      0x140 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_cmpdf2.o)
+                0x0000000000109580                __aeabi_dcmple
+                0x0000000000109498                __cmpdf2
+                0x0000000000109498                __eqdf2
+                0x0000000000109488                __gtdf2
+                0x0000000000109538                __aeabi_cdcmple
+                0x000000000010951c                __aeabi_cdrcmple
+                0x0000000000109490                __ltdf2
+                0x0000000000109568                __aeabi_dcmplt
+                0x0000000000109490                __ledf2
+                0x00000000001095b0                __aeabi_dcmpgt
+                0x0000000000109598                __aeabi_dcmpge
+                0x0000000000109498                __nedf2
+                0x0000000000109550                __aeabi_dcmpeq
+                0x0000000000109538                __aeabi_cdcmpeq
+                0x0000000000109488                __gedf2
+ .text          0x00000000001095c8       0x5c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_fixdfsi.o)
+                0x00000000001095c8                __fixdfsi
+                0x00000000001095c8                __aeabi_d2iz
  *(.rodata)
- .rodata        0x000000000010921c       0x3c main.o
- .rodata        0x0000000000109258       0x14 pio/pio.o
- .rodata        0x000000000010926c      0x244 USB/USB-CDC.o
-                0x00000000001092cd                pxDeviceDescriptor
-                0x0000000000109347                pxManufacturerStringDescriptor
-                0x000000000010926c                pxReportDescriptor
-                0x00000000001092df                pxInterfaceStringDescriptor
-                0x0000000000109323                pxProductStringDescriptor
-                0x0000000000109359                pxLanguageStringDescriptor
-                0x00000000001092fd                pxConfigurationStringDescriptor
-                0x000000000010928a                pxConfigDescriptor
- .rodata        0x00000000001094b0       0x30 locator/locator_task.o
- .rodata        0x00000000001094e0       0x20 adc/adc.o
- .rodata        0x0000000000109500      0x18c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .rodata        0x000000000010968c       0x18 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .rodata        0x00000000001096a4        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
-                0x00000000001096a4                _global_impure_ptr
- .rodata        0x00000000001096a8       0x30 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .rodata        0x00000000001096d8      0x124 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
-                0x00000000001096d8                __mprec_tinytens
-                0x0000000000109728                __mprec_tens
-                0x0000000000109700                __mprec_bigtens
+ .rodata        0x0000000000109624       0x48 main.o
+ .rodata        0x000000000010966c       0x14 pio/pio.o
+ .rodata        0x0000000000109680      0x244 USB/USB-CDC.o
+                0x00000000001096e1                pxDeviceDescriptor
+                0x000000000010975b                pxManufacturerStringDescriptor
+                0x0000000000109680                pxReportDescriptor
+                0x00000000001096f3                pxInterfaceStringDescriptor
+                0x0000000000109737                pxProductStringDescriptor
+                0x000000000010976d                pxLanguageStringDescriptor
+                0x0000000000109711                pxConfigurationStringDescriptor
+                0x000000000010969e                pxConfigDescriptor
+ .rodata        0x00000000001098c4       0x30 locator/locator_task.o
+ .rodata        0x00000000001098f4       0x20 adc/adc.o
+ .rodata        0x0000000000109914       0x14 tc/tc.o
+ .rodata        0x0000000000109928      0x18c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .rodata        0x0000000000109ab4       0x18 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .rodata        0x0000000000109acc        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+                0x0000000000109acc                _global_impure_ptr
+ .rodata        0x0000000000109ad0       0x30 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .rodata        0x0000000000109b00      0x124 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+                0x0000000000109b00                __mprec_tinytens
+                0x0000000000109b50                __mprec_tens
+                0x0000000000109b28                __mprec_bigtens
  *(.rodata*)
  .rodata.str1.4
-                0x00000000001097fc        0x4 main.o
+                0x0000000000109c24        0x4 main.o
  .rodata.str1.4
-                0x0000000000109800       0x1e ../../low_rtos/FreeRTOS/Source/tasks.o
+                0x0000000000109c28       0x1e ../../low_rtos/FreeRTOS/Source/tasks.o
                                          0x20 (size before relaxing)
- *fill*         0x000000000010981e        0x2 00
+ *fill*         0x0000000000109c46        0x2 00
  .rodata.str1.4
-                0x0000000000109820        0x2 USB/USB-CDC.o
+                0x0000000000109c48        0x2 USB/USB-CDC.o
                                           0x4 (size before relaxing)
- *fill*         0x0000000000109822        0x2 00
+ *fill*         0x0000000000109c4a        0x2 00
  .rodata.str1.4
-                0x0000000000109824        0x4 locator/locator_task.o
+                0x0000000000109c4c        0x4 locator/locator_task.o
  .rodata.str1.4
-                0x0000000000109828       0x62 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+                0x0000000000109c50       0x62 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
                                          0x64 (size before relaxing)
- *fill*         0x000000000010988a        0x2 00
+ *fill*         0x0000000000109cb2        0x2 00
  .rodata.str1.4
-                0x000000000010988c       0x1e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+                0x0000000000109cb4       0x1e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
                                          0x20 (size before relaxing)
- *fill*         0x00000000001098aa        0x2 00
+ *fill*         0x0000000000109cd2        0x2 00
  .rodata.str1.4
-                0x00000000001098ac       0x10 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+                0x0000000000109cd4       0x10 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
                                          0x14 (size before relaxing)
  .rodata.str1.4
-                0x00000000001098bc        0x2 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+                0x0000000000109ce4        0x2 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
                                           0x4 (size before relaxing)
- *fill*         0x00000000001098be        0x2 00
+ *fill*         0x0000000000109ce6        0x2 00
  .rodata.str1.4
-                0x00000000001098c0        0xb /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x0000000000109ce8        0xb /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
                                          0x18 (size before relaxing)
- *fill*         0x00000000001098cb        0x1 00
+ *fill*         0x0000000000109cf3        0x1 00
  .rodata.str1.4
-                0x00000000001098cc        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+                0x0000000000109cf4        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
  *(.glue_7)
- .glue_7        0x00000000001098d0       0x78 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_fixdfsi.o)
-                0x000000000010993c                __ConvHex2mV_from_arm
-                0x0000000000109930                __ADC_GetConvertedData_from_arm
-                0x0000000000109900                __ADC_IsChannelInterruptStatusSet_from_arm
-                0x000000000010990c                __ADC_EnableIt_from_arm
-                0x00000000001098e8                __xQueueGenericSendFromISR_from_arm
-                0x0000000000109924                __ADC_DisableIt_from_arm
-                0x00000000001098f4                __ADC_GetStatus_from_arm
-                0x00000000001098dc                __vTaskIncrementTick_from_arm
-                0x0000000000109918                __ADC_StartConversion_from_arm
-                0x00000000001098d0                __vTaskSwitchContext_from_arm
+ .glue_7        0x0000000000109cf8       0x84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_fixdfsi.o)
+                0x0000000000109d58                __ConvHex2mV_from_arm
+                0x0000000000109d4c                __ADC_GetConvertedData_from_arm
+                0x0000000000109d28                __ADC_IsChannelInterruptStatusSet_from_arm
+                0x0000000000109d64                __ADC_EnableIt_from_arm
+                0x0000000000109d10                __xQueueGenericSendFromISR_from_arm
+                0x0000000000109d70                __TC_Stop_from_arm
+                0x0000000000109d40                __ADC_DisableIt_from_arm
+                0x0000000000109d1c                __ADC_GetStatus_from_arm
+                0x0000000000109d04                __vTaskIncrementTick_from_arm
+                0x0000000000109d34                __ADC_StartConversion_from_arm
+                0x0000000000109cf8                __vTaskSwitchContext_from_arm
  *(.glue_7t)
- .glue_7t       0x0000000000109948       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_fixdfsi.o)
-                0x0000000000109954                __vPortEnterCritical_change_to_arm
-                0x0000000000109968                __vPortEnableInterruptsFromThumb_from_thumb
-                0x00000000001099b8                ____gtdf2_from_thumb
-                0x0000000000109988                ____subdf3_from_thumb
-                0x0000000000109984                ____ltdf2_change_to_arm
-                0x000000000010998c                ____subdf3_change_to_arm
-                0x000000000010995c                __vPortExitCritical_change_to_arm
-                0x00000000001099c4                ____gedf2_change_to_arm
-                0x0000000000109960                __vPortISRStartFirstTask_from_thumb
-                0x0000000000109970                ____eqdf2_from_thumb
-                0x00000000001099a8                ____fixdfsi_from_thumb
-                0x0000000000109948                __vPortDisableInterruptsFromThumb_from_thumb
-                0x00000000001099b4                ____divdf3_change_to_arm
-                0x00000000001099c0                ____gedf2_from_thumb
-                0x0000000000109958                __vPortExitCritical_from_thumb
-                0x0000000000109994                ____muldf3_change_to_arm
-                0x00000000001099ac                ____fixdfsi_change_to_arm
-                0x00000000001099b0                ____divdf3_from_thumb
-                0x000000000010999c                ____adddf3_change_to_arm
-                0x00000000001099bc                ____gtdf2_change_to_arm
-                0x0000000000109950                __vPortEnterCritical_from_thumb
-                0x00000000001099a0                ____floatsidf_from_thumb
-                0x0000000000109980                ____ltdf2_from_thumb
-                0x0000000000109964                __vPortISRStartFirstTask_change_to_arm
-                0x000000000010997c                ____nedf2_change_to_arm
-                0x0000000000109998                ____adddf3_from_thumb
-                0x000000000010994c                __vPortDisableInterruptsFromThumb_change_to_arm
-                0x0000000000109974                ____eqdf2_change_to_arm
-                0x0000000000109990                ____muldf3_from_thumb
-                0x0000000000109978                ____nedf2_from_thumb
-                0x00000000001099a4                ____floatsidf_change_to_arm
-                0x000000000010996c                __vPortEnableInterruptsFromThumb_change_to_arm
-                0x00000000001099c8                __end_of_text__ = .
+ .glue_7t       0x0000000000109d7c       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_fixdfsi.o)
+                0x0000000000109d88                __vPortEnterCritical_change_to_arm
+                0x0000000000109d9c                __vPortEnableInterruptsFromThumb_from_thumb
+                0x0000000000109dec                ____gtdf2_from_thumb
+                0x0000000000109dbc                ____subdf3_from_thumb
+                0x0000000000109db8                ____ltdf2_change_to_arm
+                0x0000000000109dc0                ____subdf3_change_to_arm
+                0x0000000000109d90                __vPortExitCritical_change_to_arm
+                0x0000000000109df8                ____gedf2_change_to_arm
+                0x0000000000109d94                __vPortISRStartFirstTask_from_thumb
+                0x0000000000109da4                ____eqdf2_from_thumb
+                0x0000000000109ddc                ____fixdfsi_from_thumb
+                0x0000000000109d7c                __vPortDisableInterruptsFromThumb_from_thumb
+                0x0000000000109de8                ____divdf3_change_to_arm
+                0x0000000000109df4                ____gedf2_from_thumb
+                0x0000000000109d8c                __vPortExitCritical_from_thumb
+                0x0000000000109dc8                ____muldf3_change_to_arm
+                0x0000000000109de0                ____fixdfsi_change_to_arm
+                0x0000000000109de4                ____divdf3_from_thumb
+                0x0000000000109dd0                ____adddf3_change_to_arm
+                0x0000000000109df0                ____gtdf2_change_to_arm
+                0x0000000000109d84                __vPortEnterCritical_from_thumb
+                0x0000000000109dd4                ____floatsidf_from_thumb
+                0x0000000000109db4                ____ltdf2_from_thumb
+                0x0000000000109d98                __vPortISRStartFirstTask_change_to_arm
+                0x0000000000109db0                ____nedf2_change_to_arm
+                0x0000000000109dcc                ____adddf3_from_thumb
+                0x0000000000109d80                __vPortDisableInterruptsFromThumb_change_to_arm
+                0x0000000000109da8                ____eqdf2_change_to_arm
+                0x0000000000109dc4                ____muldf3_from_thumb
+                0x0000000000109dac                ____nedf2_from_thumb
+                0x0000000000109dd8                ____floatsidf_change_to_arm
+                0x0000000000109da0                __vPortEnableInterruptsFromThumb_change_to_arm
+                0x0000000000109dfc                __end_of_text__ = .
 
-.data           0x0000000000200000      0xe54 load address 0x00000000001099c8
+.data           0x0000000000200000      0xe30 load address 0x0000000000109dfc
                 0x0000000000200000                __data_beg__ = .
-                0x00000000001099c8                __data_beg_src__ = __end_of_text__
+                0x0000000000109dfc                __data_beg_src__ = __end_of_text__
  *(.data)
  .data          0x0000000000200000        0x4 ../../low_rtos/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S/portISR.o
                 0x0000000000200000                ulCriticalNesting
- .data          0x0000000000200004       0x24 main.o
-                0x0000000000200004                pioleds
- .data          0x0000000000200028        0x4 ../../low_rtos/FreeRTOS/Source/tasks.o
- .data          0x000000000020002c      0x600 fft/fix_fft.o
-                0x000000000020002c                Sinewave
- .data          0x000000000020062c      0x404 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
-                0x0000000000200a2c                _impure_ptr
- .data          0x0000000000200a30       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
-                0x0000000000200a3c                __mb_cur_max
-                0x0000000000200a30                __lc_ctype
- .data          0x0000000000200a44      0x410 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
-                0x0000000000200a44                __malloc_sbrk_base
-                0x0000000000200a4c                __malloc_av_
-                0x0000000000200a48                __malloc_trim_threshold
-                0x0000000000200e54                __data_end__ = .
+ .data          0x0000000000200004        0x4 ../../low_rtos/FreeRTOS/Source/tasks.o
+ .data          0x0000000000200008      0x600 fft/fix_fft.o
+                0x0000000000200008                Sinewave
+ .data          0x0000000000200608      0x404 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+                0x0000000000200a08                _impure_ptr
+ .data          0x0000000000200a0c       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x0000000000200a18                __mb_cur_max
+                0x0000000000200a0c                __lc_ctype
+ .data          0x0000000000200a20      0x410 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x0000000000200a20                __malloc_sbrk_base
+                0x0000000000200a28                __malloc_av_
+                0x0000000000200a24                __malloc_trim_threshold
+                0x0000000000200e30                __data_end__ = .
 
-.bss            0x0000000000200e54     0x66a0
-                0x0000000000200e54                __bss_beg__ = .
+.bss            0x0000000000200e30     0x751c
+                0x0000000000200e30                __bss_beg__ = .
  *(.bss)
- .bss           0x0000000000200e54       0x44 USB/USBIsr.o
- .bss           0x0000000000200e98        0x4 main.o
- .bss           0x0000000000200e9c      0x104 ../../low_rtos/FreeRTOS/Source/tasks.o
-                0x0000000000200e9c                pxCurrentTCB
- .bss           0x0000000000200fa0     0x6014 ../../low_rtos/FreeRTOS/Source/portable/MemMang/heap_2.o
- .bss           0x0000000000206fb4      0x134 USB/USB-CDC.o
- .bss           0x00000000002070e8        0xc /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
-                0x00000000002070f0                __nlocale_changed
-                0x00000000002070ec                __mlocale_changed
-                0x00000000002070e8                _PathLocale
- .bss           0x00000000002070f4       0x34 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
-                0x0000000000207124                __malloc_top_pad
-                0x0000000000207120                __malloc_max_sbrked_mem
-                0x00000000002070f4                __malloc_current_mallinfo
-                0x000000000020711c                __malloc_max_total_mem
- .bss           0x0000000000207128       0xb0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- COMMON         0x00000000002071d8      0x314 locator/locator_isr.o
-                0x00000000002071d8                trspistat
-                0x00000000002073e8                locstat
- COMMON         0x00000000002074ec        0x4 USB/USB-CDC.o
-                0x00000000002074ec                xUSBInterruptQueue
- COMMON         0x00000000002074f0        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
-                0x00000000002074f0                errno
-                0x00000000002074f4                . = ALIGN (0x4)
-                0x00000000002074f4                . = ALIGN (0x4)
-                0x00000000002074f4                _end = .
-                0x00000000002074f4                _bss_end__ = .
-                0x00000000002074f4                __bss_end__ = .
-                0x00000000002074f4                __end__ = .
-                0x00000000002074f4                PROVIDE (end, .)
+ .bss           0x0000000000200e30       0x44 USB/USBIsr.o
+ .bss           0x0000000000200e74        0x4 main.o
+ .bss           0x0000000000200e78      0x104 ../../low_rtos/FreeRTOS/Source/tasks.o
+                0x0000000000200e78                pxCurrentTCB
+ .bss           0x0000000000200f7c     0x6014 ../../low_rtos/FreeRTOS/Source/portable/MemMang/heap_2.o
+ .bss           0x0000000000206f90      0x134 USB/USB-CDC.o
+ .bss           0x00000000002070c4        0xc /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x00000000002070cc                __nlocale_changed
+                0x00000000002070c8                __mlocale_changed
+                0x00000000002070c4                _PathLocale
+ .bss           0x00000000002070d0       0x34 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x0000000000207100                __malloc_top_pad
+                0x00000000002070fc                __malloc_max_sbrked_mem
+                0x00000000002070d0                __malloc_current_mallinfo
+                0x00000000002070f8                __malloc_max_total_mem
+ .bss           0x0000000000207104       0xb0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ COMMON         0x00000000002071b4     0x1190 locator/locator_isr.o
+                0x00000000002071b4                trspistat
+                0x0000000000208240                locstat
+ COMMON         0x0000000000208344        0x4 USB/USB-CDC.o
+                0x0000000000208344                xUSBInterruptQueue
+ COMMON         0x0000000000208348        0x4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+                0x0000000000208348                errno
+                0x000000000020834c                . = ALIGN (0x4)
+                0x000000000020834c                . = ALIGN (0x4)
+                0x000000000020834c                _end = .
+                0x000000000020834c                _bss_end__ = .
+                0x000000000020834c                __bss_end__ = .
+                0x000000000020834c                __end__ = .
+                0x000000000020834c                PROVIDE (end, .)
 OUTPUT(RTOSDemo.elf elf32-littlearm)
 
-.comment        0x0000000000000000      0x426
+.comment        0x0000000000000000      0x438
  .comment       0x0000000000000000       0x12 ../../low_rtos/FreeRTOS/Source/portable/GCC/ARM7_AT91SAM7S/portISR.o
  .comment       0x0000000000000012       0x12 ./SrcAtmel/Cstartup_SAM7.o
  .comment       0x0000000000000024       0x12 USB/USBIsr.o
@@ -647,98 +655,99 @@ OUTPUT(RTOSDemo.elf elf32-littlearm)
  .comment       0x00000000000000ea       0x12 locator/locator_task.o
  .comment       0x00000000000000fc       0x12 fft/fix_fft.o
  .comment       0x000000000000010e       0x12 adc/adc.o
- .comment       0x0000000000000120       0x12 locator/locator.o
- .comment       0x0000000000000132       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .comment       0x0000000000000144       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .comment       0x0000000000000156       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
- .comment       0x0000000000000168       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
- .comment       0x000000000000017a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
- .comment       0x000000000000018c       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
- .comment       0x000000000000019e       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .comment       0x00000000000001b0       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
- .comment       0x00000000000001c2       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
- .comment       0x00000000000001d4       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
- .comment       0x00000000000001e6       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
- .comment       0x00000000000001f8       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .comment       0x000000000000020a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
- .comment       0x000000000000021c       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
- .comment       0x000000000000022e       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
- .comment       0x0000000000000240       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
- .comment       0x0000000000000252       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
- .comment       0x0000000000000264       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
- .comment       0x0000000000000276       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .comment       0x0000000000000288       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
- .comment       0x000000000000029a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
- .comment       0x00000000000002ac       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
- .comment       0x00000000000002be       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
- .comment       0x00000000000002d0       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
- .comment       0x00000000000002e2       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
- .comment       0x00000000000002f4       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
- .comment       0x0000000000000306       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
- .comment       0x0000000000000318       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
- .comment       0x000000000000032a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
- .comment       0x000000000000033c       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
- .comment       0x000000000000034e       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
- .comment       0x0000000000000360       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
- .comment       0x0000000000000372       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- .comment       0x0000000000000384       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
- .comment       0x0000000000000396       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
- .comment       0x00000000000003a8       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
- .comment       0x00000000000003ba       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
- .comment       0x00000000000003cc       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
- .comment       0x00000000000003de       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
- .comment       0x00000000000003f0       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
- .comment       0x0000000000000402       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
- .comment       0x0000000000000414       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+ .comment       0x0000000000000120       0x12 tc/tc.o
+ .comment       0x0000000000000132       0x12 locator/locator.o
+ .comment       0x0000000000000144       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .comment       0x0000000000000156       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .comment       0x0000000000000168       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+ .comment       0x000000000000017a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+ .comment       0x000000000000018c       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+ .comment       0x000000000000019e       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+ .comment       0x00000000000001b0       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .comment       0x00000000000001c2       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+ .comment       0x00000000000001d4       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+ .comment       0x00000000000001e6       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+ .comment       0x00000000000001f8       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+ .comment       0x000000000000020a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .comment       0x000000000000021c       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+ .comment       0x000000000000022e       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+ .comment       0x0000000000000240       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+ .comment       0x0000000000000252       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+ .comment       0x0000000000000264       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+ .comment       0x0000000000000276       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+ .comment       0x0000000000000288       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .comment       0x000000000000029a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+ .comment       0x00000000000002ac       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+ .comment       0x00000000000002be       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+ .comment       0x00000000000002d0       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+ .comment       0x00000000000002e2       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+ .comment       0x00000000000002f4       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+ .comment       0x0000000000000306       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+ .comment       0x0000000000000318       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
+ .comment       0x000000000000032a       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+ .comment       0x000000000000033c       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+ .comment       0x000000000000034e       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+ .comment       0x0000000000000360       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+ .comment       0x0000000000000372       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+ .comment       0x0000000000000384       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ .comment       0x0000000000000396       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
+ .comment       0x00000000000003a8       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+ .comment       0x00000000000003ba       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
+ .comment       0x00000000000003cc       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+ .comment       0x00000000000003de       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+ .comment       0x00000000000003f0       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
+ .comment       0x0000000000000402       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
+ .comment       0x0000000000000414       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
+ .comment       0x0000000000000426       0x12 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
 
 .debug_line     0x0000000000000000     0x4315
  .debug_line    0x0000000000000000       0x70 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
- .debug_line    0x0000000000000070       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
- .debug_line    0x00000000000000e1       0x5a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
- .debug_line    0x000000000000013b       0xce /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .debug_line    0x0000000000000209       0xdf /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .debug_line    0x00000000000002e8      0x183 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
- .debug_line    0x000000000000046b       0x7f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
- .debug_line    0x00000000000004ea       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
- .debug_line    0x000000000000056a       0xcd /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
- .debug_line    0x0000000000000637      0x580 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .debug_line    0x0000000000000bb7      0x155 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
- .debug_line    0x0000000000000d0c      0x183 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
- .debug_line    0x0000000000000e8f      0x1cb /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
- .debug_line    0x000000000000105a      0x165 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
- .debug_line    0x00000000000011bf      0x436 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .debug_line    0x00000000000015f5      0x15f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
- .debug_line    0x0000000000001754      0x1b7 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
- .debug_line    0x000000000000190b      0x176 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
- .debug_line    0x0000000000001a81      0x1e8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
- .debug_line    0x0000000000001c69      0x171 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
- .debug_line    0x0000000000001dda       0xf5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
- .debug_line    0x0000000000001ecf      0x15e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .debug_line    0x000000000000202d      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
- .debug_line    0x00000000000021ac      0x24f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
- .debug_line    0x00000000000023fb       0xe5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
- .debug_line    0x00000000000024e0       0xd9 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
- .debug_line    0x00000000000025b9      0x107 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
- .debug_line    0x00000000000026c0      0x3ba /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
- .debug_line    0x0000000000002a7a      0x1ae /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
- .debug_line    0x0000000000002c28      0x10a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
- .debug_line    0x0000000000002d32       0xb0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
- .debug_line    0x0000000000002de2       0xb0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
- .debug_line    0x0000000000002e92      0x170 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
- .debug_line    0x0000000000003002       0x88 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
- .debug_line    0x000000000000308a       0xba /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
- .debug_line    0x0000000000003144      0x2ca /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- .debug_line    0x000000000000340e      0x10b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
- .debug_line    0x0000000000003519      0x110 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
- .debug_line    0x0000000000003629      0x10b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
- .debug_line    0x0000000000003734      0x104 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
- .debug_line    0x0000000000003838      0x161 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
- .debug_line    0x0000000000003999      0x15b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
- .debug_line    0x0000000000003af4      0x10b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
- .debug_line    0x0000000000003bff      0x10a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
- .debug_line    0x0000000000003d09      0x13c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
- .debug_line    0x0000000000003e45       0x7c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
- .debug_line    0x0000000000003ec1       0x68 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+ .debug_line    0x0000000000000070       0x5a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
+ .debug_line    0x00000000000000ca       0xce /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .debug_line    0x0000000000000198       0xdf /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .debug_line    0x0000000000000277      0x183 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+ .debug_line    0x00000000000003fa       0x7f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+ .debug_line    0x0000000000000479       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+ .debug_line    0x00000000000004f9       0xcd /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+ .debug_line    0x00000000000005c6      0x580 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .debug_line    0x0000000000000b46      0x155 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+ .debug_line    0x0000000000000c9b      0x183 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+ .debug_line    0x0000000000000e1e      0x1cb /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+ .debug_line    0x0000000000000fe9      0x165 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+ .debug_line    0x000000000000114e      0x436 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .debug_line    0x0000000000001584      0x15f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+ .debug_line    0x00000000000016e3      0x1b7 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+ .debug_line    0x000000000000189a      0x176 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+ .debug_line    0x0000000000001a10      0x1e8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+ .debug_line    0x0000000000001bf8      0x171 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+ .debug_line    0x0000000000001d69       0xf5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+ .debug_line    0x0000000000001e5e      0x15e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .debug_line    0x0000000000001fbc      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+ .debug_line    0x000000000000213b      0x24f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+ .debug_line    0x000000000000238a       0xe5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+ .debug_line    0x000000000000246f       0xd9 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+ .debug_line    0x0000000000002548      0x107 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+ .debug_line    0x000000000000264f      0x3ba /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+ .debug_line    0x0000000000002a09      0x1ae /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+ .debug_line    0x0000000000002bb7      0x10a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
+ .debug_line    0x0000000000002cc1       0xb0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+ .debug_line    0x0000000000002d71       0xb0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+ .debug_line    0x0000000000002e21      0x170 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+ .debug_line    0x0000000000002f91       0x88 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+ .debug_line    0x0000000000003019       0xba /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+ .debug_line    0x00000000000030d3      0x2ca /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ .debug_line    0x000000000000339d      0x10b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
+ .debug_line    0x00000000000034a8      0x110 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+ .debug_line    0x00000000000035b8      0x10b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
+ .debug_line    0x00000000000036c3      0x104 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+ .debug_line    0x00000000000037c7      0x161 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+ .debug_line    0x0000000000003928      0x15b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
+ .debug_line    0x0000000000003a83      0x10b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
+ .debug_line    0x0000000000003b8e      0x10a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
+ .debug_line    0x0000000000003c98      0x13c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+ .debug_line    0x0000000000003dd4       0x7c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
+ .debug_line    0x0000000000003e50       0x68 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+ .debug_line    0x0000000000003eb8       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
  .debug_line    0x0000000000003f29      0x162 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
  .debug_line    0x000000000000408b      0x177 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_muldivdf3.o)
  .debug_line    0x0000000000004202       0xa4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_cmpdf2.o)
@@ -746,52 +755,52 @@ OUTPUT(RTOSDemo.elf elf32-littlearm)
 
 .debug_info     0x0000000000000000    0x1698d
  .debug_info    0x0000000000000000       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
- .debug_info    0x0000000000000071       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
- .debug_info    0x00000000000000e2       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
- .debug_info    0x0000000000000153      0x10d /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .debug_info    0x0000000000000260      0x111 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .debug_info    0x0000000000000371      0xa00 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
- .debug_info    0x0000000000000d71       0xe5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
- .debug_info    0x0000000000000e56      0x10c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
- .debug_info    0x0000000000000f62      0x126 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
- .debug_info    0x0000000000001088     0x10f2 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .debug_info    0x000000000000217a      0x9ee /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
- .debug_info    0x0000000000002b68      0xa84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
- .debug_info    0x00000000000035ec      0x9f6 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
- .debug_info    0x0000000000003fe2      0x939 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
- .debug_info    0x000000000000491b      0xd65 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .debug_info    0x0000000000005680      0x973 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
- .debug_info    0x0000000000005ff3      0xb67 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
- .debug_info    0x0000000000006b5a      0xbb3 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
- .debug_info    0x000000000000770d      0xa63 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
- .debug_info    0x0000000000008170      0xadb /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
- .debug_info    0x0000000000008c4b      0x922 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
- .debug_info    0x000000000000956d      0xb7c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .debug_info    0x000000000000a0e9      0xad8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
- .debug_info    0x000000000000abc1      0xcbd /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
- .debug_info    0x000000000000b87e      0x136 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
- .debug_info    0x000000000000b9b4      0x13e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
- .debug_info    0x000000000000baf2      0x93e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
- .debug_info    0x000000000000c430     0x1332 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
- .debug_info    0x000000000000d762      0xbc3 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
- .debug_info    0x000000000000e325      0x951 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
- .debug_info    0x000000000000ec76       0xd8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
- .debug_info    0x000000000000ed4e       0xd6 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
- .debug_info    0x000000000000ee24      0xa70 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
- .debug_info    0x000000000000f894       0xd9 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
- .debug_info    0x000000000000f96d       0xd5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
- .debug_info    0x000000000000fa42     0x15b0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- .debug_info    0x0000000000010ff2      0x980 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
- .debug_info    0x0000000000011972      0xa02 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
- .debug_info    0x0000000000012374      0x945 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
- .debug_info    0x0000000000012cb9      0x914 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
- .debug_info    0x00000000000135cd      0x980 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
- .debug_info    0x0000000000013f4d      0xabd /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
- .debug_info    0x0000000000014a0a      0x96a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
- .debug_info    0x0000000000015374      0x979 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
- .debug_info    0x0000000000015ced      0x9fe /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
- .debug_info    0x00000000000166eb       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
- .debug_info    0x000000000001675c       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+ .debug_info    0x0000000000000071       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
+ .debug_info    0x00000000000000e2      0x10d /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .debug_info    0x00000000000001ef      0x111 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .debug_info    0x0000000000000300      0xa00 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+ .debug_info    0x0000000000000d00       0xe5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+ .debug_info    0x0000000000000de5      0x10c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+ .debug_info    0x0000000000000ef1      0x126 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+ .debug_info    0x0000000000001017     0x10f2 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .debug_info    0x0000000000002109      0x9ee /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+ .debug_info    0x0000000000002af7      0xa84 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+ .debug_info    0x000000000000357b      0x9f6 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+ .debug_info    0x0000000000003f71      0x939 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+ .debug_info    0x00000000000048aa      0xd65 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .debug_info    0x000000000000560f      0x973 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+ .debug_info    0x0000000000005f82      0xb67 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+ .debug_info    0x0000000000006ae9      0xbb3 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+ .debug_info    0x000000000000769c      0xa63 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+ .debug_info    0x00000000000080ff      0xadb /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+ .debug_info    0x0000000000008bda      0x922 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+ .debug_info    0x00000000000094fc      0xb7c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .debug_info    0x000000000000a078      0xad8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+ .debug_info    0x000000000000ab50      0xcbd /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+ .debug_info    0x000000000000b80d      0x136 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+ .debug_info    0x000000000000b943      0x13e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+ .debug_info    0x000000000000ba81      0x93e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+ .debug_info    0x000000000000c3bf     0x1332 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+ .debug_info    0x000000000000d6f1      0xbc3 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+ .debug_info    0x000000000000e2b4      0x951 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
+ .debug_info    0x000000000000ec05       0xd8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+ .debug_info    0x000000000000ecdd       0xd6 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+ .debug_info    0x000000000000edb3      0xa70 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+ .debug_info    0x000000000000f823       0xd9 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+ .debug_info    0x000000000000f8fc       0xd5 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+ .debug_info    0x000000000000f9d1     0x15b0 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ .debug_info    0x0000000000010f81      0x980 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
+ .debug_info    0x0000000000011901      0xa02 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+ .debug_info    0x0000000000012303      0x945 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
+ .debug_info    0x0000000000012c48      0x914 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+ .debug_info    0x000000000001355c      0x980 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+ .debug_info    0x0000000000013edc      0xabd /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
+ .debug_info    0x0000000000014999      0x96a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
+ .debug_info    0x0000000000015303      0x979 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
+ .debug_info    0x0000000000015c7c      0x9fe /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+ .debug_info    0x000000000001667a       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
+ .debug_info    0x00000000000166eb       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+ .debug_info    0x000000000001675c       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
  .debug_info    0x00000000000167cd       0x70 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
  .debug_info    0x000000000001683d       0x70 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_muldivdf3.o)
  .debug_info    0x00000000000168ad       0x70 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_cmpdf2.o)
@@ -799,52 +808,52 @@ OUTPUT(RTOSDemo.elf elf32-littlearm)
 
 .debug_abbrev   0x0000000000000000     0x3e98
  .debug_abbrev  0x0000000000000000       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
- .debug_abbrev  0x0000000000000014       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
- .debug_abbrev  0x0000000000000028       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
- .debug_abbrev  0x000000000000003c       0x99 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
- .debug_abbrev  0x00000000000000d5       0x9a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
- .debug_abbrev  0x000000000000016f      0x193 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
- .debug_abbrev  0x0000000000000302       0x87 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
- .debug_abbrev  0x0000000000000389       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
- .debug_abbrev  0x0000000000000409       0x8d /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
- .debug_abbrev  0x0000000000000496      0x35d /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
- .debug_abbrev  0x00000000000007f3      0x1a7 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
- .debug_abbrev  0x000000000000099a      0x1a4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
- .debug_abbrev  0x0000000000000b3e      0x1ab /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
- .debug_abbrev  0x0000000000000ce9      0x170 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
- .debug_abbrev  0x0000000000000e59      0x232 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
- .debug_abbrev  0x000000000000108b      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
- .debug_abbrev  0x000000000000120a      0x235 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
- .debug_abbrev  0x000000000000143f      0x1d9 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
- .debug_abbrev  0x0000000000001618      0x1b4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
- .debug_abbrev  0x00000000000017cc      0x1e1 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
- .debug_abbrev  0x00000000000019ad      0x157 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
- .debug_abbrev  0x0000000000001b04      0x1de /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
- .debug_abbrev  0x0000000000001ce2      0x1a8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
- .debug_abbrev  0x0000000000001e8a      0x214 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
- .debug_abbrev  0x000000000000209e       0xa8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
- .debug_abbrev  0x0000000000002146       0x99 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
- .debug_abbrev  0x00000000000021df      0x16a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
- .debug_abbrev  0x0000000000002349      0x249 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
- .debug_abbrev  0x0000000000002592      0x1c3 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
- .debug_abbrev  0x0000000000002755      0x18e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
- .debug_abbrev  0x00000000000028e3       0x79 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
- .debug_abbrev  0x000000000000295c       0x79 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
- .debug_abbrev  0x00000000000029d5      0x1aa /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
- .debug_abbrev  0x0000000000002b7f       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
- .debug_abbrev  0x0000000000002bf0       0x8b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
- .debug_abbrev  0x0000000000002c7b      0x395 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
- .debug_abbrev  0x0000000000003010      0x184 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
- .debug_abbrev  0x0000000000003194      0x1af /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
- .debug_abbrev  0x0000000000003343      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
- .debug_abbrev  0x00000000000034c2      0x15f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
- .debug_abbrev  0x0000000000003621      0x18e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
- .debug_abbrev  0x00000000000037af      0x18e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
- .debug_abbrev  0x000000000000393d      0x18c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
- .debug_abbrev  0x0000000000003ac9      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
- .debug_abbrev  0x0000000000003c48      0x1d8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
- .debug_abbrev  0x0000000000003e20       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
- .debug_abbrev  0x0000000000003e34       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+ .debug_abbrev  0x0000000000000014       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x0000000000000028       0x99 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+ .debug_abbrev  0x00000000000000c1       0x9a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+ .debug_abbrev  0x000000000000015b      0x193 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+ .debug_abbrev  0x00000000000002ee       0x87 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+ .debug_abbrev  0x0000000000000375       0x80 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+ .debug_abbrev  0x00000000000003f5       0x8d /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+ .debug_abbrev  0x0000000000000482      0x35d /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+ .debug_abbrev  0x00000000000007df      0x1a7 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+ .debug_abbrev  0x0000000000000986      0x1a4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+ .debug_abbrev  0x0000000000000b2a      0x1ab /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+ .debug_abbrev  0x0000000000000cd5      0x170 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+ .debug_abbrev  0x0000000000000e45      0x232 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+ .debug_abbrev  0x0000000000001077      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+ .debug_abbrev  0x00000000000011f6      0x235 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+ .debug_abbrev  0x000000000000142b      0x1d9 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+ .debug_abbrev  0x0000000000001604      0x1b4 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+ .debug_abbrev  0x00000000000017b8      0x1e1 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+ .debug_abbrev  0x0000000000001999      0x157 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(impure.o)
+ .debug_abbrev  0x0000000000001af0      0x1de /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+ .debug_abbrev  0x0000000000001cce      0x1a8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+ .debug_abbrev  0x0000000000001e76      0x214 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+ .debug_abbrev  0x000000000000208a       0xa8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+ .debug_abbrev  0x0000000000002132       0x99 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+ .debug_abbrev  0x00000000000021cb      0x16a /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+ .debug_abbrev  0x0000000000002335      0x249 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+ .debug_abbrev  0x000000000000257e      0x1c3 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+ .debug_abbrev  0x0000000000002741      0x18e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
+ .debug_abbrev  0x00000000000028cf       0x79 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+ .debug_abbrev  0x0000000000002948       0x79 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+ .debug_abbrev  0x00000000000029c1      0x1aa /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+ .debug_abbrev  0x0000000000002b6b       0x71 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+ .debug_abbrev  0x0000000000002bdc       0x8b /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+ .debug_abbrev  0x0000000000002c67      0x395 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+ .debug_abbrev  0x0000000000002ffc      0x184 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
+ .debug_abbrev  0x0000000000003180      0x1af /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+ .debug_abbrev  0x000000000000332f      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
+ .debug_abbrev  0x00000000000034ae      0x15f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+ .debug_abbrev  0x000000000000360d      0x18e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+ .debug_abbrev  0x000000000000379b      0x18e /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
+ .debug_abbrev  0x0000000000003929      0x18c /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
+ .debug_abbrev  0x0000000000003ab5      0x17f /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
+ .debug_abbrev  0x0000000000003c34      0x1d8 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+ .debug_abbrev  0x0000000000003e0c       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
+ .debug_abbrev  0x0000000000003e20       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+ .debug_abbrev  0x0000000000003e34       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
  .debug_abbrev  0x0000000000003e48       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
  .debug_abbrev  0x0000000000003e5c       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_muldivdf3.o)
  .debug_abbrev  0x0000000000003e70       0x14 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_cmpdf2.o)
@@ -854,95 +863,95 @@ OUTPUT(RTOSDemo.elf elf32-littlearm)
  .debug_aranges
                 0x0000000000000000       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_udivsi3.o)
  .debug_aranges
-                0x0000000000000020       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
+                0x0000000000000020       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
  .debug_aranges
-                0x0000000000000040       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_dvmd_tls.o)
+                0x0000000000000040       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
  .debug_aranges
-                0x0000000000000060       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memcpy.o)
+                0x0000000000000060       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
  .debug_aranges
-                0x0000000000000080       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memset.o)
+                0x0000000000000080       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
  .debug_aranges
-                0x00000000000000a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sprintf.o)
+                0x00000000000000a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
  .debug_aranges
-                0x00000000000000c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcat.o)
+                0x00000000000000c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
  .debug_aranges
-                0x00000000000000e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcpy.o)
+                0x00000000000000e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
  .debug_aranges
-                0x0000000000000100       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strncpy.o)
+                0x0000000000000100       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
  .debug_aranges
-                0x0000000000000120       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(vfprintf.o)
+                0x0000000000000120       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
  .debug_aranges
-                0x0000000000000140       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcrtomb.o)
+                0x0000000000000140       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
  .debug_aranges
-                0x0000000000000160       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wcsrtombs.o)
+                0x0000000000000160       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
  .debug_aranges
-                0x0000000000000180       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wctomb_r.o)
+                0x0000000000000180       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
  .debug_aranges
-                0x00000000000001a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(wsetup.o)
+                0x00000000000001a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
  .debug_aranges
-                0x00000000000001c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(dtoa.o)
+                0x00000000000001c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
  .debug_aranges
-                0x00000000000001e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fflush.o)
+                0x00000000000001e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
  .debug_aranges
-                0x0000000000000200       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(findfp.o)
+                0x0000000000000200       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
  .debug_aranges
-                0x0000000000000220       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(freer.o)
+                0x0000000000000220       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
  .debug_aranges
-                0x0000000000000240       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fvwrite.o)
+                0x0000000000000240       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
  .debug_aranges
-                0x0000000000000260       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fwalk.o)
+                0x0000000000000260       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
  .debug_aranges
-                0x0000000000000280       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(locale.o)
+                0x0000000000000280       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
  .debug_aranges
-                0x00000000000002a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(makebuf.o)
+                0x00000000000002a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
  .debug_aranges
-                0x00000000000002c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mallocr.o)
+                0x00000000000002c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
  .debug_aranges
-                0x00000000000002e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memchr.o)
+                0x00000000000002e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
  .debug_aranges
-                0x0000000000000300       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(memmove.o)
+                0x0000000000000300       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
  .debug_aranges
-                0x0000000000000320       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mlock.o)
+                0x0000000000000320       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
  .debug_aranges
-                0x0000000000000340       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(mprec.o)
+                0x0000000000000340       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
  .debug_aranges
-                0x0000000000000360       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reallocr.o)
+                0x0000000000000360       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
  .debug_aranges
-                0x0000000000000380       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(sbrkr.o)
+                0x0000000000000380       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
  .debug_aranges
-                0x00000000000003a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isinf.o)
+                0x00000000000003a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
  .debug_aranges
-                0x00000000000003c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(s_isnan.o)
+                0x00000000000003c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
  .debug_aranges
-                0x00000000000003e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(stdio.o)
+                0x00000000000003e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
  .debug_aranges
-                0x0000000000000400       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strcmp.o)
+                0x0000000000000400       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
  .debug_aranges
-                0x0000000000000420       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(strlen.o)
+                0x0000000000000420       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
  .debug_aranges
-                0x0000000000000440       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(syscalls.o)
+                0x0000000000000440       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
  .debug_aranges
-                0x0000000000000460       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(writer.o)
+                0x0000000000000460       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
  .debug_aranges
-                0x0000000000000480       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(callocr.o)
+                0x0000000000000480       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
  .debug_aranges
-                0x00000000000004a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(closer.o)
+                0x00000000000004a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
  .debug_aranges
-                0x00000000000004c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(errno.o)
+                0x00000000000004c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
  .debug_aranges
-                0x00000000000004e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fclose.o)
+                0x00000000000004e0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
  .debug_aranges
-                0x0000000000000500       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(fstatr.o)
+                0x0000000000000500       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
  .debug_aranges
-                0x0000000000000520       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(lseekr.o)
+                0x0000000000000520       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
  .debug_aranges
-                0x0000000000000540       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(readr.o)
+                0x0000000000000540       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
  .debug_aranges
-                0x0000000000000560       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/../../../../arm-elf/lib/thumb/interwork/libc.a(reent.o)
+                0x0000000000000560       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
  .debug_aranges
-                0x0000000000000580       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_divsi3.o)
+                0x0000000000000580       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
  .debug_aranges
-                0x00000000000005a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_umodsi3.o)
+                0x00000000000005a0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_modsi3.o)
  .debug_aranges
                 0x00000000000005c0       0x20 /home/snegovick/dev/arm/usr/bin/../lib/gcc/arm-elf/4.0.2/thumb/interwork/libgcc.a(_addsubdf3.o)
  .debug_aranges
