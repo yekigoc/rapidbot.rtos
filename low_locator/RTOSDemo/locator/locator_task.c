@@ -68,6 +68,7 @@ void vLocatorTask( void *pvParameters )
   trspistat.channels[5].channel = ADC_CHANNEL_5;
   trspistat.channels[6].channel = ADC_CHANNEL_6;
   trspistat.channels[7].channel = ADC_CHANNEL_7;
+  trspistat.processed = 1;
   
 
   int i = 0;
@@ -143,10 +144,11 @@ void vLocatorTask( void *pvParameters )
   
   
   // Start measurement
-  
+  unsigned char chan = 0;
+  unsigned short max = 0;
   for(;;)
     {
-      /*      vTaskDelay(100 / portTICK_RATE_MS );
+      vTaskDelay(5 / portTICK_RATE_MS );
       for (i = 0;i<LOC_NUMADCCHANNELS; i++)
 	{
 	  if (trspistat.channels[i].ampchanged == 1)
@@ -154,12 +156,40 @@ void vLocatorTask( void *pvParameters )
 	      loc_writecommand(trspistat.channels[i].amp, 3, 0);
 	      trspistat.channels[i].ampchanged =0;
 	    }
-	    }*/
+	}
+      if ( trspistat.processed == 0)
+	{
+	  
+	  for (i = 0;i<LOC_NUMADCCHANNELS; i++)
+	    {
+	      if (i==5)
+		{
+		  max = adchanfindmax(i);
+		  if (max>ALLOWED_MAX)
+		    {
+		      if (trspistat.channels[i].amp>0)
+			{
+			  trspistat.channels[i].amp = trspistat.channels[i].amp - 1;
+			  trspistat.channels[i].ampchanged = 1;
+			}
+		    }
+		  else if (max<ALLOWED_MIN)
+		    {
+		      if (trspistat.channels[i].amp<15)
+			{
+			  trspistat.channels[i].amp = trspistat.channels[i].amp + 1;
+			  trspistat.channels[i].ampchanged = 1;
+			}
+		    }
+		}
+	    }
+	  trspistat.processed = 1;
+	}
       trspistat.leds[0].state = 1;
       trspistat.leds[0].changed = 1;
-      vTaskDelay(400 / portTICK_RATE_MS );
+      vTaskDelay(100 / portTICK_RATE_MS );
       trspistat.leds[0].state = 0;
       trspistat.leds[0].changed = 1;
-      vTaskDelay(400 / portTICK_RATE_MS );
+      vTaskDelay(100 / portTICK_RATE_MS );
     }
 }

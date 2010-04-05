@@ -5,3 +5,7 @@
 
 unsigned int
 ConvHex2mV( unsigned int valueToConvert );
+
+
+unsigned short 
+adchanfindmax(unsigned char chan);
