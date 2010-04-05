@@ -758,9 +758,12 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 
 	  memcpy( &ampdata, pxControlRx.ucBuffer, sizeof( ampdata ) );
 	  chan = ampdata & 0xFF;
-	  amp = (ampdata & 0xFF00) >> 16;
-	  trspistat.channels[chan].amp = amp;
-	  trspistat.channels[chan].ampchanged = 1;
+	  amp = ampdata >> 8;
+	  if (chan<LOC_NUMADCCHANNELS)
+	    {
+	      trspistat.channels[chan].amp = amp;
+	      trspistat.channels[chan].ampchanged = 1;
+	    }
 	  //prvSendControlData( ( unsigned portCHAR * ) &trspistat.dutycycle, sizeof( trspistat.dutycycle ), sizeof( trspistat.dutycycle ), pdFALSE );
 	  break;
 	case 0x3:
@@ -801,6 +804,11 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	case 0x7:
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.usbdataready, sizeof( trspistat.usbdataready ), sizeof( trspistat.usbdataready ), pdFALSE );
 	  break;
+	case 0x8:
+	  //send channel amp
+	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.channels[trspistat.channelread].amp, sizeof( trspistat.channels[trspistat.channelread].amp ), sizeof( trspistat.channels[trspistat.channelread].amp ), pdFALSE );
+	  break;
+
 	default:
 	  prvSendControlData( ( unsigned portCHAR * ) &usStatus, sizeof( usStatus ), sizeof( usStatus ), pdFALSE );
 	  break;

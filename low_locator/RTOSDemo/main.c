@@ -64,7 +64,7 @@ void vApplicationIdleHook( void )
   
   /* The idle hook simply sends a string of characters to the USB port.
      The characters will be buffered and sent once the port is connected. */
-  trspistat.counter = xTaskGetTickCount();
+  //  trspistat.counter = xTaskGetTickCount();
   /*if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
     {
     xLastTx = xTaskGetTickCount();

@@ -56,10 +56,15 @@ typedef struct
   unsigned char amp;            //amplifierstate (0-16)
   unsigned char part;
   unsigned char ampchanged;     //wether amplification changed
+  unsigned short maxval;
+  unsigned char agcen;
 } adcchan;
 
 #define LOC_NUMADCCHANNELS 8
 #define LOC_NUMLEDS 1
+#define ALLOWED_MIN 200
+#define ALLOWED_MAX 1000
+#define MIDDLEPOINT 1650
 
 typedef struct
 {
@@ -69,6 +74,8 @@ typedef struct
   unsigned char channelread;
   unsigned long counter;
   unsigned short usbinited;
+  unsigned char currentchan;
+  unsigned char processed;
   ledstat leds[LOC_NUMLEDS];
 } spistat;
 

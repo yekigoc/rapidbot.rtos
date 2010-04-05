@@ -94,20 +94,22 @@ void ISR_Tc0(void)
   // RC compare
   if ((status & AT91C_TC_CPCS) == AT91C_TC_CPCS) 
     {
-      if (trspistat.usbdataready == 0)
+      if (trspistat.usbdataready == 0 /*&& trspistat.processed == 1*/)
 	{
 	  for (i = 0; i< LOC_NUMADCCHANNELS; i++)
 	    {
 	      if (trspistat.channels[i].wbufidx<256)
 		{
-		  trspistat.channels[i].adcbuf[trspistat.channels[i].wbufidx] = trspistat.adcvals[i];
-		  
+		  trspistat.channels[i].adcbuf[trspistat.channels[i].wbufidx] = trspistat.adcvals[i];		   
 		  trspistat.channels[i].wbufidx++;  
 		}
 	      else
 		{
 		  if (i == (LOC_NUMADCCHANNELS - 1))
-		    trspistat.usbdataready = 1;
+		    {
+		      trspistat.usbdataready = 1;
+		      trspistat.processed = 0;
+		    }
 		  trspistat.channels[i].wbufidx=0;
 		  TC_Stop(AT91C_BASE_TC0);
 		}
