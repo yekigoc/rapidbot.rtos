@@ -778,27 +778,7 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	  memcpy( &trspistat.channels[trspistat.channelread].part, pxControlRx.ucBuffer, sizeof( trspistat.channels[trspistat.channelread].part ) );
 	  break;
 	case 0x6:
-	  if (trspistat.channels[trspistat.channelread].part == 0)
-	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf, 128, 128, pdFALSE ); //sending in two stages
-	    }
-	  else if (trspistat.channels[trspistat.channelread].part == 1)
-	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf+128, 128, 128, pdFALSE ); //sending in two stages
-	    }
-	  else if (trspistat.channels[trspistat.channelread].part == 2)
-	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf+256, 128, 128, pdFALSE ); //sending in two stages
-	    }
-	  else if (trspistat.channels[trspistat.channelread].part == 3)
-	    {
-	      prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf+384, 128, 128, pdFALSE ); //sending in two stages
-	      if (trspistat.channelread == LOC_NUMADCCHANNELS-1)
-		{
-		  trspistat.usbdataready = 0;
-		  TC_Start(AT91C_BASE_TC0);
-		}
-	    }
+	  prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].adcbuf, 128, 128, pdFALSE ); //sending in two stages
 
 	  break;
 	case 0x7:
@@ -807,6 +787,10 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	case 0x8:
 	  //send channel amp
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.channels[trspistat.channelread].amp, sizeof( trspistat.channels[trspistat.channelread].amp ), sizeof( trspistat.channels[trspistat.channelread].amp ), pdFALSE );
+	  break;
+	case 0x9:
+	  prvSendControlData( ( unsigned portCHAR * ) trspistat.channels[trspistat.channelread].fx, 128, 128, pdFALSE );
+	  trspistat.usbdataready = 0;
 	  break;
 
 	default:

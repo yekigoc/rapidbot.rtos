@@ -7,7 +7,7 @@ OBJCOPY=~/dev/arm/usr/bin/arm-elf-objcopy
 SIZE=~/dev/arm/usr/bin/arm-elf-size
 LDSCRIPT=atmel-rom.ld
 
-LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -oRTOSDemo.elf -Xlinker -M -Xlinker -Map=rtosdemo.map
+LINKER_FLAGS=-mthumb -nostartfiles -Xlinker -oRTOSDemo.elf -Xlinker -M -Xlinker -Map=rtosdemo.map -lm
 
 DEBUG=
 OPTIM=-O3
@@ -16,6 +16,7 @@ CFLAGS= $(DEBUG) \
 		$(OPTIM) \
 		-T$(LDSCRIPT) \
 		-I . \
+		-I fft \
 		-I./EMAC  \
 		-I $(RTOS_SOURCE_DIR)/include \
 		-I $(RTOS_SOURCE_DIR)/portable/GCC/ARM7_AT91SAM7S \
@@ -23,7 +24,8 @@ CFLAGS= $(DEBUG) \
 		-I ./USB \
 		-D SAM7_GCC \
 		-D THUMB_INTERWORK \
-		-mcpu=arm7tdmi \
+		-mcpu=arm7tdmi-s \
+		-mtune=arm7tdmi-s \
 		-D AT91SAM7S256 \
 		-D PACK_STRUCT_END=__attribute\(\(packed\)\) \
 		-D ALIGN_STRUCT_END=__attribute\(\(aligned\(4\)\)\) \
@@ -41,7 +43,6 @@ THUMB_SOURCE= \
 		pio/pio.c \
 		USB/USB-CDC.c \
 		locator/locator_task.c \
-		fft/fix_fft.c \
 		adc/adc.c \
 		tc/tc.c \
 		locator/locator.c
@@ -55,7 +56,10 @@ ARM_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_AT91SAM7S/portISR.c \
 		./SrcAtmel/Cstartup_SAM7.c \
 		USB/USBIsr.c \
+		offt/radix4fft.c \
 		locator/locator_isr.c
+
+#		fft/fix_fft.c \
 
 THUMB_OBJS = $(THUMB_SOURCE:.c=.o)
 ARM_OBJS = $(ARM_SOURCE:.c=.o)

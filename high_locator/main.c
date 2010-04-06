@@ -16,6 +16,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+
+#define NUMSAMPLES 64
 #include <stdio.h>
 #include <fix_fft.h>
 #include <gtk/gtk.h>
@@ -24,7 +26,7 @@
 #include <gtkdatabox_ruler.h>
 #include <math.h>
 
-#define POINTS 256
+#define POINTS NUMSAMPLES 
 #define STEPS 50
 #define BARS 25
 #define MARKER 10
@@ -54,6 +56,16 @@
 #define USB_RQ_STAT			0x0
 #define USB_RQ_FEATURE                  0x03
 #define INTR_LENGTH		64
+
+#include <stdio.h>
+#include <math.h>
+#include <assert.h>
+#include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
+
+
+#include "fft_001/fft.h"
 //#define USE_JOYSTICK
 
 enum {
@@ -83,27 +95,25 @@ static int find_dpfp_device(void)
 }
 
 
-gfloat *X;
-gfloat *Y;
-gfloat *X_scope;
-gfloat *Y_scope;
-GtkDataboxGraph *graph;
+
+GtkDataboxGraph *graphs[8];
 GdkColor color;
 GtkWidget *box;
-GtkDataboxGraph *graph_scope;
+GtkDataboxGraph *graph_scopes[8];
 GdkColor color_scope;
 GtkWidget *box_scope;
 int a;
 pthread_t thread;
 GtkWidget *spinner;
-unsigned short adcbuf[256];
+unsigned short adcbuf[NUMSAMPLES];
 
-#define FFT_SIZE  256
-#define log2FFT   8
+
+
+#define FFT_SIZE  NUMSAMPLES
+#define log2FFT   6
 #define N         (2 * FFT_SIZE)
 #define log2N     (log2FFT + 1)
 
-short x[N], fx[N];
 typedef struct
 {
   unsigned char ampchannel;
@@ -111,24 +121,26 @@ typedef struct
   unsigned char ampchanged;
 } amp;
 
-amp amp5;
-
-typedef struct
-{
-  int val[5];
-  int freq[5];
-} maximumpoints;
-maximumpoints maxpts;
+amp amps[8];
 
 #define MIDDLEPOINT 1650
 #define MAX_AMPLITUDE 1000
 #define MIN_AMPLITUDE 200
 
+typedef struct 
+{
+  gfloat *X;
+  gfloat *Y;
+} points;
+
+points scope_points[8];
+points spectrum_points[8];
+
 int findabsmax()
 {
   int i = 0;
   int max = 0;
-  for (i=0;i<256;i++)
+  for (i=0;i<NUMSAMPLES;i++)
     {
       if (abs(adcbuf[i]-MIDDLEPOINT)>max)
 	max = adcbuf[i]-MIDDLEPOINT;
@@ -136,38 +148,15 @@ int findabsmax()
   return max;
 }
 
-void find5maximumpoints()
-{
-  memset(&maxpts, 0, sizeof(maximumpoints));
-  int i = 0;
-  int j = 0;
-  for (i=0; i<N/2;i++)
-    {
-      for (j=0;j<5;j++)
-	{
-	  if (maxpts.val[j]-abs(fx[i])<0)
-	    {
-	      maxpts.val[j] = abs(fx[i]);
-	      maxpts.freq[j] = i;
-	      break;
-	    }
-	}
-    }
-  for (j=0;j<5;j++)
-    {
-      printf ("mp%i = %i ", j, maxpts.freq[j]);
-    }
-  printf("\n");
-}
 
-gboolean set_gain(void *vptr_args)
+/*gboolean set_gain(void *vptr_args)
 {
-  amp5.ampchannel = 5;
+  amps.ampchannel = 5;
   amp5.amp = gtk_spin_button_get_value_as_int(spinner);
   amp5.ampchanged = 1;
   printf ("called set_gain\n");
   return TRUE;
-}
+  }*/
 
 gboolean thread_func(void *vptr_args)
 {
@@ -176,106 +165,55 @@ gboolean thread_func(void *vptr_args)
     unsigned char usbdataready = 0;
     unsigned int counter = 0;
     unsigned char numchannels;
-    unsigned char z;
+    unsigned char d;
     unsigned short ampl = 0;
     int absmax;
-    int r;   
+    int r;
+    short fft [64];
 
     /*    amp=0x0;*/
 	  
-    if (amp5.ampchanged == 1)
-      {
-	ampl = 0;
-	unsigned short samp = amp5.amp;
-	ampl = amp5.ampchannel | (samp)<<8;
-	printf ("amp = %i, ampchan = %i, setting ampl = %i\n",amp5.amp, amp5.ampchannel, ampl);
-	r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x2, 0, &ampl, 2, 0);
-	amp5.ampchanged = 0;
-      }
-
     r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x03, 0, &counter, 4, 0);
     printf ("time : %u\n", counter);
     r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x07, 0, &usbdataready, 1, 0);
-    if (r < 0) 
-      {
-	fprintf(stderr, "set hwstat error %d\n", r);
-	return r;
-      }
-    if ((unsigned int) r < 1) 
-      {
-	fprintf(stderr, "short write (%d)", r);
-	return -1;
-      }
-    //    printf ("checking wether usbdata is ready\n");
+    
     if (usbdataready == 1)
       {
-	//	printf ("data ready, reading\n");
-	r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x04, 0, &numchannels, 1, 0);
-	//	printf ("channel quantity request returned %i\n", numchannels);
-	for (z = 0; z< numchannels; z++)
-	{
-	  //	  printf ("reading channel %i data\n",z);
-	  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x01, 0, &z, 1, 0);
+	printf ("dataready\n");
+	for (d = 0; d<8; d++)
+	  {
+	    r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x01, 0, &d, 1, 0);
+	    
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x08, 0, (unsigned char *)&amps[d].amp, 1, 0);
+	    printf ("amp5.amp = %i\n", amps[d].amp);
 
-	  part = 0;
-	  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &part, 1, 0);
-	  r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x06, 0, (unsigned char *)adcbuf, 128, 0);
-	  part = 1;
-	  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &part, 1, 0);
-	  r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x06, 0, (unsigned char *)adcbuf+128, 128, 0);
-	  part = 2;
-	  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &part, 1, 0);
-	  r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x06, 0, (unsigned char *)adcbuf+256, 128, 0);
-	  part = 3;
-	  r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x05, 0, &part, 1, 0);
-	  r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x06, 0, (unsigned char *)adcbuf+384, 128, 0);
-	  if (z == 5)
-	    {
-	      r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x08, 0, (unsigned char *)&amp5.amp, 1, 0);
-	      printf ("amp5.amp = %i\n", amp5.amp);
-		
-	      gtk_spin_button_set_value(spinner, (double)amp5.amp);
 
-	      gtk_databox_graph_remove (GTK_DATABOX (box), graph);
-	      gtk_databox_graph_remove (GTK_DATABOX (box_scope), graph_scope);
-	      for (i=0; i<POINTS; i++)
-		{
-		  //		  printf ("%i ", adcbuf[i]);
-		  X[i] = i;
-		  Y[i] = adcbuf[i];
-		  x[i] = Y[i]-1600;
-		  if (i & 0x01)
-		    fx[(N+i)>>1] = x[i];
-		  else
-		    fx[i>>1] = x[i];
-		}
-	      
-	      fix_fftr(fx, log2N, 0);
-	      find5maximumpoints();
-	      for (i=0; i<N; i++)
-		{
-		  X_scope[i] = i;
-		  Y_scope[i] = ((float)fx[i])+1600.0;
-		  //		  printf ("%f ", Y_scope[i]);
-		}
-	      //	      printf("\n");
-		  
-	      //	      printf ("\n");
-	    }
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x09, 0, (unsigned char *)fft, 128, 0);
+	    gtk_databox_graph_remove (GTK_DATABOX (box_scope), graph_scopes[d]);
+	    for (i=0; i<NUMSAMPLES; i++)
+	      {
+		scope_points[d].X[i] = i;
+		scope_points[d].Y[i] = ((float)fft[i])+d*5000.0;
+	      }
+	
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x06, 0, (unsigned char *)adcbuf, 128, 0);
+	
+	    gtk_databox_graph_remove (GTK_DATABOX (box), graphs[d]);
+	    for (i=0; i<POINTS; i++)
+	      {
+		spectrum_points[d].X[i] = i;
+		spectrum_points[d].Y[i] = adcbuf[i]-1600+d*5000;
+	      }
 
-	}
+	    graphs[d] = gtk_databox_lines_new (POINTS, spectrum_points[d].X, spectrum_points[d].Y, &color, 1);
+	    gtk_databox_graph_add (GTK_DATABOX (box), graphs[d]);
+	    graph_scopes[d] = gtk_databox_lines_new (POINTS, scope_points[d].X, scope_points[d].Y, &color_scope, 1);
+	    gtk_databox_graph_add (GTK_DATABOX (box_scope), graph_scopes[d]);
+	  }
+	
+	gtk_widget_queue_draw (GTK_WIDGET(box));
+	gtk_widget_queue_draw (GTK_WIDGET(box_scope));
       }
-
-    graph = gtk_databox_lines_new (POINTS, X, Y, &color, 1);
-    gtk_databox_graph_add (GTK_DATABOX (box), graph);
-    graph_scope = gtk_databox_lines_new (N, X_scope, Y_scope, &color_scope, 1);
-    gtk_databox_graph_add (GTK_DATABOX (box_scope), graph_scope);
-
-    //    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.05);
-    //	gtk_databox_calculate_extrema (GTK_DATABOX (box), &min_x, &max_x, &min_y, &max_y);
-    
-    gtk_widget_queue_draw (GTK_WIDGET(box));
-    gtk_widget_queue_draw (GTK_WIDGET(box_scope));
 
     return TRUE;
 }
@@ -300,30 +238,8 @@ create_basics (void)
    GtkAdjustment *adj;
   
    gint i;
-
-   /* We define some data */
-   X = g_new0 (gfloat, POINTS);
-   Y = g_new0 (gfloat, POINTS);
-
-   for (i = 0; i < POINTS; i++)
-   {
-      X[i] = i;
-      Y[i] = 0;
-   }
-
-
-   /* We define some data */
-   X_scope = g_new0 (gfloat, N);
-   Y_scope = g_new0 (gfloat, N);
-
-   for (i = 0; i < N; i++)
-   {
-      X_scope[i] = i;
-      Y_scope[i] = 0;
-   }
-
    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-   gtk_widget_set_size_request (window, 500, 700);
+   gtk_widget_set_size_request (window, 1000, 700);
 
    g_signal_connect (GTK_OBJECT (window), "destroy",
 		     G_CALLBACK (gtk_main_quit), NULL);
@@ -336,9 +252,11 @@ create_basics (void)
 
    label = gtk_label_new("scope");
    gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+
    separator = gtk_hseparator_new ();
-   gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, FALSE, 0);
-   
+   gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
+   hbox = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);   
    /* ----------------------------------------------------------------- 
     * This is all you need:
     * -----------------------------------------------------------------
@@ -349,68 +267,89 @@ create_basics (void)
 						      TRUE, TRUE, TRUE, TRUE);
 
    /* Put it somewhere */
-   gtk_box_pack_start (GTK_BOX (vbox), table, TRUE, TRUE, 0);
+   gtk_box_pack_start (GTK_BOX (hbox), table, TRUE, TRUE, 0);
 
    /* Add your data data in some color */
    color.red = 0;
    color.green = 0;
    color.blue = 0;
 
-   graph = gtk_databox_lines_new (POINTS, X, Y, &color, 1);
-   gtk_databox_graph_add (GTK_DATABOX (box), graph);
+   int j = 0;
+   for (j=0;j<8;j++)
+     {
+       /* We define some data */
+       spectrum_points[j].X = g_new0 (gfloat, POINTS);
+       spectrum_points[j].Y = g_new0 (gfloat, POINTS);
+       
+       for (i = 0; i < POINTS; i++)
+	 {
+	   spectrum_points[j].X[i] = i;
+	   spectrum_points[j].Y[i] = 5000.0*j;
+	 }
+       graphs[j] = gtk_databox_lines_new (POINTS, spectrum_points[j].X, spectrum_points[j].Y, &color, 1);
+       gtk_databox_graph_add (GTK_DATABOX (box), graphs[j]);
+     }
 
-   gtk_databox_set_total_limits (GTK_DATABOX (box), -100., 356.0, 3400.0, -100.);
+   gtk_databox_set_total_limits (GTK_DATABOX (box), 0., NUMSAMPLES, 42000.0, -2000.);
    gtk_databox_auto_rescale (GTK_DATABOX (box), 0.05);
 
+   printf ("passed stage 1\n");
    /* ----------------------------------------------------------------- 
     * Done :-)
     * -----------------------------------------------------------------
     */
-
-   separator = gtk_hseparator_new ();
-   gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
    /* Create the GtkDatabox widget */
    gtk_databox_create_box_with_scrollbars_and_rulers (&box_scope, &table_scope,
 						      TRUE, TRUE, TRUE, TRUE);
 
    /* Put it somewhere */
-   gtk_box_pack_start (GTK_BOX (vbox), table_scope, TRUE, TRUE, 0);
+   gtk_box_pack_start (GTK_BOX (hbox), table_scope, TRUE, TRUE, 0);
 
    /* Add your data data in some color */
    color_scope.red = 0;
    color_scope.green = 0;
    color_scope.blue = 0;
 
-   graph_scope = gtk_databox_lines_new (N, X_scope, Y_scope, &color_scope, 1);
-   gtk_databox_graph_add (GTK_DATABOX (box_scope), graph_scope);
+   printf ("passed stage 1.5\n");
+   for (j=0;j<8;j++)
+     {
+       scope_points[j].X = g_new0 (gfloat, POINTS);
+       scope_points[j].Y = g_new0 (gfloat, POINTS);
+       for (i = 0; i < POINTS; i++)
+	 {
+	   scope_points[j].X[i] = i;
+	   scope_points[j].Y[i] = 5000*j;
+	 }
+       graph_scopes[j] = gtk_databox_lines_new (POINTS, scope_points[j].X, scope_points[j].Y, &color_scope, 1);
+       gtk_databox_graph_add (GTK_DATABOX (box_scope), graph_scopes[j]);
+     }
+   printf ("passed stage 1.6\n");
 
-   gtk_databox_set_total_limits (GTK_DATABOX (box_scope), -10., 522.0, 2600.0, 600.);
+   gtk_databox_set_total_limits (GTK_DATABOX (box_scope), -5., NUMSAMPLES, 42000.0, -2000.);
    gtk_databox_auto_rescale (GTK_DATABOX (box_scope), 0.05);
 
+   printf ("passed stage 2\n");
    /* ----------------------------------------------------------------- 
     * Done :-)
     * -----------------------------------------------------------------
     */
 
-   separator = gtk_hseparator_new ();
-   gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
-   hbox = gtk_hbox_new (FALSE, 0);
-   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);
+   
 
    //   gtk_container_add (GTK_CONTAINER (vbox), hbox);
-
+   /*
    label = gtk_label_new ("Manual gain : ");
    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
    adj = (GtkAdjustment *) gtk_adjustment_new (0,0, 15.0, 1.0,
 					       1.0, 0.0);
    spinner = gtk_spin_button_new (adj, 0, 0);
    gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinner), TRUE);
-   gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, TRUE, 0);
+   gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, TRUE, 0);*/
 
-   setgain_button = gtk_button_new_with_label ("Set");
+   /*   setgain_button = gtk_button_new_with_label ("Set");
    g_signal_connect_swapped (GTK_OBJECT (setgain_button), "clicked",
 			     G_CALLBACK (set_gain), GTK_OBJECT (box));
-   gtk_box_pack_start (GTK_BOX (hbox), setgain_button, FALSE, FALSE, 0);
+			     gtk_box_pack_start (GTK_BOX (hbox), setgain_button, FALSE, FALSE, 0);*/
 
    separator = gtk_hseparator_new ();
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
@@ -435,6 +374,8 @@ main (gint argc, char *argv[])
 {
   //  struct sigaction sigact;
   int r = 1;
+
+  InitFFTTables();
   
   r = libusb_init(NULL);
   if (r < 0) {
