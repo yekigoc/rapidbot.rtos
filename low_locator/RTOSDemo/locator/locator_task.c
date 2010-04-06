@@ -4,9 +4,9 @@
 #include "common.h"
 #include "task.h"
 #include "pio/pio.h"
+#include "fft/fix_fft.h"
 
-
-#define locatorSTACK_SIZE		(200)
+#define locatorSTACK_SIZE		(1024)
 #define SPI_PCS(npcs)       ((~(1 << npcs) & 0xF) << 16)
 
 void vLocatorTask( void *pvParameters );
@@ -59,6 +59,9 @@ void vLocatorTask( void *pvParameters )
 {
   extern void ( vLOC_ISR_Wrapper )( void );
   extern void ( vLOC_TC_ISR_Wrapper )( void );
+
+  struct complex in[FFT_SIZE];
+
   unsigned int id_channel;
   trspistat.channels[0].channel = ADC_CHANNEL_0;
   trspistat.channels[1].channel = ADC_CHANNEL_1;
@@ -107,23 +110,20 @@ void vLocatorTask( void *pvParameters )
 		  800);
   
 
-  /*  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_0);
-  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_1);
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_0);
+  /*  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_1);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_2);
-  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_3);*/
-  //  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_4);
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_3);
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_4);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_5);
-  /*  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_6);
-      ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_7);*/
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_6);
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_7);*/
 
-    AIC_ConfigureIT(AT91C_ID_ADC, 0, vLOC_ISR_Wrapper);
+  AIC_ConfigureIT(AT91C_ID_ADC, 0, vLOC_ISR_Wrapper);
 
   AIC_EnableIT(AT91C_ID_ADC);
 
-  for(id_channel=ADC_CHANNEL_5;id_channel<=ADC_CHANNEL_5;id_channel++) 
-    {  
-      ADC_EnableIt(AT91C_BASE_ADC,id_channel);
-    }
+  ADC_EnableIt(AT91C_BASE_ADC,ADC_CHANNEL_0);
   // Start measurement
   ADC_StartConversion(AT91C_BASE_ADC);
 
@@ -146,50 +146,89 @@ void vLocatorTask( void *pvParameters )
   // Start measurement
   unsigned char chan = 0;
   unsigned short max = 0;
+  //short x[N];
+  int z = 0;
+  unsigned long timebefore = 0;
+  trspistat.timeafter = 0;
+  InitFFTTables();
+		  
+  int octr = 0;
   for(;;)
     {
+      if (octr%10 == 0)
+	{
+	  if (trspistat.leds[0].state == 1)
+	    {
+	      trspistat.leds[0].state = 0;
+	      trspistat.leds[0].changed = 1;
+	    }
+	  else
+	    {
+	      trspistat.leds[0].state = 1;
+	      trspistat.leds[0].changed = 1;
+	    }
+	}
       vTaskDelay(5 / portTICK_RATE_MS );
       for (i = 0;i<LOC_NUMADCCHANNELS; i++)
 	{
 	  if (trspistat.channels[i].ampchanged == 1)
 	    {
-	      loc_writecommand(trspistat.channels[i].amp, 3, 0);
-	      trspistat.channels[i].ampchanged =0;
+	      if (i==5)
+		{
+		  loc_writecommand(trspistat.channels[i].amp, 3, 0);
+		  trspistat.channels[i].ampchanged =0;
+		}
 	    }
 	}
       if ( trspistat.processed == 0)
 	{
-	  
+	  timebefore = xTaskGetTickCount();	  
 	  for (i = 0;i<LOC_NUMADCCHANNELS; i++)
 	    {
-	      if (i==5)
+	      for (z=0;z<LOC_NUMSAMPLES;z++)
 		{
-		  max = adchanfindmax(i);
-		  if (max>ALLOWED_MAX)
+		  if (trspistat.channels[i].adcbuf[z]-MIDDLEPOINT>max)
+		    max = trspistat.channels[i].adcbuf[z]-MIDDLEPOINT;
+		  in[z].r = trspistat.channels[i].adcbuf[z]-MIDDLEPOINT;
+		  in[z].i=0;
+		}
+	      DoFFT(in, FFT_SIZE);
+	      for (z=0;z<LOC_NUMSAMPLES;z++)
+		trspistat.channels[i].fx[z] = in[z].r;
+	      
+	      if (max>ALLOWED_MAX)
+		{
+		  if (trspistat.channels[i].amp>0)
 		    {
-		      if (trspistat.channels[i].amp>0)
-			{
-			  trspistat.channels[i].amp = trspistat.channels[i].amp - 1;
-			  trspistat.channels[i].ampchanged = 1;
-			}
-		    }
-		  else if (max<ALLOWED_MIN)
-		    {
-		      if (trspistat.channels[i].amp<15)
-			{
-			  trspistat.channels[i].amp = trspistat.channels[i].amp + 1;
-			  trspistat.channels[i].ampchanged = 1;
-			}
+		      trspistat.channels[i].amp = trspistat.channels[i].amp - 1;
+		      trspistat.channels[i].ampchanged = 1;
 		    }
 		}
+	      else if (max<ALLOWED_MIN)
+		{
+		  if (trspistat.channels[i].amp<15)
+		    {
+		      trspistat.channels[i].amp = trspistat.channels[i].amp + 1;
+		      trspistat.channels[i].ampchanged = 1;
+		    }
+		}
+	      max = 0;
 	    }
+	  trspistat.timeafter = xTaskGetTickCount();
+	  trspistat.counter = trspistat.timeafter - timebefore;
+	  trspistat.usbdataready = 1;
+	  while (trspistat.usbdataready == 1)
+	    {
+	      vTaskDelay(1 / portTICK_RATE_MS );
+	    }
+	  octr ++;
+	  trspistat.usbdataready = 0;
+	  trspistat.channelconverted = 0;
 	  trspistat.processed = 1;
+	  ADC_EnableChannel(AT91C_BASE_ADC, trspistat.channelconverted);
+	  ADC_EnableIt(AT91C_BASE_ADC, trspistat.channelconverted);
+	  ADC_StartConversion(AT91C_BASE_ADC);
+	  TC_Start(AT91C_BASE_TC0);
 	}
-      trspistat.leds[0].state = 1;
-      trspistat.leds[0].changed = 1;
-      vTaskDelay(100 / portTICK_RATE_MS );
-      trspistat.leds[0].state = 0;
-      trspistat.leds[0].changed = 1;
-      vTaskDelay(100 / portTICK_RATE_MS );
     }
 }

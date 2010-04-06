@@ -6,6 +6,7 @@
 #include "../aic/aic.h"
 #include "../pwmc/pwmc.h"
 #include "common_structs.h"
+#include "../offt/fft.h"
 
 //#define PB21   {1 << 21, AT91C_BASE_PIOB, AT91C_ID_PIOB, PIO_OUTPUT_0, PIO_DEFAULT}
 
@@ -47,10 +48,17 @@ typedef struct
   char changed;
 }ledstat;
 
+#define LOC_NUMSAMPLES 64
+#define LOC_NUMADCCHANNELS 8
+#define LOC_NUMLEDS 1
+#define ALLOWED_MIN 200
+#define ALLOWED_MAX 1000
+#define MIDDLEPOINT 1650
+
 typedef struct
 {
   unsigned int channel;
-  unsigned short adcbuf[256];
+  unsigned short adcbuf[LOC_NUMSAMPLES];
   char converted;               //wether conversion is over
   unsigned short wbufidx;        //current write index
   unsigned char amp;            //amplifierstate (0-16)
@@ -58,13 +66,8 @@ typedef struct
   unsigned char ampchanged;     //wether amplification changed
   unsigned short maxval;
   unsigned char agcen;
+  short fx[LOC_NUMSAMPLES];
 } adcchan;
-
-#define LOC_NUMADCCHANNELS 8
-#define LOC_NUMLEDS 1
-#define ALLOWED_MIN 200
-#define ALLOWED_MAX 1000
-#define MIDDLEPOINT 1650
 
 typedef struct
 {
@@ -77,6 +80,8 @@ typedef struct
   unsigned char currentchan;
   unsigned char processed;
   ledstat leds[LOC_NUMLEDS];
+  unsigned long timeafter;
+  unsigned char channelconverted;
 } spistat;
 
 spistat trspistat;

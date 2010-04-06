@@ -22,10 +22,6 @@
 /* The rate at which the idle hook sends data to the USB port. */
 #define mainUSB_TX_FREQUENCY		        ( 100 / portTICK_RATE_MS )
 
-/* The string that is transmitted down the USB port. */
-#define mainFIRST_TX_CHAR			'a'
-#define mainLAST_TX_CHAR			'z'
-
 static void prvSetupHardware( void );
 
 int main( void )
@@ -62,17 +58,7 @@ void vApplicationIdleHook( void )
   static portTickType xLastTx = 0;
   portCHAR cTxByte;
   
-  /* The idle hook simply sends a string of characters to the USB port.
-     The characters will be buffered and sent once the port is connected. */
   //  trspistat.counter = xTaskGetTickCount();
-  /*if( ( trspistat.counter - xLastTx ) > mainUSB_TX_FREQUENCY )
-    {
-    xLastTx = xTaskGetTickCount();
-    for( cTxByte = mainFIRST_TX_CHAR; cTxByte <= mainLAST_TX_CHAR; cTxByte++ )
-    {
-    vUSBSendByte( cTxByte );
-    }
-    }*/
   
   int i = 0;
   
