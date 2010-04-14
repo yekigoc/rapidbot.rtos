@@ -14,6 +14,11 @@
 #define PA8  {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
 //#define PA9  {1 << 9, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
 #define PA10 {1 << 10, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
+#define PA0en  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, /*PIO_INPUT*/ PIO_OUTPUT_1, PIO_DEFAULT}
+#define PA1dis {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, /*PIO_OUTPUT_1*/ PIO_INPUT, PIO_DEFAULT}
+#define PA0dis  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}
+#define PA1en {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
+
 
 #define PIN_ADC_AD0 {1 << 17, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}        //adc0
 #define PIN_ADC_AD1 {1 << 18, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}        //adc1
@@ -30,11 +35,33 @@
 
 static const Pin pins[] = {
   //  PA6,
+  PA0dis,
+  PA1en,
   PA8,
   //  PA9,
   PA10,
   PINS_LOC_AMP
   //  PINS_ADC
+};
+
+static const Pin pa1epa0d[] = {
+  PA1en,
+  PA0dis
+};
+
+static const Pin pa1dpa0e[] = {
+  PA1dis,
+  PA0en
+};
+
+static const Pin pa1epa0e[] = {
+  PA1en,
+  PA0en
+};
+
+static const Pin pa1dpa0d[] = {
+  PA1dis,
+  PA0dis
 };
 
 #define MIN_DUTY_CYCLE 0
@@ -51,9 +78,11 @@ typedef struct
 #define LOC_NUMSAMPLES 64
 #define LOC_NUMADCCHANNELS 8
 #define LOC_NUMLEDS 1
-#define ALLOWED_MIN 200
-#define ALLOWED_MAX 1000
+#define ALLOWED_MIN 1000
+#define ALLOWED_MAX 1200
 #define MIDDLEPOINT 1650
+#define LEFT_BORDER 20
+#define RIGHT_BORDER 24
 
 typedef struct
 {
@@ -66,6 +95,7 @@ typedef struct
   unsigned char ampchanged;     //wether amplification changed
   unsigned short maxval;
   unsigned char agcen;
+  unsigned int freqamount;
   short fx[LOC_NUMSAMPLES];
 } adcchan;
 
@@ -82,6 +112,8 @@ typedef struct
   ledstat leds[LOC_NUMLEDS];
   unsigned long timeafter;
   unsigned char channelconverted;
+  char paen;
+  char padatachange;
 } spistat;
 
 spistat trspistat;
