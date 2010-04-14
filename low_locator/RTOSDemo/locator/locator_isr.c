@@ -110,6 +110,7 @@ void ISR_Tc0(void)
     {
       if (trspistat.processed == 1)
 	{
+	  //xtrspistat.counter ++;
 	  /*if (trspistat.channelsconverted ==0)
 	    {*/
 	  if (trspistat.channels[trspistat.channelconverted].wbufidx<LOC_NUMSAMPLES)

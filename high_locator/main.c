@@ -94,8 +94,6 @@ static int find_dpfp_device(void)
   return devh ? 0 : -EIO;
 }
 
-
-
 GtkDataboxGraph *graphs[8];
 GdkColor color;
 GtkWidget *box;
@@ -106,8 +104,11 @@ int a;
 pthread_t thread;
 GtkWidget *spinner;
 unsigned short adcbuf[NUMSAMPLES];
-
-
+GtkWidget * pa0;
+GtkWidget * pa1;
+char pastate;
+int sendpastate;
+GtkWidget * resistor_button;
 
 #define FFT_SIZE  NUMSAMPLES
 #define log2FFT   6
@@ -122,10 +123,11 @@ typedef struct
 } amp;
 
 amp amps[8];
+unsigned int freqs[8];
 
 #define MIDDLEPOINT 1650
-#define MAX_AMPLITUDE 1000
-#define MIN_AMPLITUDE 200
+#define MAX_AMPLITUDE 1200
+#define MIN_AMPLITUDE 1000
 
 typedef struct 
 {
@@ -146,6 +148,22 @@ int findabsmax()
 	max = adcbuf[i]-MIDDLEPOINT;
     }
   return max;
+}
+
+gboolean set_resistor(void * some)
+{
+  pastate = 0;
+  if (gtk_toggle_button_get_active(pa0) == TRUE)
+    {
+      pastate |= 1;
+    }
+  if (gtk_toggle_button_get_active(pa1) == TRUE)
+    {
+      pastate |= 1<<1;
+    }
+  sendpastate = 1;
+  printf ("sending %i\n", pastate);
+  return TRUE;
 }
 
 
@@ -173,6 +191,12 @@ gboolean thread_func(void *vptr_args)
 
     /*    amp=0x0;*/
 	  
+    if (sendpastate == 1)
+      {
+	r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0xB, 0, &pastate, 1, 0);
+	sendpastate = 0;
+      }
+
     r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x03, 0, &counter, 4, 0);
     printf ("time : %u\n", counter);
     r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x07, 0, &usbdataready, 1, 0);
@@ -183,10 +207,11 @@ gboolean thread_func(void *vptr_args)
 	for (d = 0; d<8; d++)
 	  {
 	    r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0x01, 0, &d, 1, 0);
-	    
+	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x0A, 0, &freqs[d], sizeof(unsigned int), 0);
+	    printf ("frequency amount[%i] : %u\n", d, freqs[d]);
+ 
 	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x08, 0, (unsigned char *)&amps[d].amp, 1, 0);
-	    printf ("amp5.amp = %i\n", amps[d].amp);
-
+	    printf ("amp[%i].amp = %i\n",d,  amps[d].amp);
 
 	    r = libusb_control_transfer(devh, CTRL_IN, USB_RQ_STAT, 0x09, 0, (unsigned char *)fft, 128, 0);
 	    gtk_databox_graph_remove (GTK_DATABOX (box_scope), graph_scopes[d]);
@@ -353,6 +378,22 @@ create_basics (void)
 
    separator = gtk_hseparator_new ();
    gtk_box_pack_start (GTK_BOX (vbox), separator, FALSE, TRUE, 0);
+   
+   hbox = gtk_hbox_new (FALSE, 0);
+   gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, TRUE, 0);   
+      
+   pa0 = gtk_check_button_new_with_label ("enable PA0 resistor");
+   gtk_toggle_button_set_active (GTK_CHECK_BUTTON(pa0), TRUE);
+   gtk_box_pack_start (GTK_BOX (hbox), pa0, FALSE, FALSE, 0);
+
+   pa1 = gtk_check_button_new_with_label ("enable PA1 resistor");
+   gtk_toggle_button_set_active (GTK_CHECK_BUTTON(pa1), FALSE);
+   gtk_box_pack_start (GTK_BOX (hbox), pa1, FALSE, FALSE, 0);
+
+   resistor_button = gtk_button_new_with_label ("set");
+   g_signal_connect_swapped (GTK_OBJECT (resistor_button), "clicked",
+			     G_CALLBACK (set_resistor), GTK_OBJECT (box));
+   gtk_box_pack_start (GTK_BOX (hbox), resistor_button, FALSE, FALSE, 0);
 
    close_button = gtk_button_new_with_label ("close");
    g_signal_connect_swapped (GTK_OBJECT (close_button), "clicked",
@@ -374,6 +415,7 @@ main (gint argc, char *argv[])
 {
   //  struct sigaction sigact;
   int r = 1;
+  sendpastate = 0;
 
   InitFFTTables();
   

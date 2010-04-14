@@ -111,13 +111,13 @@ void vLocatorTask( void *pvParameters )
   
 
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_0);
-  /*  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_1);
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_1);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_2);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_3);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_4);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_5);
   ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_6);
-  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_7);*/
+  ADC_EnableChannel(AT91C_BASE_ADC, ADC_CHANNEL_7);
 
   AIC_ConfigureIT(AT91C_ID_ADC, 0, vLOC_ISR_Wrapper);
 
@@ -151,10 +151,30 @@ void vLocatorTask( void *pvParameters )
   unsigned long timebefore = 0;
   trspistat.timeafter = 0;
   InitFFTTables();
+  trspistat.counter=0;
 		  
   int octr = 0;
   for(;;)
     {
+      if (trspistat.padatachange == 1)
+	{
+	  switch (trspistat.paen)
+	    {
+	    case 1:
+	      PIO_Configure(pa1dpa0e, PIO_LISTSIZE(pa1dpa0e));
+	      break;
+	    case 2:
+	      PIO_Configure(pa1epa0d, PIO_LISTSIZE(pa1epa0d));
+	      break;
+	    case 3:
+	      PIO_Configure(pa1epa0e, PIO_LISTSIZE(pa1epa0e));
+	      break;
+	    default:
+	      PIO_Configure(pa1dpa0d, PIO_LISTSIZE(pa1dpa0d));
+	      break;
+	    }
+	  trspistat.padatachange = 0;
+	}
       if (octr%10 == 0)
 	{
 	  if (trspistat.leds[0].state == 1)
@@ -185,6 +205,7 @@ void vLocatorTask( void *pvParameters )
 	  timebefore = xTaskGetTickCount();	  
 	  for (i = 0;i<LOC_NUMADCCHANNELS; i++)
 	    {
+	      trspistat.channels[i].freqamount = 0;
 	      for (z=0;z<LOC_NUMSAMPLES;z++)
 		{
 		  if (trspistat.channels[i].adcbuf[z]-MIDDLEPOINT>max)
@@ -194,7 +215,13 @@ void vLocatorTask( void *pvParameters )
 		}
 	      DoFFT(in, FFT_SIZE);
 	      for (z=0;z<LOC_NUMSAMPLES;z++)
-		trspistat.channels[i].fx[z] = in[z].r;
+		{
+		  if (z>LEFT_BORDER && z<RIGHT_BORDER)
+		    {
+		      trspistat.channels[i].freqamount += abs(in[z].r);
+		    }
+		  trspistat.channels[i].fx[z] = in[z].r;
+		}
 	      
 	      if (max>ALLOWED_MAX)
 		{
