@@ -796,13 +796,14 @@ static void prvHandleStandardInterfaceRequest( xUSB_REQUEST *pxRequest )
 	  prvSendControlData( ( unsigned portCHAR * ) &trspistat.channels[trspistat.channelread].freqamount, sizeof(trspistat.channels[trspistat.channelread].freqamount), sizeof(trspistat.channels[trspistat.channelread].freqamount), pdFALSE );
 	  break;
 	case 0xB:
-       	  //trspistat.pwmp.cyclechange = ;
 	  prvSendZLP();
-
 	  memcpy( &trspistat.paen, pxControlRx.ucBuffer, sizeof( char ) );
 	  trspistat.padatachange = 1;
 	  break;
-	  
+	case 0xC:
+	  prvSendZLP();
+	  memcpy( &trspistat.pwmp, pxControlRx.ucBuffer, sizeof( trspistat.pwmp ) );
+	  break;	  
 
 
 	default:

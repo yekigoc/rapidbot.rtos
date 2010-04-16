@@ -29,6 +29,8 @@ int main( void )
   prvSetupHardware();
 
   memset(&trspistat, 0, sizeof(trspistat));
+  trspistat.pwmp.dutycycles = 250;
+  trspistat.pwmp.cyclechange = 1;
   Pin a = PA8;
   trspistat.leds[0].pioled = a ;
 
@@ -47,6 +49,10 @@ static void prvSetupHardware( void )
   portDISABLE_INTERRUPTS();
 	
   AT91C_BASE_AIC->AIC_EOICR = 0;
+
+  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PWMC;
+  PWMC_ConfigureClocks(PWM_FREQUENCY * MAX_DUTY_CYCLE, 0, BOARD_MCK);
+
   PIO_Configure(pins, PIO_LISTSIZE(pins));
   AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
 
@@ -54,12 +60,7 @@ static void prvSetupHardware( void )
   PWMC_SetPeriod(CHANNEL_PWM_1, MAX_DUTY_CYCLE);
   PWMC_SetDutyCycle(CHANNEL_PWM_1, MIN_DUTY_CYCLE);
 
-  PWMC_ConfigureChannel(CHANNEL_PWM_2, AT91C_PWMC_CPRE_MCKA, 0, 0);
-  PWMC_SetPeriod(CHANNEL_PWM_2, MAX_DUTY_CYCLE);
-  PWMC_SetDutyCycle(CHANNEL_PWM_2, MIN_DUTY_CYCLE);
-
   PWMC_EnableChannel(CHANNEL_PWM_1);
-  PWMC_EnableChannel(CHANNEL_PWM_2);
 
   //  AT91C_BASE_PMC->PMC_PCER = 1 << AT91C_ID_PIOA;
   //  adcinit();
@@ -72,6 +73,12 @@ void vApplicationIdleHook( void )
   portCHAR cTxByte;
   
   //  trspistat.counter = xTaskGetTickCount();
+
+  if ((trspistat.pwmp.cyclechange & 1<<1) !=0)
+    {
+      PWMC_SetDutyCycle(CHANNEL_PWM_1, trspistat.pwmp.dutycycles);
+      trspistat.pwmp.cyclechange&=~1<<1;
+    }
   
   int i = 0;
   

@@ -40,6 +40,7 @@ THUMB_SOURCE= \
 		$(RTOS_SOURCE_DIR)/portable/GCC/ARM7_AT91SAM7S/port.c \
 		$(RTOS_SOURCE_DIR)/portable/MemMang/heap_2.c \
 		aic/aic.c \
+		pwmc/pwmc.c \
 		pio/pio.c \
 		USB/USB-CDC.c \
 		locator/locator_task.c \

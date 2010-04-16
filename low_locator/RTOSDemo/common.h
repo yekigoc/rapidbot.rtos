@@ -11,14 +11,12 @@
 //#define PB21   {1 << 21, AT91C_BASE_PIOB, AT91C_ID_PIOB, PIO_OUTPUT_0, PIO_DEFAULT}
 
 //#define PA6  {1 << 6, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT} 
+#define PA1  {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_PERIPH_A, PIO_DEFAULT}             //pwm
 #define PA8  {1 << 8, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
 //#define PA9  {1 << 9, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
 #define PA10 {1 << 10, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_0, PIO_DEFAULT}
-#define PA0en  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, /*PIO_INPUT*/ PIO_OUTPUT_1, PIO_DEFAULT}
-#define PA1dis {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, /*PIO_OUTPUT_1*/ PIO_INPUT, PIO_DEFAULT}
-#define PA0dis  {1 << 0, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}
-#define PA1en {1 << 1, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_OUTPUT_1, PIO_DEFAULT}
-
+#define PA7en  {1 << 7, AT91C_BASE_PIOA, AT91C_ID_PIOA, /*PIO_INPUT*/ PIO_OUTPUT_1, PIO_DEFAULT}
+#define PA7dis  {1 << 7, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}
 
 #define PIN_ADC_AD0 {1 << 17, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}        //adc0
 #define PIN_ADC_AD1 {1 << 18, AT91C_BASE_PIOA, AT91C_ID_PIOA, PIO_INPUT, PIO_DEFAULT}        //adc1
@@ -35,38 +33,27 @@
 
 static const Pin pins[] = {
   //  PA6,
-  PA0dis,
-  PA1en,
+  PA7dis,
   PA8,
+  PA1,
   //  PA9,
   PA10,
   PINS_LOC_AMP
   //  PINS_ADC
 };
 
-static const Pin pa1epa0d[] = {
-  PA1en,
-  PA0dis
+static const Pin pa7en[] = {
+  PA7en
 };
 
-static const Pin pa1dpa0e[] = {
-  PA1dis,
-  PA0en
-};
-
-static const Pin pa1epa0e[] = {
-  PA1en,
-  PA0en
-};
-
-static const Pin pa1dpa0d[] = {
-  PA1dis,
-  PA0dis
+static const Pin pa7dis[] = {
+  PA7dis
 };
 
 #define MIN_DUTY_CYCLE 0
 #define MAX_DUTY_CYCLE 5000
 #define PWM_FREQUENCY  50
+#define CHANNEL_PWM_1 1
 
 typedef struct
 {
@@ -114,6 +101,7 @@ typedef struct
   unsigned char channelconverted;
   char paen;
   char padatachange;
+  pwmparams pwmp;
 } spistat;
 
 spistat trspistat;

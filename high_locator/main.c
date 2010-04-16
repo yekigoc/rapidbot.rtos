@@ -64,7 +64,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-
+#include "common_structs.h"
 #include "fft_001/fft.h"
 //#define USE_JOYSTICK
 
@@ -137,6 +137,8 @@ typedef struct
 
 points scope_points[8];
 points spectrum_points[8];
+  int dc = 250;
+  int dcc = 1;
 
 int findabsmax()
 {
@@ -235,6 +237,19 @@ gboolean thread_func(void *vptr_args)
 	    graph_scopes[d] = gtk_databox_lines_new (POINTS, scope_points[d].X, scope_points[d].Y, &color_scope, 1);
 	    gtk_databox_graph_add (GTK_DATABOX (box_scope), graph_scopes[d]);
 	  }
+	pwmparams pwmp;
+	pwmp.cyclechange = 3;
+	dc = dc + 10*dcc;
+	if (dc > 600)
+	  dcc = -1;
+	else if ( dc < 250)
+	  dcc = 1;
+
+	printf ("dc=%i\n",dc);
+	
+	pwmp.dutycycles=dc;
+	int r = libusb_control_transfer(devh, CTRL_OUT, USB_RQ_STAT, 0xc, 0, (unsigned char*)&pwmp, sizeof(pwmparams), 0);
+
 	
 	gtk_widget_queue_draw (GTK_WIDGET(box));
 	gtk_widget_queue_draw (GTK_WIDGET(box_scope));

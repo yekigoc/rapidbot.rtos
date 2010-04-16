@@ -161,16 +161,10 @@ void vLocatorTask( void *pvParameters )
 	  switch (trspistat.paen)
 	    {
 	    case 1:
-	      PIO_Configure(pa1dpa0e, PIO_LISTSIZE(pa1dpa0e));
-	      break;
-	    case 2:
-	      PIO_Configure(pa1epa0d, PIO_LISTSIZE(pa1epa0d));
-	      break;
-	    case 3:
-	      PIO_Configure(pa1epa0e, PIO_LISTSIZE(pa1epa0e));
+	      PIO_Configure(pa7en, PIO_LISTSIZE(pa7en));
 	      break;
 	    default:
-	      PIO_Configure(pa1dpa0d, PIO_LISTSIZE(pa1dpa0d));
+	      PIO_Configure(pa7dis, PIO_LISTSIZE(pa7dis));
 	      break;
 	    }
 	  trspistat.padatachange = 0;
