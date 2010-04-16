@@ -1,0 +1,496 @@
+/*
+ * This is a input demultiplexor class
+ */
+requires 2.0.0
+%{
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <debug_macros.h>
+#include <gio/gio.h>
+#include <rgi.pb-c.h>
+#include "rgi-stateparam.h"
+#include "rgi-pwmparam.h"
+#include "rgi-adcparam.h"
+%}
+
+%headertop{
+#include <gio/gio.h>
+#include "rgi-usbscheduler.h"
+%}
+
+%{
+  typedef struct _idclient
+  {
+    unsigned int id;
+    int exclusive;
+  } idclient; //input demultiplexor client
+  typedef int (*h)(RgiInputDemultiplexor *, void*, unsigned int, GDataInputStream *, GDataOutputStream*);
+  typedef struct _idphandler
+  {
+    unsigned int id;
+    h callback;
+  } idphandler;
+  
+  static void rgi_inputdemultiplexor_tellready(RgiInputDemultiplexor * self, GDataInputStream *idata, GDataOutputStream *odata);
+  
+  static void rgi_inputdemultiplexor_telllocked(RgiInputDemultiplexor * self, GDataInputStream *idata, GDataOutputStream *odata);
+  
+  static int rgi_inputdemultiplexor_unlockusb(RgiInputDemultiplexor * self, idclient * client);
+  
+  static int rgi_inputdemultiplexor_lockusb(RgiInputDemultiplexor * self, idclient * client);
+
+  static gboolean
+    handler (GThreadedSocketService *service,
+	     GSocketConnection      *connection,
+	     GSocketListener        *listener,
+	     gpointer                user_data)
+  {
+    GOutputStream *out;
+    GInputStream *in;
+    GFileInputStream *file_in;
+    GDataInputStream *idata;
+    GDataOutputStream *odata;
+    char *line, *escaped, *tmp, *query, *unescaped, *path, *version;
+    GFile *f;
+    GError *error;
+    GFileInfo *info;
+    GString *s;
+
+    RgiInputDemultiplexor * self = (RgiInputDemultiplexor * )user_data;
+    RgiUsbScheduler * me = self->scheduler;
+    
+    gboolean ret = FALSE;
+    idclient * cl = malloc(sizeof(idclient));
+    cl->id = 0;
+    
+    in = g_io_stream_get_input_stream (G_IO_STREAM (connection));
+    out = g_io_stream_get_output_stream (G_IO_STREAM (connection));
+    
+    idata = g_data_input_stream_new (in);
+    odata = g_data_output_stream_new (out);
+    
+    pmsg ("handler called \n");
+    
+    g_data_input_stream_set_byte_order (idata, G_DATA_STREAM_BYTE_ORDER_HOST_ENDIAN);
+    GError *tmp_error;
+    int noway = 0;
+    idphandler* idph;
+    int r = 0;
+
+    int prevexclusive = 1;
+
+    while (noway == 0)
+      {
+	if (prevexclusive != cl->exclusive)
+	  {
+	    if (cl->exclusive == 0)
+	      {
+		rgi_inputdemultiplexor_telllocked(self, idata, odata);
+	      }
+	    prevexclusive = cl->exclusive;
+	  }
+	tmp_error=NULL;
+	unsigned short head = g_data_input_stream_read_int16 (idata, NULL, &tmp_error);
+	if (head == 0 && tmp_error!= NULL)
+	  {
+	    pmsg("%s\n", tmp_error->message);
+	    g_clear_error(&tmp_error);
+	    noway = 1;
+	    break;
+	  }
+	pmsg ("packettype = %i\n", head);
+	tmp_error=NULL;
+	unsigned short len = g_data_input_stream_read_int16 (idata, NULL, &tmp_error);
+	if (len == 0 && tmp_error!= NULL)
+	  {
+	    pmsg("%s\n", tmp_error->message);
+	    g_clear_error(&tmp_error);
+	    noway = 1;
+	    break;
+	  }
+	pmsg ("packetlen = %i\n", len);
+	
+	unsigned char *packed = malloc(sizeof(char)*len);
+	for (int i = 0; i<len; i++)
+	  {
+	    tmp_error=NULL;
+	    packed[i] = g_data_input_stream_read_byte (idata, NULL, &tmp_error);
+	    if (packed[i] == 0 && tmp_error!= NULL)
+	      {
+		pmsg("%s\n", tmp_error->message);
+		g_clear_error(&tmp_error);
+		noway = 1;
+		break;
+	      }
+	  }
+	if (noway==0)
+	  {
+	    if ((cl->id!=0))
+	      {
+		if (head == PER_SETLOCK)
+		  {
+		    pmsg("cl->id (%i) is trying to obtain exclusive mode ... ", cl->id);
+		    r = rgi_inputdemultiplexor_lockusb(self, cl);
+		    if (r==0)
+		      {
+			pmsg (" success\n");
+			rgi_inputdemultiplexor_tellready(self, idata, odata);
+		      }
+		    else
+		      {
+			pmsg (" failed\n");
+			rgi_inputdemultiplexor_telllocked(self, idata, odata);
+		      }
+		  }
+		else if (head == PER_SETUNLOCK)
+		  {
+		    pmsg("cl->id (%i) is trying to unlock hardware ... ", cl->id);
+		    r = rgi_inputdemultiplexor_unlockusb(self, cl);
+		    if (r==0)
+		      {
+			pmsg (" success\n");
+			rgi_inputdemultiplexor_tellready(self, idata, odata);
+		      }
+		    else
+		      {
+			pmsg (" failed\n");
+			rgi_inputdemultiplexor_telllocked(self, idata, odata);
+		      }
+		  }
+		else
+		  {
+		    if (cl->id == self->_priv->ecid)
+		      {
+			pmsg("handling request type %i; hash size = %i\n", head, g_hash_table_size(self->_priv->packethandlers));
+			//			idph = (idphandler*)g_hash_table_lookup(self->_priv->packethandlers, (void*)&head);
+			GHashTableIter iter;
+			int *key;
+			idphandler * value;
+			int called = 0;
+			g_hash_table_iter_init(&iter, self->_priv->packethandlers);
+			while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
+			  {
+			    pmsg ("found key %i\n", *key);
+			    if (*key == head)
+			      {
+				if (value != NULL)
+				  {
+				    value->callback(self, packed, len, idata, odata);
+				    called = 1;
+				  }
+				else
+				  pwar ("idph is NULL ptr\n");
+			      }
+			  }
+			if (called == 0)
+			  pwar ("key %i not found\n", head);
+		      }
+		  }
+	      }
+	    else if (head == PER_TELLID)
+	      {
+		Rgi__Tellid *tellid;
+		
+		tellid = rgi__tellid__unpack(NULL, len, packed);
+		
+		pmsg("tellid->id = %i", tellid->id);
+		cl->id = tellid->id;
+		idclient * idc = (idclient*)g_hash_table_lookup(self->_priv->clients, (void*)&tellid->id);
+		if (idc == NULL)
+		  {
+		    g_hash_table_insert(self->_priv->clients, &(cl->id),cl);
+		  }
+	      }
+	  }
+
+	free(packed);
+      }
+
+    pmsg ("closing thread cl->id = %i\n", cl->id);
+    rgi_inputdemultiplexor_unlockusb(self, cl);
+    g_hash_table_remove(self->_priv->clients, (void*)&cl->id);
+    free(cl);
+    
+    g_object_unref (idata);
+    g_object_unref (odata);
+    return TRUE;
+  }
+%}
+
+class Rgi:InputDemultiplexor from G:Object
+{
+  public GAsyncQueue* fromusb;
+  public GAsyncQueue* tousb;
+  public RgiUsbScheduler * scheduler;
+  private GHashTable * clients;
+  private GHashTable * packethandlers;
+  private unsigned int ecid = 0;
+
+
+  private
+    void
+    tellready(self, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    int ret = 0;
+    char * buffer;
+    int sz = 0;
+    Rgi__Tellready tellready = RGI__TELLREADY__INIT;
+    tellready.lock = 1;
+    sz = rgi__tellready__get_packed_size(&tellready);
+    buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__tellready__pack(&tellready, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLREADY, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    free (buffer);
+  }
+
+  private
+    void
+    telllocked(self, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    int ret = 0;
+    char * buffer;
+    int sz = 0;
+    Rgi__Telllocked telllocked = RGI__TELLLOCKED__INIT;
+    telllocked.lock = 1;
+    sz = rgi__telllocked__get_packed_size(&telllocked);
+    buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__telllocked__pack(&telllocked, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLLOCKED, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    free (buffer);
+  }
+
+  private
+    int
+    unlockusb(self, idclient * client)
+  {
+    if (self->_priv->ecid != 0)
+      {
+	if (self->_priv->ecid >= client->id)
+	  {
+	    idclient * idc = (idclient*)g_hash_table_lookup(self->_priv->clients, (void*)&(self->_priv->ecid));
+	    if (idc != NULL)
+	      idc->exclusive = 0;
+	    self->_priv->ecid = 0;
+	    return 0; //unlocked
+	  }
+	else
+	  return -1; //locked by client with higher priority
+      }
+    return 0;
+  }
+
+  private
+    int
+    lockusb(self, idclient * client)
+  {
+    if (self->_priv->ecid != 0)
+      {
+	if (self->_priv->ecid >= client->id)
+	  {
+
+	    idclient * idc = (idclient*)g_hash_table_lookup(self->_priv->clients, (void*)&(self->_priv->ecid));
+	    if (idc != NULL)
+	      idc->exclusive = 0;
+	    self->_priv->ecid = client->id;
+	    client->exclusive = 1;
+	    return 0; //locked
+	  }
+	else
+	  return -1; //locked by client with higher priority
+      }
+    else
+      {
+	self->_priv->ecid = client->id;
+	return 0; //locked
+      }
+    return 0; //locked
+  }
+
+  public 
+    int 
+    setpwm(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    Rgi__Setpwmchan *pwmchan;
+	
+    pwmchan = rgi__setpwmchan__unpack(NULL, len, data);
+
+    if (pwmchan->channel > 2)
+      return -1;
+    pmsg("pwmchan->value = %i", pwmchan->value);
+    pmsg("pwmchan->channel = %i", pwmchan->channel);
+
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_PWM);
+    pwmdata * pptr = (pwmdata *)rgi_stateparam_get(param);
+    pptr->valuesw[pwmchan->channel] = pwmchan->value;
+
+    rgi_stateparam_set(param, pptr);
+  }
+
+  public 
+    int 
+    getadc(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    Rgi__Getadcchannel *adcchan;
+	
+    adcchan = rgi__getadcchannel__unpack(NULL, len, data);
+
+    if (adcchan->channel > 8)
+      return -1;
+    pmsg("adcchan->channel = %i", adcchan->channel);
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_ADC);
+    adcdata * p = rgi_stateparam_get(param);
+
+    Rgi__Telladcchannel telladcchan = RGI__TELLADCCHANNEL__INIT;
+    telladcchan.channel = adcchan->channel;
+    telladcchan.value = p->adcval[adcchan->channel];
+    int sz = rgi__telladcchannel__get_packed_size(&telladcchan);
+    char * buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__telladcchannel__pack(&telladcchan, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLADC, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    
+    free (buffer);
+  }
+
+  public 
+    int 
+    gettime(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_TIME);
+    if (param == NULL)
+      pwar("parameter is NULL\n");
+    rgi_stateparam_set_requested(param, 1);
+    while (rgi_stateparam_get_requested(param)!=0)
+      {
+	usleep(100);
+      }
+    unsigned long * p = rgi_stateparam_get(param);
+
+    Rgi__Telltime telltime = RGI__TELLTIME__INIT;
+    telltime.time = *p;
+    int sz = rgi__telltime__get_packed_size(&telltime);
+    char * buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__telltime__pack(&telltime, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLTIME, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    
+    free (buffer);
+  }
+
+  public 
+    int 
+    getbatchadc(self, void * data, unsigned int len, GDataInputStream *idata, GDataOutputStream *odata)
+  {
+    RgiStateParam * param = rgi_usbscheduler_getparam(self->scheduler, PER_ADC);
+    adcdata * p = rgi_stateparam_get(param);
+
+    Rgi__Tellbatchadc telladc = RGI__TELLBATCHADC__INIT;
+    telladc.c0 = p->adcval[0];
+    telladc.c1 = p->adcval[1];
+    telladc.c2 = p->adcval[2];
+    telladc.c3 = p->adcval[3];
+    telladc.c4 = p->adcval[4];
+    telladc.c5 = p->adcval[5];
+    telladc.c6 = p->adcval[6];
+    telladc.c7 = p->adcval[7];
+
+    int sz = rgi__tellbatchadc__get_packed_size(&telladc);
+    char * buffer = (char*)malloc(sz*(sizeof(char)));
+    rgi__tellbatchadc__pack(&telladc, buffer);
+    g_data_output_stream_put_int16(odata, PER_TELLBATCHADC, NULL, NULL);
+    g_data_output_stream_put_int16(odata, sz, NULL, NULL);
+    for (int i = 0; i<sz; i++)
+      g_data_output_stream_put_byte(odata, buffer[i], NULL, NULL);
+    
+    free (buffer);
+  }
+
+  init(self)
+  {
+    self->_priv->packethandlers = g_hash_table_new(g_int_hash, g_int_equal);
+    self->_priv->clients = g_hash_table_new(g_int_hash, g_int_equal);
+  }
+
+  public
+  void
+  start(self)
+  {
+    pmsg("starting init sequence\n");
+    GSocketService *service;
+    GOptionContext *context;
+    GError *error = NULL;
+
+    idphandler * pwm = malloc(sizeof(idphandler));
+    pwm->id = PER_PWM;
+    pwm->callback = rgi_inputdemultiplexor_setpwm;
+    g_hash_table_insert(self->_priv->packethandlers, &(pwm->id),pwm);
+
+    idphandler * adc = malloc(sizeof(idphandler));
+    adc->id = PER_GETADC;
+    adc->callback = rgi_inputdemultiplexor_getadc;
+    g_hash_table_insert(self->_priv->packethandlers, &(adc->id),adc);
+
+    idphandler * time = malloc(sizeof(idphandler));
+    time->id = PER_GETTIME;
+    time->callback = rgi_inputdemultiplexor_gettime;
+    g_hash_table_insert(self->_priv->packethandlers, &(time->id),time);
+
+    idphandler * batchadc = malloc(sizeof(idphandler));
+    batchadc->id = PER_GETBATCHADC;
+    batchadc->callback = rgi_inputdemultiplexor_getbatchadc;
+    g_hash_table_insert(self->_priv->packethandlers, &(batchadc->id),batchadc);
+    
+    context = g_option_context_new ("RGI server");
+
+    pmsg("creating service\n");    
+    service = g_threaded_socket_service_new (10);
+    if (!g_socket_listener_add_inet_port (G_SOCKET_LISTENER (service),
+					  30000,
+					  NULL,
+					  &error))
+      {
+	pmsg ("failed to add inet port\n");
+	return;
+      }
+    
+    pmsg ("RGI Input Demultiplexor is listening on port %d\n", 30000);
+    
+    g_signal_connect (service, "run", G_CALLBACK (handler), G_OBJECT(self));
+    
+    g_main_loop_run (g_main_loop_new (NULL, FALSE));
+
+    GHashTableIter iter;
+    int * key;
+    idphandler * value;
+    g_hash_table_iter_init(&iter, self->_priv->packethandlers);
+    while (g_hash_table_iter_next (&iter, (void**)&key, (void**)&value)) 
+      {
+	free(value);
+      }
+    pmsg ("exiting\n");
+    g_hash_table_destroy(self->_priv->packethandlers);
+    g_hash_table_destroy(self->_priv->clients);
+    g_assert_not_reached ();
+  }
+
+  public RgiInputDemultiplexor *
+    new (void)
+  {
+    return (RgiInputDemultiplexor *)GET_NEW;
+  }
+  
+}
